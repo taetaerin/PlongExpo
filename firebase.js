@@ -1,8 +1,8 @@
 //파이어베이스 
 
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import 'firebase/auth';
+// import { getAnalytics } from "firebase/analytics";
+import 'firebase/auth'
 
 const firebaseConfig = {
   apiKey: "AIzaSyBLs4g8C1X6Xqmt0sNIo7TjMk8Y7oNcR7k",
@@ -16,6 +16,6 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+// const analytics = getAnalytics(app);
 
 export default app;

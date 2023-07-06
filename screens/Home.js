@@ -84,9 +84,8 @@ const Home = ({navigation}) => {
 
           {environmentalPractice.map((data, index) => {
             return(
-              <TouchableOpacity onPress={() => navigation.navigate('Content', {data})}>
-              
-                <ImplementCard title={data.title} image={data.image} key={index} />
+              <TouchableOpacity onPress={() => navigation.navigate('Content', {data})} key={index}>
+                <ImplementCard title={data.title} image={data.image} />
               </TouchableOpacity>
             )
           })}

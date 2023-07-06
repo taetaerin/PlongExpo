@@ -11,6 +11,10 @@ import Participant from './screens/Participant';
 import Map from './screens/Map';
 import Profile from './screens/Profile';
 import Content from './screens/Content';
+import SignIn from './screens/SignIn';
+import SignUp from './screens/SignUp';
+
+// import app from './firebase'
 
 const App = () => {
 
@@ -80,8 +84,12 @@ const App = () => {
               </>
             )} */}
             {/* <Stack.Screen name="Home" component={Home} /> */}
+
+            <Stack.Screen name="SignIn" component={SignIn} />
+            <Stack.Screen name="SignUp" component={SignUp} />
             <Stack.Screen name="Main" component={BottomTabScreens} />
             <Stack.Screen name="Content" component={Content} />
+
             {/* <Stack.Screen name="EditProfile" component={EditProfile} />  */}
 
 
