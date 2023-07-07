@@ -1,14 +1,29 @@
 import { View, Text, TouchableOpacity, TextInput, StyleSheet,Platform, TouchableWithoutFeedback, Keyboard, 
-    ScrollView, Pressable} from 'react-native';
-    import React, { useState } from 'react';
-    import { SafeAreaView } from 'react-native-safe-area-context';
-    import Ionic from 'react-native-vector-icons/Ionicons';
-    import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-    // import { CheckBox } from '@rneui/themed';
+ScrollView, Pressable} from 'react-native';
+import React, { useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Ionic from 'react-native-vector-icons/Ionicons';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
         
         
         const SignUp = ({navigation}) => {
           const [checked, setChecked] = useState(true);
+          const [email, setEmail] = useState('');
+          const [password, setPassword] = useState('');
+          const [name, setName] = useState('');
+          const [phone, setPhone] = useState('');
+          const [nickName, setNickName] = useState('');
+          const auth = getAuth();
+
+          const handleSignUp = async() => {
+            try {
+              const user = await createUserWithEmailAndPassword(auth, email, password);
+              console.log('user', user)
+            } catch (error){
+                console.log(error.message);
+            }
+          }
         
           return (
             
@@ -42,40 +57,61 @@ import { View, Text, TouchableOpacity, TextInput, StyleSheet,Platform, Touchable
                     <View>
                       <Text style={styles.title}>* 이메일</Text>
                       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                        <TextInput placeholder='이메일을 입력해주세요' style={[styles.inputContainer, styles.small]}/>
+                        <TextInput 
+                          placeholder='이메일을 입력해주세요' 
+                          style={[styles.inputContainer, styles.small]}
+                          value={email} 
+                          onChangeText={text => setEmail(text)}
+                          />
+
                         <Pressable style={styles.btn}>
                           <Text style={{fontSize: 14, color: '#1AAD55'}}>
                             중복확인
                           </Text>
                         </Pressable>
+
                       </View>
                     </View>
         
                     <View>
                       <Text style={styles.title}>* 비밀번호</Text>
-                      <TextInput placeholder='비밀번호를 입력해주세요' style={styles.inputContainer}/>
+                      <TextInput 
+                        placeholder='비밀번호를 입력해주세요' 
+                        style={styles.inputContainer}
+                        value={password} 
+                        onChangeText={text => setPassword(text)}
+                      />
                       <TextInput placeholder='비밀번호를 다시 입력해주세요' style={styles.inputContainer}/>
                     </View>
         
                     <View>
                       <Text style={styles.title}>* 이름</Text>
-                      <TextInput placeholder='이름을 입력해주세요' style={styles.inputContainer}/>
+                      <TextInput 
+                        placeholder='이름을 입력해주세요' 
+                        style={styles.inputContainer}
+                        value={name} 
+                        onChangeText={text => setName(text)}
+                      />
                     </View>
         
                     <View>
                       <Text style={styles.title}>* 휴대폰 번호</Text>
-                      <TextInput placeholder='휴대폰 번호를 입력해주세요' style={styles.inputContainer}/>
+                      <TextInput 
+                        placeholder='휴대폰 번호를 입력해주세요' 
+                        style={styles.inputContainer}
+                        value={phone} onChangeText={text => setPhone(text)}
+                      />
                     </View>
-        
-                    <View>
-                      <Text style={styles.title}>* 이메일</Text>
-                      <TextInput placeholder='이메일을 입력해주세요' style={styles.inputContainer}/>
-                    </View>
-                    
+            
                     <View>
                       <Text style={styles.title}>* 닉네임</Text>
                       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                        <TextInput placeholder='닉네임을 입력해주세요' style={[styles.inputContainer, styles.small]}/>
+                        <TextInput 
+                          placeholder='닉네임을 입력해주세요' 
+                          style={[styles.inputContainer, styles.small]}
+                          value={nickName} 
+                          onChangeText={text => setNickName(text)}
+                        />
                         <Pressable style={styles.btn}>
                           <Text style={{fontSize: 14, color: '#1AAD55'}}>
                             중복확인
@@ -110,7 +146,7 @@ import { View, Text, TouchableOpacity, TextInput, StyleSheet,Platform, Touchable
               </KeyboardAwareScrollView>
             </SafeAreaView>
         
-                <Pressable style={styles.button} onPress={() => console.log('click')}>
+                <Pressable style={styles.button} onPress={handleSignUp}>
                     <Text style={{color: 'white', fontSize: 20, fontWeight: 600, marginBottom: 10}}>가입하기</Text>
                 </Pressable>
         

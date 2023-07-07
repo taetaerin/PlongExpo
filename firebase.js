@@ -1,21 +1,20 @@
-//파이어베이스 
-
+// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-// import { getAnalytics } from "firebase/analytics";
-import 'firebase/auth'
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
+import 'firebase/auth'
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBLs4g8C1X6Xqmt0sNIo7TjMk8Y7oNcR7k",
-  authDomain: "plogging-a9145.firebaseapp.com",
-  projectId: "plogging-a9145",
-  storageBucket: "plogging-a9145.appspot.com",
-  messagingSenderId: "58481871046",
-  appId: "1:58481871046:web:de797e1da07b816ee0efc7",
-  measurementId: "G-MRX7TLT0RZ"
+  apiKey: "AIzaSyCmJJzGfZe4EeuwVA1dJGw62wm6nrPsnkc",
+  authDomain: "plongexpo.firebaseapp.com",
+  projectId: "plongexpo",
+  storageBucket: "plongexpo.appspot.com",
+  messagingSenderId: "586366805279",
+  appId: "1:586366805279:web:b34da872f8a85d61be3c2a"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-// const analytics = getAnalytics(app);
 
 export default app;

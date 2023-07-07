@@ -5,6 +5,7 @@ const Logo = () => {
   let LogoImg = require('../../assets/images/Logo.png');
   return (
     <View style={styles.logoContainer}>
+      
         {/* 로고 이미지 */}
         <View>
             <Image style={styles.logoImg} source={LogoImg} resizeMode='contain' />
@@ -12,8 +13,8 @@ const Logo = () => {
 
         {/* 로고 이미지 밑 텍스트 */}
         <View style={styles.subTitle}>
-            <Text>함께 뜻깊은</Text>
-            <Text>플로깅 해볼까요?</Text>
+            <Text style={{color:'#696969'}}>함께 뜻깊은</Text>
+            <Text style={{color: '#696969'}}>플로깅 해볼까요?</Text>
         </View>
 
     </View>
@@ -35,7 +36,6 @@ const styles = StyleSheet.create({
       
       subTitle:{
         alignItems: 'center',
-        color: '#424242',
       },
 });
 

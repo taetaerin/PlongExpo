@@ -2,6 +2,7 @@ import { View, Text,  StyleSheet, Pressable, KeyboardAvoidingView, Platform, Tou
 import React, { useState } from 'react';
 import Logo from './components/Logo';
 import CustomerInput from './components/CustomerInput';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 
 
 const SignIn = ({ navigation }) => {
@@ -9,8 +10,15 @@ const SignIn = ({ navigation }) => {
   const [userid, setUserId] = useState('');
   const [password, setPassword] = useState('');
 
-  console.log('userid', userid);
-  console.log('password', password);
+  const handleSignIn = async () => {
+    // try {
+    //     const user = await createUserWithEmailAndPassword(auth, email, password);
+    //     console.log('user', user)
+    // } catch (error){
+    //     console.log(error.message);
+    // }
+    navigation.navigate('Main')
+  }
 
   return (
     <KeyboardAvoidingView
@@ -40,7 +48,8 @@ const SignIn = ({ navigation }) => {
           />
 
           {/* 로그인 버튼  */}
-          <Pressable onPress={() => navigation.navigate('Main')} style={styles.signInBtn}>
+          {/* <Pressable onPress={() => navigation.navigate('Main')} style={styles.signInBtn}> */}
+          <Pressable onPress={handleSignIn} style={styles.signInBtn}>
               <Text style={styles.btnText}>로그인</Text>
           </Pressable>
 
@@ -140,7 +149,7 @@ const SignIn = ({ navigation }) => {
   },
 
   findText: {
-      color: '#f424242',
+      color: '#424242',
       fontSize: 14,
       marginRight: 16,
       opacity: 0.75,
