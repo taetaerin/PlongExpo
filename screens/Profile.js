@@ -10,7 +10,7 @@ const Profile = ({navigation}) => {
     
     const onPressSaveEdit = () => {
     }
-    const[selectImage, setSelectImage] = useState('');
+    const[selectImage, setSelectImage] = useState(null);
 
     const markDates = {
         '2023-07-01': {
@@ -44,15 +44,25 @@ const Profile = ({navigation}) => {
             </View>
             
             {/* 프로필 수정 컨테이너 */}
-            <View style={{flexDirection: 'row', alignItems: 'center', height: 160, borderBottomWidth: 0.5,
-                  borderBottomColor: '#EAEAEA'}}>
+            <View style={{flexDirection: 'row', height: 160, borderBottomWidth: 0.5, borderBottomColor: '#EAEAEA'}}>
+                <View style={{justifyContent:'center'}}>
+                    <Image 
+                        style={{backgroundColor: '#EFEFEF',left: 16, width: 100, height: 100, borderRadius: 100}} 
+                        source={{uri: selectImage}} 
+                    />
+                </View>
 
-                <Image style={{backgroundColor: '#EFEFEF',
-                left: 16, width: 100, height: 100, borderRadius: 100}}source={{uri: selectImage}} />
-                          
-                <Text style={styles.nameText}>
-                    홍길동 님
-                </Text>                
+                <View style={{marginLeft: 25, paddingTop: 50}}>
+                    <Text style={styles.nameText}>
+                        홍길동 님
+                    </Text>   
+
+                    <Text style={{marginTop: 14, color: '#424242', fontSize: 12}}>
+                        플로깅으로 같이 환경을 깨끗이 만들어요~!
+                    </Text>  
+                </View>
+     
+
             </View>
 
             <View style={{marginVertical: 24}}> 
@@ -107,7 +117,7 @@ const Profile = ({navigation}) => {
             <View style={styles.line}>
             </View>
 
-            <TouchableOpacity style={styles.touchBox} onPress={() => onPressSaveEdit()} >
+            <TouchableOpacity style={styles.touchBox} onPress={() => navigation.navigate('EditProfile')} >
                   <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                       <Text style={styles.text}>
                           프로필 관리
@@ -151,8 +161,6 @@ const styles = StyleSheet.create({
     },
     nameText: {
         fontSize: 20,
-        left: 45,
-        top:15,
         color: '#424242',
        
     },
@@ -182,3 +190,5 @@ const styles = StyleSheet.create({
 )
 
 export default Profile;
+
+
