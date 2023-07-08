@@ -14,6 +14,7 @@ import SignIn from './screens/SignIn';
 import SignUp from './screens/SignUp';
 
 import app from './firebase';
+import EditProfile from './screens/EditProfile';
 
 export default function App() {
     const Stack = createNativeStackNavigator();
@@ -71,19 +72,13 @@ export default function App() {
                   <Stack.Screen name="SignUp" component={SignUp} />
                 </>
               )} */}
-              {/* <Stack.Screen name="Home" component={Home} /> */}
-
-              {/* <Stack.Screen name="SignIn" component={SignIn} />
-              <Stack.Screen name="SignUp" component={SignUp} /> */}
-              {/* <Stack.Screen name="Main" component={BottomTabScreens} />
-              <Stack.Screen name="Content" component={Content} /> */}
-
-              {/* <Stack.Screen name="EditProfile" component={EditProfile} />  */}
-              <Stack.Screen name="Profile" component={Profile} />
-              
-
-
-
+      
+              <Stack.Screen name="SignIn" component={SignIn} />
+              <Stack.Screen name="SignUp" component={SignUp} /> 
+              <Stack.Screen name="Main" component={BottomTabScreens} />
+              <Stack.Screen name="Content" component={Content} />
+              <Stack.Screen name="EditProfile" component={EditProfile} /> 
+            
           </Stack.Navigator>
         </NavigationContainer>
     );
