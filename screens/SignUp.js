@@ -26,131 +26,94 @@ const SignUp = ({navigation}) => {
   }
 
   return (
-    
-    <View style={{flex: 1, backgroundColor: 'white'}}>
-    <SafeAreaView>
-        <View 
-            style={{
-            width: '100%', 
-            backgroundColor: 'white', 
-            height: 44, 
-            paddingHorizontal: 18,
-            justifyContent:'center'}}
-            >
-            <TouchableOpacity  onPress={() => navigation.goBack()}>
-                <Ionic name="chevron-back-sharp" style={{fontSize:24}} />
-            </TouchableOpacity>
-          </View>
+      <View style={{flex: 1, backgroundColor: 'white'}}>
+          <SafeAreaView>
+
+                {/* 상단바 */}
+                <View 
+                    style={{
+                    width: '100%', 
+                    backgroundColor: 'white', 
+                    height: 44, 
+                    paddingHorizontal: 18,
+                    justifyContent:'center',
+                    borderBottomWidth: 0.5,
+                    borderBottomColor: '#EAEAEA',
+                  }}>
+                    <TouchableOpacity>
+                        <Ionic name="chevron-back-sharp" style={{fontSize:24}} onPress={() => navigation.goBack()} />
+                    </TouchableOpacity>
+                </View>
 
 
-      <KeyboardAwareScrollView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.container}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView contentContainerStyle={{ paddingBottom: 20 }}
-        contentInset={{ bottom: 60 }} style={{backgroundColor: '#FBFBFB'}}>
+                <View style={{backgroundColor:'#FBFBFB', paddingHorizontal: 18}}>
+                    <KeyboardAwareScrollView
+                      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
 
-          <View style={{flex: 1, paddingHorizontal: 18}}>
+                      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                        <View>
+                          <Text style={{fontSize: 18, color: '#48566A', marginVertical: 12, fontWeight: 600}}>회원가입</Text>
+                          
+                          {/* 구분선 */}
+                          <View style={styles.line}></View>
+                          
+                          <View>
+                              <Text style={styles.title}>* 이메일</Text>
+                              <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                                <TextInput placeholder='이메일을 입력해주세요' style={[styles.inputContainer, styles.small]}/>
+                                <Pressable style={styles.btn}>
+                                    <Text style={{fontSize: 14, color: '#1AAD55'}}>
+                                      중복확인
+                                    </Text>
+                                </Pressable>
+                              </View>
+                          </View>
 
-            <Text style={{fontSize: 18, color: '#48566A', marginVertical: 11, fontWeight: 600}}>회원가입</Text>
+                          <View>
+                            <Text style={styles.title}>* 비밀번호</Text>
+                            <TextInput placeholder='비밀번호를 입력해주세요' style={styles.inputContainer}/>
+                            <TextInput placeholder='비밀번호를 다시 입력해주세요' style={styles.inputContainer}/>
+                          </View>
+              
+                          <View>
+                            <Text style={styles.title}>* 이름</Text>
+                            <TextInput placeholder='이름을 입력해주세요' style={styles.inputContainer}/>
+                          </View>
+              
+                          <View>
+                            <Text style={styles.title}>* 휴대폰 번호</Text>
+                            <TextInput placeholder='휴대폰 번호를 입력해주세요' style={styles.inputContainer}/>
+                          </View>
 
-            <View>
-              <Text style={styles.title}>* 이메일</Text>
-              <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                <TextInput 
-                  placeholder='이메일을 입력해주세요' 
-                  style={[styles.inputContainer, styles.small]}
-                  value={email} 
-                  onChangeText={text => setEmail(text)}
-                  />
-
-                <Pressable style={styles.btn}>
-                  <Text style={{fontSize: 14, color: '#1AAD55'}}>
-                    중복확인
-                  </Text>
-                </Pressable>
-
-              </View>
-            </View>
-
-            <View>
-              <Text style={styles.title}>* 비밀번호</Text>
-              <TextInput 
-                placeholder='비밀번호를 입력해주세요' 
-                style={styles.inputContainer}
-                value={password} 
-                onChangeText={text => setPassword(text)}
-              />
-              <TextInput placeholder='비밀번호를 다시 입력해주세요' style={styles.inputContainer}/>
-            </View>
-
-            <View>
-              <Text style={styles.title}>* 이름</Text>
-              <TextInput 
-                placeholder='이름을 입력해주세요' 
-                style={styles.inputContainer}
-                value={name} 
-                onChangeText={text => setName(text)}
-              />
-            </View>
-
-            <View>
-              <Text style={styles.title}>* 휴대폰 번호</Text>
-              <TextInput 
-                placeholder='휴대폰 번호를 입력해주세요' 
-                style={styles.inputContainer}
-                value={phone} onChangeText={text => setPhone(text)}
-              />
-            </View>
-    
-            <View>
-              <Text style={styles.title}>* 닉네임</Text>
-              <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                <TextInput 
-                  placeholder='닉네임을 입력해주세요' 
-                  style={[styles.inputContainer, styles.small]}
-                  value={nickName} 
-                  onChangeText={text => setNickName(text)}
-                />
-                <Pressable style={styles.btn}>
-                  <Text style={{fontSize: 14, color: '#1AAD55'}}>
-                    중복확인
-                  </Text>
-                </Pressable>
-              </View>
-            </View>
-
-        
-              <Text style={styles.title}>약관동의</Text>
-              <View style={styles.agreeContainer}>
-{/*         
-                  약관동의 */}
-                  {/* <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                      <CheckBox 
-                          checked={checked} 
-                          onPress={() => setChecked(!checked)} 
-                          checkedIcon="checkbox-outline"
-                          iconType="material-community"
-                          uncheckedIcon={'checkbox-blank-outline'}
-                          containerStyle={{width: 45, height: 45, backgroundColor: '#ECECEC'}} />
-                      <Text style={{color: '#424242'}}>전체동의</Text>
-                  </View>
+                          <View>
+                            <Text style={styles.title}>* 이메일</Text>
+                            <TextInput placeholder='이메일을 입력해주세요' style={styles.inputContainer}/>
+                          </View>
                   
-                  <Ionic name="chevron-down" style={{fontSize: 20, marginRight: 10, color: '#363636'}}/> */}
-              </View>
+                          <View>
+                            <Text style={styles.title}>* 닉네임</Text>
+                            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                              <TextInput placeholder='닉네임을 입력해주세요' style={[styles.inputContainer, styles.small]}/>
+                              <Pressable style={styles.btn}>
+                                <Text style={{fontSize: 14, color: '#1AAD55'}}>
+                                  중복확인
+                                </Text>
+                              </Pressable>
+                            </View>
+                          </View>
 
-          </View>
+                          <View style={{backgroundColor: '#FBFBFB', height: 60}} />
+                          
+                        </View>
+                      </TouchableWithoutFeedback>
+                    </KeyboardAwareScrollView>
+                </View>
+          </SafeAreaView>
 
-        </ScrollView>
-        </TouchableWithoutFeedback>
-      </KeyboardAwareScrollView>
-    </SafeAreaView>
-
-        <Pressable style={styles.button} onPress={handleSignUp}>
-            <Text style={{color: 'white', fontSize: 20, fontWeight: 600, marginBottom: 10}}>가입하기</Text>
-        </Pressable>
-
-    </View>
+          <Pressable style={styles.button} onPress={() => console.log('click')}>
+                <Text style={{color: 'white', fontSize: 20, fontWeight: 600, marginBottom: 10}}>가입하기</Text>
+          </Pressable>
+      </View>
   )
 }
 
@@ -159,7 +122,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     width: '100%',
     height: 47,
-    marginBottom: 6,
+    marginBottom: 11,
     justifyContent: 'center',
     borderWidth: 1,
     borderRadius: 4,
@@ -200,8 +163,33 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 4,
     height: 47,
+  },
+  line: {
+    borderBottomColor: '#CBCBCB',
+    marginBottom: 10,
+    borderBottomWidth: 0.8
   }
 })
 
 
 export default SignUp;
+
+
+{/* <Text style={styles.title}>약관동의</Text>
+<View style={styles.agreeContainer}>
+  
+</View> */}
+
+  {/* 약관동의 */}
+                  {/* <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                      <CheckBox 
+                          checked={checked} 
+                          onPress={() => setChecked(!checked)} 
+                          checkedIcon="checkbox-outline"
+                          iconType="material-community"
+                          uncheckedIcon={'checkbox-blank-outline'}
+                          containerStyle={{width: 45, height: 45, backgroundColor: '#ECECEC'}} />
+                      <Text style={{color: '#424242'}}>전체동의</Text>
+                  </View>
+                  
+                  <Ionic name="chevron-down" style={{fontSize: 20, marginRight: 10, color: '#363636'}}/> */}
