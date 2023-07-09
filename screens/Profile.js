@@ -26,8 +26,6 @@ const Profile = ({navigation}) => {
  
     return (
         <SafeAreaView style={styles.container}>
-          <ScrollView> 
-
             {/* 프로필 상단 컨테이너 */}
             <View 
                 style={{
@@ -42,7 +40,8 @@ const Profile = ({navigation}) => {
                       <Text style={{fontSize: 20, color: '#424242'}}>프로필</Text>
                   </View>
             </View>
-            
+          <ScrollView> 
+
             {/* 프로필 수정 컨테이너 */}
             <View style={{flexDirection: 'row', height: 160, borderBottomWidth: 0.5, borderBottomColor: '#EAEAEA'}}>
                 <View style={{justifyContent:'center'}}>
