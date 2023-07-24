@@ -1,4 +1,4 @@
-import { FlatList, SafeAreaView, ScrollView, StyleSheet, Text, View, Image} from 'react-native';
+import { FlatList, SafeAreaView, ScrollView, StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import React from 'react';
 import Ionic from 'react-native-vector-icons/Ionicons';
@@ -40,6 +40,7 @@ const posts = [
 const PostCard = ({ name, image, date, text, avatar, leaf, comment}) => {
   // item을 사용하는 코드 작성
   return (
+    
     <View style={{paddingBottom: 10, paddingHorizontal: 18, borderBottomWidth: 0.5, borderBottomColor: '#EAEAEA'}}>
 
         <View style={{flexDirection: 'row', marginVertical: 14}}>
@@ -82,7 +83,7 @@ const PostCard = ({ name, image, date, text, avatar, leaf, comment}) => {
   );
 }
 
-const Post = () => {
+const Post = ({navigation}) => {
   return (
     <SafeAreaView style={{backgroundColor: 'white', flex: 1}}>
         <View 
@@ -104,19 +105,30 @@ const Post = () => {
                 </View>
             </View>
         </View>
+
       <ScrollView>
         {/* 게시판 컨테이너 */}
-
         <FlatList
           style={{borderBottomWidth: 0.5, borderBottomColor: '#EAEAEA'}}
           data={posts}
-          renderItem={({ item }) => <PostCard image={item.image} name={item.name} date={item.date} 
-          text={item.text} avatar={item.avatar} leaf={item.leaf} comment={item.comment}/>}
+          renderItem={({ item }) => 
+          <TouchableOpacity onPress={() => navigation.navigate('PostContent', {item})}>
+            <PostCard 
+              image={item.image} 
+              name={item.name} 
+              date={item.date} 
+              text={item.text} 
+              avatar={item.avatar} 
+              leaf={item.leaf} 
+              comment={item.comment}/>
+          </TouchableOpacity>
+          }
+
           keyExtractor={item => item.id}
+        
         />
 
-        
-
+  
       </ScrollView>
     </SafeAreaView>
   );
