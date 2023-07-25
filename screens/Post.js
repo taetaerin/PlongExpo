@@ -56,7 +56,9 @@ const PostCard = ({ name, image, date, text, avatar, leaf, comment}) => {
                     </View>
 
                     {/* more 아이콘 */}
-                    <Ionic name='md-ellipsis-horizontal' size={17} color='#424242' />
+                    {/* <TouchableOpacity onPress={() => navigation.navigate('')}> */}
+                      <Ionic name='md-ellipsis-horizontal' size={17} color='#424242' />
+                    {/* </TouchableOpacity> */}
                 </View>
             </View>
         </View>
@@ -101,7 +103,9 @@ const Post = ({navigation}) => {
 
                 {/* 플러스 아이콘 */}
                 <View style={{ position: 'absolute', right: -145 }}>
-                  <Ionic name='add-outline' color="#686868" style={{fontSize: 24}} />
+                  <TouchableOpacity onPress={() => navigation.navigate('PostUpdate')}>
+                    <Ionic name='add-outline' color="#686868" style={{fontSize: 24}} />
+                  </TouchableOpacity>
                 </View>
             </View>
         </View>

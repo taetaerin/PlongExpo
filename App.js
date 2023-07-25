@@ -16,6 +16,7 @@ import SignUp from './screens/SignUp';
 import app from './firebase';
 import EditProfile from './screens/EditProfile';
 import PostContent from './screens/PostContent';
+import PostUpdate from './screens/PostUpdate';
 
 export default function App() {
     const Stack = createNativeStackNavigator();
@@ -74,12 +75,13 @@ export default function App() {
                 </>
               )} */}
       
-              <Stack.Screen name="SignIn" component={SignIn} />
+              {/* <Stack.Screen name="SignIn" component={SignIn} />
               <Stack.Screen name="SignUp" component={SignUp} /> 
               <Stack.Screen name="Main" component={BottomTabScreens} />
               <Stack.Screen name="Content" component={Content} />
-              <Stack.Screen name="EditProfile" component={EditProfile} /> 
-              <Stack.Screen name="PostContent" component={PostContent} /> 
+              <Stack.Screen name="EditProfile" component={EditProfile} />  */}
+              {/* <Stack.Screen name="PostContent" component={PostContent} />  */}
+              <Stack.Screen name="PostUpdate" component={PostUpdate} /> 
               
             
           </Stack.Navigator>

@@ -85,8 +85,6 @@ const PostContent = ({navigation, route}) => {
               </View>
           </View>
           
-
-
           {/* 댓글 컨테이너 */}
           <CommentContainer />
           
