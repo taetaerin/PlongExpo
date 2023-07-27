@@ -75,12 +75,12 @@ export default function App() {
                 </>
               )} */}
       
-              {/* <Stack.Screen name="SignIn" component={SignIn} />
+              <Stack.Screen name="SignIn" component={SignIn} />
               <Stack.Screen name="SignUp" component={SignUp} /> 
               <Stack.Screen name="Main" component={BottomTabScreens} />
               <Stack.Screen name="Content" component={Content} />
-              <Stack.Screen name="EditProfile" component={EditProfile} />  */}
-              {/* <Stack.Screen name="PostContent" component={PostContent} />  */}
+              <Stack.Screen name="EditProfile" component={EditProfile} />  
+              <Stack.Screen name="PostContent" component={PostContent} /> 
               <Stack.Screen name="PostUpdate" component={PostUpdate} /> 
               
             

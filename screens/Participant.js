@@ -2,11 +2,14 @@ import { View, Text, ScrollView,  StyleSheet, SafeAreaView, Image,  TouchableOpa
 import React, { useState } from 'react'
 import Ionic from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
+import ImplementCard from './components/ParCard'; 
 
 
 const Par = [
   {
     id: 1,
+    avatar: require('../assets/images/avatar.jpeg'),
+    name: 'fdnk111',
     image: require('../assets/images/seoulforest.jpg'),
     title: '서울숲에서 같이 플로깅 하실 분 모집합니다!',
     location: '성동구',
@@ -14,6 +17,8 @@ const Par = [
   },
   {
     id: 2,
+    avatar: require('../assets/images/avatar.jpeg'),
+    name: 'fdnk111',
     image: require('../assets/images/y.jpg'),
     title: '여의도에서 플로깅 같이해요!!',
     location: '영등포구',
@@ -21,6 +26,8 @@ const Par = [
   },
   {
     id: 3,
+    avatar: require('../assets/images/avatar.jpeg'),
+    name: 'fdnk111',
     image: require('../assets/images/ttook.jpg'),
     title: '뚝섬 유원지 플로깅',
     location: '성동구',
@@ -28,6 +35,8 @@ const Par = [
   },
   {
     id: 4,
+    avatar: require('../assets/images/avatar.jpeg'),
+    name: 'fdnk111',
     image: require('../assets/images/63.jpg'),
     title: '63빌딩 앞 한강공원',
     location: '영등포구',
@@ -35,6 +44,8 @@ const Par = [
   },
   {
     id: 5,
+    avatar: require('../assets/images/avatar.jpeg'),
+    name: 'fdnk111',
     image: require('../assets/images/jr.jpg'),
     title: '중랑천 플로깅',
     location: '중랑구',
@@ -42,6 +53,8 @@ const Par = [
   },
   {
     id: 6,
+    avatar: require('../assets/images/avatar.jpeg'),
+    name: 'fdnk111',
     image: require('../assets/images/cg.jpg'),
     title: '청계천 플로깅해요',
     location: '성동구',
@@ -54,7 +67,7 @@ const Participant = ({navigation}) => {
 
  
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{backgroundColor: 'white'}}>
       <ScrollView>
         <View 
           style={{
@@ -79,34 +92,18 @@ const Participant = ({navigation}) => {
           <Text style={styles.subtitle}>스크랩</Text>
           </TouchableOpacity>
         </View>
-
-         {Par.map((image, title, data, index)=>{
+        <View style={styles.container}>
+         
+        {Par.map((data, index) => {
             return(
-           
-        <View style={styles.imgcontainer}>
-    
+              <TouchableOpacity onPress={() => navigation.navigate('Content', {data})} >
+                <ImplementCard  key={index} avartar={data.avatar} name={data.name} title={data.title} image={data.image}
+                location={data.location} date={data.date}/>
+              </TouchableOpacity>
+            )
+          })}
           
-              <TouchableOpacity >
-                <View>
-               <Image style={styles.img} source={image}></Image>
-                <Text>gkals111</Text>
-               <Text>{title}</Text>
-               
-
-               </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity>
-                <View>
-               <Image style={styles.img} source={image}></Image>
-               <Text>gkals111</Text>
-               <Text>{title}</Text>
-               </View>
-              </TouchableOpacity>
-    </View>
-    )
-           })}
-    
+          </View>
     </ScrollView>
     </SafeAreaView>
   )
@@ -115,11 +112,11 @@ const Participant = ({navigation}) => {
 
 const styles = StyleSheet.create({
  
-  container: {
-    flex: 1,
-    paddingTop: Platform.OS === 'android' ? 20 : 0,
-    backgroundColor: '#F5F5F5'
-  },
+  // container: {
+  //   flex: 1,
+  //   paddingTop: Platform.OS === 'android' ? 20 : 0,
+  //   backgroundColor: '#F5F5F5'
+  // },
    title: {
     
     fontSize: 22,
@@ -129,25 +126,18 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     color: '#868686',
-    marginLeft: 15
+    marginLeft: 18,
+    fontWeight: 'bold'
   },
-  imgcontainer: {
-    marginVertical: 18, 
-    marginHorizontal:12, 
-    flexDirection: 'row', 
-    justifyContent:'space-around'
-    
 
+  
+  container: {
+    flexDirection: 'row',
+    justifyContent: "space-around",
+    flexWrap: 'wrap',
+    paddingHorizontal: 10,
+    marginBottom: 10,
   },
-  img: {
-
-    width: 170,
-    height: 109,
-    borderRadius: 5,
-    
-
-
-  }
 })
 
 export default Participant
