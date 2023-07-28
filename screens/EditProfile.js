@@ -1,8 +1,13 @@
-import {View, Text, SafeAreaView, TouchableOpacity,ScrollView, TextInput, Image, StyleSheet, Platform,  Pressable, TouchableWithoutFeedback, Keyboard} from 'react-native'
+import {View, Text, SafeAreaView, TouchableOpacity,ScrollView, TextInput, Image, StyleSheet, Platform,  Pressable, TouchableWithoutFeedback, Keyboard, Alert} from 'react-native'
 import React, { useEffect, useState } from 'react';
 import Ionic from 'react-native-vector-icons/Ionicons';
 import * as ImagePicker from 'expo-image-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
+import { getAuth } from 'firebase/auth';
+import { getStorage, ref, uploadString, getDownloadURL, uploadBytesResumable, connectStorageEmulator } from 'firebase/storage';
+import { storage } from '../firebase';
+import { firebase } from '../firebase';
 
 
 const EditProfile = ({navigation}) => {
@@ -12,26 +17,57 @@ const EditProfile = ({navigation}) => {
 
     //사진 선택
     const [image, setImage] = useState(null);
-   
-    //저장 함수
-    const onPressSaveEdit = () => {
+    console.log(image)
 
-    };
 
     const pickImage = async () => {
-        // No permissions request is necessary for launching the image library
         let result = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.All,
           allowsEditing: true,
           aspect: [4, 3],
           quality: 1,
         });
-    
+
+        setImage(result.uri);
+
         if (!result.canceled) {
           setImage(result.assets[0].uri);
         }
       };
-                
+
+
+
+    const uploadImageToFirebase = async () => {
+      try {
+        const auth = getAuth();
+        const user = auth.currentUser;
+  
+        if (!user) {
+          console.log('로그인된 사용자가 없습니다.');
+          return;
+        }
+  
+        if (!image) {
+          console.log('이미지를 선택해주세요.');
+          return;
+        }
+  
+        const storage = getStorage();
+        const imageRef = ref(storage, `user_profile/${user.uid}.jpg`);
+  
+        // 이미지의 uri를 사용하여 Blob으로 변환
+        const response = await fetch(image);
+        const blob = await response.blob();
+  
+        
+        const uploadTask = uploadBytesResumable(imageRef, blob);
+  
+      } catch (error) {
+        console.error('이미지 업로드 중 오류:', error);
+      }
+    };
+    
+
     return (
         <View style={{flex: 1}}>
 
@@ -111,7 +147,7 @@ const EditProfile = ({navigation}) => {
                 </View>
             </SafeAreaView>
 
-            <Pressable style={styles.button} onPress={() => console.log('click')}>
+            <Pressable style={styles.button} onPress={uploadImageToFirebase}>
                 <Text style={{color: 'white', fontSize: 20, fontWeight: 600, marginBottom: 10}}>완료</Text>
             </Pressable>
             
@@ -171,3 +207,107 @@ const styles = StyleSheet.create({
 export default EditProfile;
 
 
+
+    // const uploadImageToFirebase = async () => {
+    //     try {
+    //       const auth = getAuth();
+    //       const user = auth.currentUser;
+      
+    //       if (!user) {
+    //         console.log('로그인된 사용자가 없습니다.');
+    //         return;
+    //       }
+      
+    //       if (!image) {
+    //         console.log('이미지를 선택해주세요.');
+    //         return;
+    //       }
+      
+    //       const storageRef = ref(getStorage(), `user_profile/${user.uid}.jpg`);
+      
+    //       // 이미지의 uri를 사용하여 Blob으로 변환
+    //       const response = await fetch(image);
+    //       const blob = await response.blob();
+      
+    //       const uploadTask = uploadBytesResumable(storageRef, blob);
+      
+    //       uploadTask.on('state_changed',
+    //         (snapshot) => {
+    //           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    //           console.log('Upload is ' + progress + '% done');
+    //           switch (snapshot.state) {
+    //             case 'running':
+    //               console.log('Upload is running');
+    //               break;
+    //             case 'paused':
+    //               console.log('Upload is paused');
+    //               break;
+    //           }
+    //         },
+    //         (error) => {
+    //           console.error('이미지 업로드 중 오류:', error);
+    //         },
+    //         () => {
+    //           uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+    //             console.log('업로드한 이미지의 URL: ', downloadURL);
+    //             // 이 URL을 Firestore에 저장하거나 필요에 따라 사용하세요.
+    //           });
+    //         }
+    //       );
+      
+    //     } catch (error) {
+    //       console.error('이미지 업로드 중 오류:', error);
+    //     }
+    //   };
+
+    // const uploadImageToFirebase = async () => {
+    //   try {
+    //     const auth = getAuth();
+    //     const user = auth.currentUser;
+    
+    //     if (!user) {
+    //       console.log('로그인된 사용자가 없습니다.');
+    //       return;
+    //     }
+    
+    //     if (!image) {
+    //       console.log('이미지를 선택해주세요.');
+    //       return;
+    //     }
+    
+    //     const storageRef = ref(getStorage(), `user_profile/${user.uid}.jpg`);
+    
+    //     // 이미지의 uri를 사용하여 Blob으로 변환
+    //     const response = await fetch(image);
+    //     const blob = await response.blob();
+    
+    //     const uploadTask = uploadBytesResumable(storageRef, blob);
+    
+    //     uploadTask.on('state_changed',
+    //       (snapshot) => {
+    //         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    //         console.log('Upload is ' + progress + '% done');
+    //         switch (snapshot.state) {
+    //           case 'running':
+    //             console.log('Upload is running');
+    //             break;
+    //           case 'paused':
+    //             console.log('Upload is paused');
+    //             break;
+    //         }
+    //       },
+    //       (error) => {
+    //         console.error('이미지 업로드 중 오류:', error);
+    //       },
+    //       () => {
+    //         uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+    //           console.log('업로드한 이미지의 URL: ', downloadURL);
+    //           // 이 URL을 Firestore에 저장하거나 필요에 따라 사용하세요.
+    //         });
+    //       }
+    //     );
+    
+    //   } catch (error) {
+    //     console.error('오류 발생:', error);
+    //   }
+    // };

@@ -82,10 +82,10 @@ const Home = ({navigation}) => {
         <Text style={styles.subTitle}>지구를 지키는 작은 실천</Text>
         <View style={styles.container}>
 
-          {environmentalPractice.map((data, index) => {
+          {environmentalPractice.map((data) => {
             return(
-              <TouchableOpacity onPress={() => navigation.navigate('Content', {data})} >
-                <ImplementCard  key={index} title={data.title} image={data.image} />
+              <TouchableOpacity onPress={() => navigation.navigate('Content', {data})} key={data.id}>
+                <ImplementCard title={data.title} image={data.image} />
               </TouchableOpacity>
             )
           })}
@@ -95,8 +95,8 @@ const Home = ({navigation}) => {
         <View style={styles.container}>
           {environmentalStory.map((data, index) => {
             return(
-              <TouchableOpacity onPress={() => navigation.navigate('Content', {data})}>
-                <ImplementCard title={data.title} image={data.image} key={index} />
+              <TouchableOpacity onPress={() => navigation.navigate('Content', {data})} key={index}>
+                <ImplementCard title={data.title} image={data.image} />
               </TouchableOpacity>
             )
           })}
