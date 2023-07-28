@@ -5,7 +5,7 @@ import Ionic from 'react-native-vector-icons/Ionicons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import * as ImagePicker from 'expo-image-picker';
 
-const PostUpdate = () => {
+const PostUpdate = ({navigation}) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
 
