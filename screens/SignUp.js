@@ -5,12 +5,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionic from 'react-native-vector-icons/Ionicons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
+import { addDoc, collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
 import { firestore } from '../firebase';
 
         
 const SignUp = ({navigation}) => {
-  const [checked, setChecked] = useState(true);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -18,6 +18,7 @@ const SignUp = ({navigation}) => {
   const [nickName, setNickName] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordMatch, setPasswordMatch] = useState(true);
+
 
   const [isValidPhone, setIsValidPhone] = useState(true);
   const [isValidEmail, setIsValidEmail] = useState(true);
@@ -35,6 +36,8 @@ const SignUp = ({navigation}) => {
 
 
   const auth = getAuth();
+
+
 
   const handlePasswordChange = (text) => {
     setPassword(text);
@@ -161,16 +164,30 @@ const SignUp = ({navigation}) => {
 
       //이메일, 닉네임 중복버튼 클릭 시 회원가입 가능
       if (isEmailAvailable && isNicknameAvailable) {
-        //파이어베이스 - 파이어스토어 users 에 회원정보 저장
-        const user = await createUserWithEmailAndPassword(auth, email, password);
+        // 파이어베이스 - 파이어스토어 users에 회원정보 저장
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        // userCredential에서 user 객체를 가져오기
+        const user = userCredential.user; 
 
-        const docRef = await addDoc(collection(firestore, 'users'), {
-          email,
-          password,
-          name,
-          phone,
-          nickName
-        })
+        // user 객체가 존재하고 uid가 있는지 확인
+        if (user && user.uid) {
+
+          //파이어베이스 문서이름을 user.uid로 하기
+          const userRef = doc(firestore, 'users', user.uid);
+
+          const userData = {
+            email,
+            password,
+            uid: user.uid,
+            name,
+            phone,
+            nickName,
+            profilePicture: null,
+          };
+
+          // 문서 ID를 user.uid로 설정하여 데이터를 Firestore에 저장
+          await setDoc(userRef, userData);         
+        }
 
         alert("회원가입이 완료되었습니다!");
 

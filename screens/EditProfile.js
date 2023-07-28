@@ -8,6 +8,7 @@ import { getAuth } from 'firebase/auth';
 import { getStorage, ref, uploadString, getDownloadURL, uploadBytesResumable, connectStorageEmulator } from 'firebase/storage';
 import { storage } from '../firebase';
 import { firebase } from '../firebase';
+import { doc, getFirestore, setDoc, updateDoc } from 'firebase/firestore';
 
 
 const EditProfile = ({navigation}) => {
@@ -17,8 +18,7 @@ const EditProfile = ({navigation}) => {
 
     //사진 선택
     const [image, setImage] = useState(null);
-    console.log(image)
-
+    // console.log(image)
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -36,7 +36,7 @@ const EditProfile = ({navigation}) => {
       };
 
 
-
+    //파이어베이스 - storage 에 이미지 저장
     const uploadImageToFirebase = async () => {
       try {
         const auth = getAuth();
@@ -61,6 +61,19 @@ const EditProfile = ({navigation}) => {
   
         
         const uploadTask = uploadBytesResumable(imageRef, blob);
+
+        uploadTask.on('state_changed', null, null, async () => {
+            const downloadURL = await getDownloadURL(imageRef);
+      
+            // 이미지 URL을 Firestore에 저장
+            const firestore = getFirestore();
+
+            const userRef = doc(firestore, 'users', user.uid);
+            
+            //profilePicture 사진 업데이트
+            await updateDoc(userRef, { profilePicture: downloadURL }, { merge: true });
+          });
+    
   
       } catch (error) {
         console.error('이미지 업로드 중 오류:', error);
