@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import ImplementCard from './components/HomeCard'; 
 
 
+
 const environmentalPractice = [
   {
     id: 1,

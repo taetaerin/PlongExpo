@@ -86,14 +86,8 @@ export default function App() {
     return (
         <NavigationContainer>
           <Stack.Navigator screenOptions={{headerShown:false}}>
-{/*   
-              <Stack.Screen name="SignIn" component={SignIn} />
-              <Stack.Screen name="SignUp" component={SignUp} /> 
-              <Stack.Screen name="Main" component={BottomTabScreens} />
-              <Stack.Screen name="Content" component={Content} />
-              <Stack.Screen name="EditProfile" component={EditProfile} /> 
-              <Stack.Screen name="PostContent" component={PostContent} /> 
-              <Stack.Screen name="PostUpdate" component={PostUpdate} />  */}
+
+
 
 {!isLoggedIn ? ( // 로그인 상태가 아닌 경우에는 로그인 화면을 렌더링
           <>
@@ -109,6 +103,7 @@ export default function App() {
             <Stack.Screen name="PostUpdate" component={PostUpdate} />
           </>
         )}
+
               
           </Stack.Navigator>
         </NavigationContainer>
