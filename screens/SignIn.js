@@ -1,23 +1,33 @@
-import { View, Text,  StyleSheet, Pressable, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard} from 'react-native';
-import React, { useState } from 'react';
+import { View, Text,  StyleSheet, Pressable, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, Alert} from 'react-native';
+import React, { useEffect, useState } from 'react';
 import Logo from './components/Logo';
 import CustomerInput from './components/CustomerInput';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+
 
 
 const SignIn = ({ navigation }) => {
 
-  const [userid, setUserId] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const auth = getAuth();
+
   const handleSignIn = async () => {
-    // try {
-    //     const user = await createUserWithEmailAndPassword(auth, email, password);
-    //     console.log('user', user)
-    // } catch (error){
-    //     console.log(error.message);
-    // }
-    navigation.navigate('Main')
+    try {
+        const user = await signInWithEmailAndPassword(auth, email, password);
+        console.log('user', user)
+        navigation.navigate('Main')
+        
+    } catch (error){
+        Alert.alert(
+          "다시 입력해주세요",
+          error.message,
+          [{text: '닫기', onPress: () => console.log('닫기')}],
+          {cancelable: true}
+        )
+    }
+
   }
 
   return (
@@ -33,8 +43,8 @@ const SignIn = ({ navigation }) => {
 
           {/* 로그인 컴포넌트 */}
           <CustomerInput 
-              value = {userid}
-              setValue = {setUserId}
+              value = {email}
+              setValue = {setEmail}
               autoCapitalize = 'none'
               placeholder = '아이디' name = 'person-outline'
           />

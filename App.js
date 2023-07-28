@@ -18,9 +18,32 @@ import EditProfile from './screens/EditProfile';
 import PostContent from './screens/PostContent';
 import PostUpdate from './screens/PostUpdate';
 
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { useEffect, useState } from 'react';
+
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs(['Possible Unhandled Promise Rejection']);
+
+// Ignore all log notifications
+LogBox.ignoreAllLogs();
+
 export default function App() {
-    const Stack = createNativeStackNavigator();
-    const Tab = createBottomTabNavigator();
+  const Stack = createNativeStackNavigator();
+  const Tab = createBottomTabNavigator();
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const auth = getAuth();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, user => {
+      setIsLoggedIn(!!user); // 사용자가 로그인한 경우에만 isLoggedIn를 true로 설정
+    });
+    return unsubscribe;
+  }, []);
+
+
 
       //하단바 생성
   const BottomTabScreens = () => {
@@ -63,133 +86,26 @@ export default function App() {
     return (
         <NavigationContainer>
           <Stack.Navigator screenOptions={{headerShown:false}}>
-            {/* 로그인 true 바로 홈화면 로그인 false 면 로그인 화면 */}
-            {/* {isSignedIn ? (
-                <>
-                  <Stack.Screen name="Home" component={Home} />
-                </>
-              ) : (
-                <>
-                  <Stack.Screen name="SignIn" component={SignIn} />
-                  <Stack.Screen name="SignUp" component={SignUp} />
-                </>
-              )} */}
-      
-              <Stack.Screen name="SignIn" component={SignIn} />
-              <Stack.Screen name="SignUp" component={SignUp} /> 
-              <Stack.Screen name="Main" component={BottomTabScreens} />
-              <Stack.Screen name="Content" component={Content} />
-              <Stack.Screen name="EditProfile" component={EditProfile} />  
-              <Stack.Screen name="PostContent" component={PostContent} /> 
-              <Stack.Screen name="PostUpdate" component={PostUpdate} /> 
+
+
+
+{!isLoggedIn ? ( // 로그인 상태가 아닌 경우에는 로그인 화면을 렌더링
+          <>
+            <Stack.Screen name="SignIn" component={SignIn} />
+            <Stack.Screen name="SignUp" component={SignUp} />
+          </>
+        ) : (
+          <>
+            <Stack.Screen name="Main" component={BottomTabScreens} />
+            <Stack.Screen name="Content" component={Content} />
+            <Stack.Screen name="EditProfile" component={EditProfile} />
+            <Stack.Screen name="PostContent" component={PostContent} />
+            <Stack.Screen name="PostUpdate" component={PostUpdate} />
+          </>
+        )}
+
               
-            
           </Stack.Navigator>
         </NavigationContainer>
     );
   }
-
-// const App = () => {
-
-//   // useEffect(() => {
-//   //   //setTimeout을 이용하면 1초간 스플래시 스크린을 보여줌
-//   //   setTimeout(() => {
-//   //     SplashScreen.hide();
-//   //   }, 1000);
-//   // }, []);
-
-//   const Stack = createNativeStackNavigator();
-//   const Tab = createBottomTabNavigator();
-
-//   // const isSignedIn = getIsSignedIn();
-
-//   //하단바 생성
-//   const BottomTabScreens = () => {
-//     return (
-//       <Tab.Navigator
-//         screenOptions={({route}) => ({
-//           tabBarHideOnKeyboard: true,
-//           tabBarShowLabel: false,
-//           headerShown: false,
-        
-//           tabBarIcon: ({ focused, size, color }) => {
-//             let iconName;
-//             if(route.name == 'Home') {
-//               iconName = focused ? 'home-sharp' : 'home-outline';
-              
-//             } else if(route.name == 'Post') {
-//               iconName =  focused ? 'create-sharp' : 'create-outline';
-//             } else if(route.name == 'Participant') {
-//               iconName = focused ?  'ios-megaphone-sharp' : 'ios-megaphone-outline';
-//             } else if(route.name == 'Map') {
-//               iconName = focused ?  'ios-location-sharp' : 'ios-location-outline';
-//             } else if(route.name == 'Profile') {
-//               iconName = focused ? 'ios-person-sharp' : 'ios-person-outline';
-//             }
-          
-//             return <Ionicons name={iconName} size={size} color={color = focused ? '#0BE060' : '#797979'} />;
-//           },
-//         })}
-//       >
-//         <Tab.Screen name="Home" component={Home} />
-//         <Tab.Screen name="Post" component={Post} />
-//         <Tab.Screen name="Participant" component={Participant} />
-//         <Tab.Screen name="Map" component={Map} />
-//         <Tab.Screen name="Profile" component={Profile} />
-//       </Tab.Navigator>
-//     );
-//   };
-
-
-// //stack 네비게이션  
-//   return (
-//       <NavigationContainer>
-//         <Stack.Navigator screenOptions={{headerShown:false}}>
-//           {/* 로그인 true 바로 홈화면 로그인 false 면 로그인 화면 */}
-//           {/* {isSignedIn ? (
-//               <>
-//                 <Stack.Screen name="Home" component={Home} />
-//               </>
-//             ) : (
-//               <>
-//                 <Stack.Screen name="SignIn" component={SignIn} />
-//                 <Stack.Screen name="SignUp" component={SignUp} />
-//               </>
-//             )} */}
-//             {/* <Stack.Screen name="Home" component={Home} /> */}
-
-//             <Stack.Screen name="SignIn" component={SignIn} />
-//             <Stack.Screen name="SignUp" component={SignUp} />
-//             <Stack.Screen name="Main" component={BottomTabScreens} />
-//             <Stack.Screen name="Content" component={Content} />
-
-//             {/* <Stack.Screen name="EditProfile" component={EditProfile} />  */}
-
-
-
-//         </Stack.Navigator>
-//       </NavigationContainer>
-//   );
-// };
-
-// export default App;
-
-
-
-// export default function App() {
-//   return (
-//     <View style={styles.container}>
-//       <Text>Open up App.js to start working on your app!</Text>
-//       <StatusBar style="auto" />
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#fff',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-// });

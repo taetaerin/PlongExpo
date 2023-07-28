@@ -42,8 +42,8 @@ const Profile = ({navigation}) => {
             </View>
           <ScrollView> 
 
-            {/* 프로필 수정 컨테이너 */}
-            <View style={{flexDirection: 'row', height: 160, borderBottomWidth: 0.5, borderBottomColor: '#EAEAEA'}}>
+            {/* 프로필 컨테이너 */}
+            <View style={{flexDirection: 'row', height: 150, borderBottomWidth: 0.5, borderBottomColor: '#EAEAEA'}}>
                 <View style={{justifyContent:'center'}}>
                     <Image 
                         style={{backgroundColor: '#EFEFEF',left: 16, width: 100, height: 100, borderRadius: 100}} 
@@ -64,7 +64,7 @@ const Profile = ({navigation}) => {
 
             </View>
 
-            <View style={{marginVertical: 24}}> 
+            <View style={{marginTop: 24, marginBottom: 8}}> 
               <Text style={styles.subTitle}>
                   플로깅 기록
               </Text>
@@ -178,6 +178,7 @@ const styles = StyleSheet.create({
         borderColor: '#e0e0e0',
         borderRadius: 5,
         width: '100%',
+        height: 350,
     },
     touchBox: {
       paddingHorizontal: 18, 

@@ -37,7 +37,7 @@ const posts = [
   },
 ]
 
-const PostCard = ({ name, image, date, text, avatar, leaf, comment}) => {
+const PostCard = ({ name, image, date, text, avatar, leaf, comment, id}) => {
   // item을 사용하는 코드 작성
   return (
     
@@ -110,30 +110,29 @@ const Post = ({navigation}) => {
             </View>
         </View>
 
-      <ScrollView>
+     
         {/* 게시판 컨테이너 */}
         <FlatList
           style={{borderBottomWidth: 0.5, borderBottomColor: '#EAEAEA'}}
           data={posts}
+          keyExtractor={(item, index) => {
+            return item.id;
+          }}
           renderItem={({ item }) => 
-          <TouchableOpacity onPress={() => navigation.navigate('PostContent', {item})}>
-            <PostCard 
-              image={item.image} 
-              name={item.name} 
-              date={item.date} 
-              text={item.text} 
-              avatar={item.avatar} 
-              leaf={item.leaf} 
-              comment={item.comment}/>
-          </TouchableOpacity>
+            <TouchableOpacity key={item.id} onPress={() => navigation.navigate('PostContent', {item})}>
+              <PostCard 
+                image={item.image} 
+                name={item.name} 
+                date={item.date} 
+                text={item.text} 
+                avatar={item.avatar} 
+                leaf={item.leaf} 
+                comment={item.comment}
+                key={item.id}
+              />
+            </TouchableOpacity>
           }
-
-          keyExtractor={item => item.id}
-        
         />
-
-  
-      </ScrollView>
     </SafeAreaView>
   );
 };
