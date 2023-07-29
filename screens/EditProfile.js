@@ -8,22 +8,20 @@ import { getAuth } from 'firebase/auth';
 import { getStorage, ref, uploadString, getDownloadURL, uploadBytesResumable, connectStorageEmulator } from 'firebase/storage';
 import { firestore, storage } from '../firebase';
 import { firebase } from '../firebase';
-import { doc, getDoc, getFirestore, setDoc, updateDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, getFirestore, query, setDoc, updateDoc, where } from 'firebase/firestore';
 
 
 const EditProfile = ({navigation, user}) => {
-    const [text, onChangeText] = React.useState('');
-    const [number, onChangeNumber] = React.useState('');
-    const [inputText, setinputText] = useState('');
+    //닉네임
+    const [nickName, setNickName] = useState('');
+
+    //닉네임 존재 여부
+    const [isNicknameAvailable, setIsNicknameAvailable] = useState(false);
 
     //사진 선택
     const [image, setImage] = useState(null);
-    // console.log(image)
 
-    console.log('edituser', user)
-
-    
-
+    //사진 고르기
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -39,52 +37,102 @@ const EditProfile = ({navigation, user}) => {
         }
       };
 
-
     //파이어베이스 - storage 에 이미지 저장
-    const uploadImageToFirebase = async () => {
-      try {
-        const auth = getAuth();
-        const user = auth.currentUser;
-        console.log('userr', user)
+    // const uploadImageToFirebase = async () => {
+    //   try {
+    //     const auth = getAuth();
+    //     const user = auth.currentUser;
   
-        if (!user) {
-          console.log('로그인된 사용자가 없습니다.');
-          return;
-        }
+    //     if (!user) {
+    //       console.log('로그인된 사용자가 없습니다.');
+    //       return;
+    //     }
   
-        if (!image) {
-          console.log('이미지를 선택해주세요.');
-          return;
-        }
+    //     if (!image) {
+    //       console.log('이미지를 선택해주세요.');
+    //       return;
+    //     }
   
-        const storage = getStorage();
-        const imageRef = ref(storage, `user_profile/${user.uid}.jpg`);
+    //     const storage = getStorage();
+    //     const imageRef = ref(storage, `user_profile/${user.uid}.jpg`);
   
-        // 이미지의 uri를 사용하여 Blob으로 변환
-        const response = await fetch(image);
-        const blob = await response.blob();
+    //     // 이미지의 uri를 사용하여 Blob으로 변환
+    //     const response = await fetch(image);
+    //     const blob = await response.blob();
   
-        
-        const uploadTask = uploadBytesResumable(imageRef, blob);
+    //     const uploadTask = uploadBytesResumable(imageRef, blob);
 
-        uploadTask.on('state_changed', null, null, async () => {
-            const downloadURL = await getDownloadURL(imageRef);
+    //     uploadTask.on('state_changed', null, null, async () => {
+    //         const downloadURL = await getDownloadURL(imageRef);
       
-            // 이미지 URL을 Firestore에 저장
-            const firestore = getFirestore();
+    //         // 이미지 URL을 Firestore에 저장
+    //         const firestore = getFirestore();
 
-            const userRef = doc(firestore, 'users', user.uid);
+    //         const userRef = doc(firestore, 'users', user.uid);
             
-            //profilePicture 사진 업데이트
-            await updateDoc(userRef, { profilePicture: downloadURL }, { merge: true });
-          });
+    //         //profilePicture 사진 업데이트
+    //         await updateDoc(userRef, { profilePicture: downloadURL }, { merge: true });
+    //       });
     
-  
-      } catch (error) {
-        console.error('이미지 업로드 중 오류:', error);
-      }
-    };
+    //   } catch (error) {
+    //     console.error('이미지 업로드 중 오류:', error);
+    //   }
+    // };
 
+    //실헝용
+    const updateUserProfile = async () => {
+        try {
+          const auth = getAuth();
+          const user = auth.currentUser;
+    
+          if (!user) {
+            console.log('로그인된 사용자가 없습니다.');
+            return;
+          }
+    
+          if (!image) {
+            console.log('이미지를 선택해주세요.');
+            return;
+          }
+    
+          if (!nickName) {
+            Alert.alert('닉네임을 입력해주세요.');
+            return;
+          }
+
+          if (!isNicknameAvailable) {
+            Alert.alert('이미 존재하는 닉네임입니다.');
+            return;
+          }
+
+          const storage = getStorage();
+          const imageRef = ref(storage, `user_profile/${user.uid}.jpg`);
+    
+          // 이미지의 uri를 사용하여 Blob으로 변환
+          const response = await fetch(image);
+          const blob = await response.blob();
+    
+          const uploadTask = uploadBytesResumable(imageRef, blob);
+  
+          uploadTask.on('state_changed', null, null, async () => {
+              const downloadURL = await getDownloadURL(imageRef);
+        
+              // 이미지 URL을 Firestore에 저장
+              const firestore = getFirestore();
+  
+              const userRef = doc(firestore, 'users', user.uid);
+              
+              //profilePicture 사진 업데이트
+              await updateDoc(userRef, { 
+                    profilePicture: downloadURL,
+                    nickName: nickName
+                }, { merge: true });
+            });
+      
+        } catch (error) {
+          console.error('이미지 업로드 중 오류:', error);
+        }
+      };
 
     // useEffect를 사용하여 Firestore에서 이미지 URI를 가져와서 image 상태 변수에 설정
     useEffect(() => {
@@ -110,6 +158,89 @@ const EditProfile = ({navigation, user}) => {
         fetchProfilePicture();
       }, []);
     
+
+    useEffect(() => {
+        const fetchProfilePicture = async () => {
+          if (!user) {
+            return;
+          }
+    
+          const userRef = doc(firestore, 'users', user.uid);
+          try {
+            const docSnapshot = await getDoc(userRef);
+            if (docSnapshot.exists()) {
+              const userData = docSnapshot.data();
+              if (userData.profilePicture) {
+                setImage(userData.profilePicture);
+              }
+            }
+          } catch (error) {
+            console.error('프로필 사진 가져오기 오류:', error);
+          }
+        };
+    
+        fetchProfilePicture();
+      }, []);
+
+    //Firebase Firestore에서 사용자의 닉네임 값을 가져오는 함수
+    const fetchNicknameFromFirestore = async () => {
+        try {
+            const firestore = getFirestore();
+
+            const userRef = doc(firestore, 'users', user.uid);
+
+            const docSnapshot = await getDoc(userRef);
+
+            if (docSnapshot.exists()) {
+                const userData = docSnapshot.data();
+                const userNickname = userData.nickName;
+                setNickName(userNickname); // 사용자의 닉네임을 상태 변수에 저장
+            }
+        } catch (error) {
+            console.error('닉네임 가져오기 오류:', error);
+        }
+    };
+
+    //컴포넌트가 마운트될 때 사용자의 닉네임 값을 가져옴
+    useEffect(() => {
+        fetchNicknameFromFirestore();
+    }, []);
+
+    //닉네임이 바뀔때 마다 checkNicknameAvailability 실행
+    useEffect(() => {
+        checkNicknameAvailability();
+    }, [nickName]);
+    
+    //닉네임 중복 화인 
+    const checkNicknameAvailability = async () => {
+        if (!nickName) {
+            setIsNicknameAvailable(true); // Set as available if nickname is empty
+            return;
+        }
+
+        try {
+            const firestore = getFirestore();
+            const usersRef = collection(firestore, 'users');
+
+            // 사용자 컬렉션에서 해당 닉네임을 가진 사용자가 있는지 조회합니다.
+            const q = query(usersRef, where('nickName', '==', nickName));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+            // 닉네임이 이미 존재하는 경우
+            console.log('이미 존재하는 닉네임입니다.');
+            setIsNicknameAvailable(false);
+
+            } else {
+            // 닉네임이 존재하지 않는 경우
+            console.log('사용 가능한 닉네임입니다.');
+            setIsNicknameAvailable(true);
+            // 여기에서 닉네임을 변경하거나 저장 등의 로직을 추가할 수 있습니다.
+            }
+        } catch (error) {
+            console.error('닉네임 확인 중 오류:', error);
+        }
+    };
 
     return (
         <View style={{flex: 1}}>
@@ -154,35 +285,21 @@ const EditProfile = ({navigation, user}) => {
                                 
                                     {/* 입력창 */}
                                     <TextInput
-                                        onChangeText={(text) => setinputText(text)}
-                                        defaultValue={inputText}
-                                        placeholder='홍길동'
+                                        onChangeText={(text) => setNickName(text)}
+                                        defaultValue={nickName.toLowerCase()}
+                                        value={nickName}
+                                        placeholder='닉네임을 입력해주세요'
                                         editable={true}
                                         multiline={false}
                                         style={styles.inputText} />
 
                                     {/* 닉네임이 중복되었을 경우 뜨는 창 */}
-                                    <Text style={{
-                                        fontSize: 16,
-                                        textAlign: 'center',
-                                        color: '#1AAD55',
-                                        marginTop: 7,
-                                    }}>
-                                    * 이미 존재하는 닉네임입니다.
-                                    </Text>
-                                </View>
+                                    {!isNicknameAvailable && (
+                                        <Text style={{ fontSize: 14, textAlign: 'center', color: '#1AAD55', marginTop: 7}}>
+                                            * 이미 존재하는 닉네임입니다.
+                                        </Text>
+                                    )}
 
-                                {/* 한줄 목표 컨테이너 */}
-                                <View>
-                                    <Text style={styles.subTitle}>한줄 목표</Text>
-                                    <TextInput
-                                        placeholder='화이팅'
-                                        onChangeText={(text) => setinputText(text)}
-                                        defaultValue={inputText}
-                                        editable={true}
-                                        multiline={false}
-                                        style={styles.inputText} />
-                                
                                 </View>
                             </View>
                         </TouchableWithoutFeedback>
@@ -190,7 +307,7 @@ const EditProfile = ({navigation, user}) => {
                 </View>
             </SafeAreaView>
 
-            <Pressable style={styles.button} onPress={uploadImageToFirebase}>
+            <Pressable style={styles.button} onPress={updateUserProfile}>
                 <Text style={{color: 'white', fontSize: 20, fontWeight: 600, marginBottom: 10}}>완료</Text>
             </Pressable>
             
@@ -221,7 +338,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 47,
         textAlign: 'center',
-        fontSize: 20,
+        fontSize: 18,
         backgroundColor: 'white',
         borderColor: '#E2E2E2',
         borderRadius: 4,
@@ -248,109 +365,3 @@ const styles = StyleSheet.create({
 )
 
 export default EditProfile;
-
-
-
-    // const uploadImageToFirebase = async () => {
-    //     try {
-    //       const auth = getAuth();
-    //       const user = auth.currentUser;
-      
-    //       if (!user) {
-    //         console.log('로그인된 사용자가 없습니다.');
-    //         return;
-    //       }
-      
-    //       if (!image) {
-    //         console.log('이미지를 선택해주세요.');
-    //         return;
-    //       }
-      
-    //       const storageRef = ref(getStorage(), `user_profile/${user.uid}.jpg`);
-      
-    //       // 이미지의 uri를 사용하여 Blob으로 변환
-    //       const response = await fetch(image);
-    //       const blob = await response.blob();
-      
-    //       const uploadTask = uploadBytesResumable(storageRef, blob);
-      
-    //       uploadTask.on('state_changed',
-    //         (snapshot) => {
-    //           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-    //           console.log('Upload is ' + progress + '% done');
-    //           switch (snapshot.state) {
-    //             case 'running':
-    //               console.log('Upload is running');
-    //               break;
-    //             case 'paused':
-    //               console.log('Upload is paused');
-    //               break;
-    //           }
-    //         },
-    //         (error) => {
-    //           console.error('이미지 업로드 중 오류:', error);
-    //         },
-    //         () => {
-    //           uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-    //             console.log('업로드한 이미지의 URL: ', downloadURL);
-    //             // 이 URL을 Firestore에 저장하거나 필요에 따라 사용하세요.
-    //           });
-    //         }
-    //       );
-      
-    //     } catch (error) {
-    //       console.error('이미지 업로드 중 오류:', error);
-    //     }
-    //   };
-
-    // const uploadImageToFirebase = async () => {
-    //   try {
-    //     const auth = getAuth();
-    //     const user = auth.currentUser;
-    
-    //     if (!user) {
-    //       console.log('로그인된 사용자가 없습니다.');
-    //       return;
-    //     }
-    
-    //     if (!image) {
-    //       console.log('이미지를 선택해주세요.');
-    //       return;
-    //     }
-    
-    //     const storageRef = ref(getStorage(), `user_profile/${user.uid}.jpg`);
-    
-    //     // 이미지의 uri를 사용하여 Blob으로 변환
-    //     const response = await fetch(image);
-    //     const blob = await response.blob();
-    
-    //     const uploadTask = uploadBytesResumable(storageRef, blob);
-    
-    //     uploadTask.on('state_changed',
-    //       (snapshot) => {
-    //         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-    //         console.log('Upload is ' + progress + '% done');
-    //         switch (snapshot.state) {
-    //           case 'running':
-    //             console.log('Upload is running');
-    //             break;
-    //           case 'paused':
-    //             console.log('Upload is paused');
-    //             break;
-    //         }
-    //       },
-    //       (error) => {
-    //         console.error('이미지 업로드 중 오류:', error);
-    //       },
-    //       () => {
-    //         uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-    //           console.log('업로드한 이미지의 URL: ', downloadURL);
-    //           // 이 URL을 Firestore에 저장하거나 필요에 따라 사용하세요.
-    //         });
-    //       }
-    //     );
-    
-    //   } catch (error) {
-    //     console.error('오류 발생:', error);
-    //   }
-    // };
