@@ -8,239 +8,144 @@ import { getAuth } from 'firebase/auth';
 import { getStorage, ref, uploadString, getDownloadURL, uploadBytesResumable, connectStorageEmulator } from 'firebase/storage';
 import { firestore, storage } from '../firebase';
 import { firebase } from '../firebase';
-import { collection, doc, getDoc, getDocs, getFirestore, query, setDoc, updateDoc, where } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, getFirestore, onSnapshot, query, setDoc, updateDoc, where } from 'firebase/firestore';
 
 
-const EditProfile = ({navigation, user}) => {
-    //닉네임
-    const [nickName, setNickName] = useState('');
+const EditProfile = ({ navigation, user }) => {
+  const [nickName, setNickName] = useState('');
+  const [isNicknameAvailable, setIsNicknameAvailable] = useState(true); // 기본값을 true로 설정
 
-    //닉네임 존재 여부
-    const [isNicknameAvailable, setIsNicknameAvailable] = useState(false);
+  const [image, setImage] = useState(null);
 
-    //사진 선택
-    const [image, setImage] = useState(null);
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
 
-    //사진 고르기
-    const pickImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.All,
-          allowsEditing: true,
-          aspect: [4, 3],
-          quality: 1,
-        });
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
 
-        setImage(result.uri);
+  const updateUserProfile = async () => {
+    try {
+      const auth = getAuth();
+      const currentUser = auth.currentUser;
 
-        if (!result.canceled) {
-          setImage(result.assets[0].uri);
+      if (!currentUser) {
+        console.log('로그인된 사용자가 없습니다.');
+        return;
+      }
+
+      if (!image) {
+        console.log('이미지를 선택해주세요.');
+        return;
+      }
+
+      if (!nickName) {
+        Alert.alert('닉네임을 입력해주세요.');
+        return;
+      }
+
+      if (!isNicknameAvailable) {
+        // 닉네임이 중복된 경우 알림창을 표시하고 함수를 종료합니다.
+        console.log('이미 존재하는 닉네임입니다.');
+        Alert.alert('닉네임 중복', '이미 존재하는 닉네임입니다. 다른 닉네임을 입력해주세요.');
+        return;
+      }
+
+      const storage = getStorage();
+      const imageRef = ref(storage, `user_profile/${currentUser.uid}.jpg`);
+
+      // 이미지의 uri를 사용하여 Blob으로 변환
+      const response = await fetch(image);
+      const blob = await response.blob();
+
+      const uploadTask = uploadBytesResumable(imageRef, blob);
+
+      uploadTask.on('state_changed', null, null, async () => {
+        const downloadURL = await getDownloadURL(imageRef);
+
+        // 이미지 URL을 Firestore에 저장
+        const firestore = getFirestore();
+        const userRef = doc(firestore, 'users', currentUser.uid);
+
+        // profilePicture 사진 업데이트
+        await updateDoc(userRef, {
+          profilePicture: downloadURL,
+          nickName: nickName
+        }, { merge: true });
+
+        navigation.navigate('Profile');
+      });
+    } catch (error) {
+      console.error('이미지 업로드 중 오류:', error);
+    }
+  };
+
+  // Firestore에서 사용자 데이터를 실시간으로 감시하여 닉네임과 프로필 사진 설정
+  useEffect(() => {
+    const firestore = getFirestore();
+    const userRef = doc(firestore, 'users', user.uid);
+
+    const unsubscribe = onSnapshot(userRef, (docSnapshot) => {
+      if (docSnapshot.exists()) {
+        const userData = docSnapshot.data();
+        // 닉네임이 존재하면 해당 닉네임을 상태 변수에 설정
+        if (userData.nickName) {
+          setNickName(userData.nickName);
         }
-      };
-
-    //파이어베이스 - storage 에 이미지 저장
-    // const uploadImageToFirebase = async () => {
-    //   try {
-    //     const auth = getAuth();
-    //     const user = auth.currentUser;
-  
-    //     if (!user) {
-    //       console.log('로그인된 사용자가 없습니다.');
-    //       return;
-    //     }
-  
-    //     if (!image) {
-    //       console.log('이미지를 선택해주세요.');
-    //       return;
-    //     }
-  
-    //     const storage = getStorage();
-    //     const imageRef = ref(storage, `user_profile/${user.uid}.jpg`);
-  
-    //     // 이미지의 uri를 사용하여 Blob으로 변환
-    //     const response = await fetch(image);
-    //     const blob = await response.blob();
-  
-    //     const uploadTask = uploadBytesResumable(imageRef, blob);
-
-    //     uploadTask.on('state_changed', null, null, async () => {
-    //         const downloadURL = await getDownloadURL(imageRef);
-      
-    //         // 이미지 URL을 Firestore에 저장
-    //         const firestore = getFirestore();
-
-    //         const userRef = doc(firestore, 'users', user.uid);
-            
-    //         //profilePicture 사진 업데이트
-    //         await updateDoc(userRef, { profilePicture: downloadURL }, { merge: true });
-    //       });
-    
-    //   } catch (error) {
-    //     console.error('이미지 업로드 중 오류:', error);
-    //   }
-    // };
-
-    //실헝용
-    const updateUserProfile = async () => {
-        try {
-          const auth = getAuth();
-          const user = auth.currentUser;
-    
-          if (!user) {
-            console.log('로그인된 사용자가 없습니다.');
-            return;
-          }
-    
-          if (!image) {
-            console.log('이미지를 선택해주세요.');
-            return;
-          }
-    
-          if (!nickName) {
-            Alert.alert('닉네임을 입력해주세요.');
-            return;
-          }
-
-          if (!isNicknameAvailable) {
-            Alert.alert('이미 존재하는 닉네임입니다.');
-            return;
-          }
-
-          const storage = getStorage();
-          const imageRef = ref(storage, `user_profile/${user.uid}.jpg`);
-    
-          // 이미지의 uri를 사용하여 Blob으로 변환
-          const response = await fetch(image);
-          const blob = await response.blob();
-    
-          const uploadTask = uploadBytesResumable(imageRef, blob);
-  
-          uploadTask.on('state_changed', null, null, async () => {
-              const downloadURL = await getDownloadURL(imageRef);
-        
-              // 이미지 URL을 Firestore에 저장
-              const firestore = getFirestore();
-  
-              const userRef = doc(firestore, 'users', user.uid);
-              
-              //profilePicture 사진 업데이트
-              await updateDoc(userRef, { 
-                    profilePicture: downloadURL,
-                    nickName: nickName
-                }, { merge: true });
-            });
-      
-        } catch (error) {
-          console.error('이미지 업로드 중 오류:', error);
+        // profilePicture가 존재하면 해당 URL을 상태 변수에 설정
+        if (userData.profilePicture) {
+          setImage(userData.profilePicture);
         }
-      };
+        // 다른 필요한 사용자 데이터도 처리할 수 있습니다.
+      } else {
+        console.log('해당 사용자를 찾을 수 없습니다.');
+      }
+    });
 
-    // useEffect를 사용하여 Firestore에서 이미지 URI를 가져와서 image 상태 변수에 설정
-    useEffect(() => {
-        const fetchProfilePicture = async () => {
-          if (!user) {
-            return;
-          }
-    
-          const userRef = doc(firestore, 'users', user.uid);
-          try {
-            const docSnapshot = await getDoc(userRef);
-            if (docSnapshot.exists()) {
-              const userData = docSnapshot.data();
-              if (userData.profilePicture) {
-                setImage(userData.profilePicture);
-              }
-            }
-          } catch (error) {
-            console.error('프로필 사진 가져오기 오류:', error);
-          }
-        };
-    
-        fetchProfilePicture();
-      }, []);
-    
+    // 컴포넌트가 언마운트될 때 감시를 해제합니다.
+    return () => unsubscribe();
+  }, [user]);
 
-    useEffect(() => {
-        const fetchProfilePicture = async () => {
-          if (!user) {
-            return;
-          }
-    
-          const userRef = doc(firestore, 'users', user.uid);
-          try {
-            const docSnapshot = await getDoc(userRef);
-            if (docSnapshot.exists()) {
-              const userData = docSnapshot.data();
-              if (userData.profilePicture) {
-                setImage(userData.profilePicture);
-              }
-            }
-          } catch (error) {
-            console.error('프로필 사진 가져오기 오류:', error);
-          }
-        };
-    
-        fetchProfilePicture();
-      }, []);
+  // 닉네임 중복 여부를 확인하는 함수
+  const checkNicknameAvailability = async () => {
+    if (!nickName) {
+      setIsNicknameAvailable(true); // Set as available if nickname is empty
+      return;
+    }
 
-    //Firebase Firestore에서 사용자의 닉네임 값을 가져오는 함수
-    const fetchNicknameFromFirestore = async () => {
-        try {
-            const firestore = getFirestore();
+    try {
+      const firestore = getFirestore();
+      const usersRef = collection(firestore, 'users');
 
-            const userRef = doc(firestore, 'users', user.uid);
+      // 사용자 컬렉션에서 해당 닉네임을 가진 사용자가 있는지 조회합니다.
+      const q = query(usersRef, where('nickName', '==', nickName));
+      const querySnapshot = await getDocs(q);
 
-            const docSnapshot = await getDoc(userRef);
+      if (!querySnapshot.empty) {
+        // 닉네임이 이미 존재하는 경우
+        console.log('이미 존재하는 닉네임입니다.');
+        setIsNicknameAvailable(false);
+      } else {
+        // 닉네임이 존재하지 않는 경우
+        console.log('사용 가능한 닉네임입니다.');
+        setIsNicknameAvailable(true);
+        // 여기에서 닉네임을 변경하거나 저장 등의 로직을 추가할 수 있습니다.
+      }
+    } catch (error) {
+      console.error('닉네임 확인 중 오류:', error);
+    }
+  };
 
-            if (docSnapshot.exists()) {
-                const userData = docSnapshot.data();
-                const userNickname = userData.nickName;
-                setNickName(userNickname); // 사용자의 닉네임을 상태 변수에 저장
-            }
-        } catch (error) {
-            console.error('닉네임 가져오기 오류:', error);
-        }
-    };
-
-    //컴포넌트가 마운트될 때 사용자의 닉네임 값을 가져옴
-    useEffect(() => {
-        fetchNicknameFromFirestore();
-    }, []);
-
-    //닉네임이 바뀔때 마다 checkNicknameAvailability 실행
-    useEffect(() => {
-        checkNicknameAvailability();
-    }, [nickName]);
-    
-    //닉네임 중복 화인 
-    const checkNicknameAvailability = async () => {
-        if (!nickName) {
-            setIsNicknameAvailable(true); // Set as available if nickname is empty
-            return;
-        }
-
-        try {
-            const firestore = getFirestore();
-            const usersRef = collection(firestore, 'users');
-
-            // 사용자 컬렉션에서 해당 닉네임을 가진 사용자가 있는지 조회합니다.
-            const q = query(usersRef, where('nickName', '==', nickName));
-            const querySnapshot = await getDocs(q);
-
-            if (!querySnapshot.empty) {
-            // 닉네임이 이미 존재하는 경우
-            console.log('이미 존재하는 닉네임입니다.');
-            setIsNicknameAvailable(false);
-
-            } else {
-            // 닉네임이 존재하지 않는 경우
-            console.log('사용 가능한 닉네임입니다.');
-            setIsNicknameAvailable(true);
-            // 여기에서 닉네임을 변경하거나 저장 등의 로직을 추가할 수 있습니다.
-            }
-        } catch (error) {
-            console.error('닉네임 확인 중 오류:', error);
-        }
-    };
+  // 닉네임이 바뀔 때마다 checkNicknameAvailability 실행
+  useEffect(() => {
+    checkNicknameAvailability();
+  }, [nickName]);
 
     return (
         <View style={{flex: 1}}>
