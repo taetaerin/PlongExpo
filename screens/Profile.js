@@ -2,32 +2,86 @@ import {View, Text, SafeAreaView, TouchableOpacity, TextInput, Image, StyleSheet
 import React, { useEffect, useState } from 'react'
 import Ionic from 'react-native-vector-icons/Ionicons';
 import { Calendar } from 'react-native-calendars';
-import { collection, doc, getDoc, getDocs, getFirestore } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, getFirestore, onSnapshot } from 'firebase/firestore';
 import { getDownloadURL, getStorage, ref } from 'firebase/storage';
 import { getAuth } from 'firebase/auth';
 
 
 const Profile = ({navigation, user}) => {
-    const [text, onChangeText] = useState('');
-    const [number, onChangeNumber] = useState('');
-    const [inputText, setinputText] = useState('');
-
+    //닉네임 설정
+    const [nickName, setNickName] = useState('');
+    //프로필 설정
     const [profilePictureURI, setProfilePictureURI] = useState(null);
 
-    useEffect(() => {
+    //파이어베이스에 저장된 이미지 uri 가져오기
+    // useEffect(() => {
+    //     // Firestore에서 사용자 데이터 가져오기
+    //     const fetchUserData = async () => {
+    //     const firestore = getFirestore();
+    //     const userRef = doc(firestore, 'users', user.uid);
+  
+    //     try {
+    //       const docSnapshot = await getDoc(userRef);
+    //       if (docSnapshot.exists()) {
+    //         const userData = docSnapshot.data();
+    //         // profilePicture가 존재하면 해당 URL을 상태 변수에 설정
+    //         if (userData.profilePicture) {
+    //           setProfilePictureURI(userData.profilePicture);
+    //         }
+    //         // 다른 필요한 사용자 데이터도 처리할 수 있습니다.
+    //       } else {
+    //         console.log('해당 사용자를 찾을 수 없습니다.');
+    //       }
+    //     } catch (error) {
+    //       console.error('사용자 데이터 가져오기 오류:', error);
+    //     }
+    // };
+  
+    //   // Firestore에서 사용자 데이터 가져오기
+    //   fetchUserData();
+    // }, []); 
 
-      // Firestore에서 사용자 데이터 가져오기
-      const fetchUserData = async () => {
+    //실험용 
+    useEffect(() => {
+      const firestore = getFirestore();
+      const userRef = doc(firestore, 'users', user.uid);
+  
+      const unsubscribe = onSnapshot(userRef, (docSnapshot) => {
+        if (docSnapshot.exists()) {
+          const userData = docSnapshot.data();
+          // 닉네임이 존재하면 해당 닉네임을 상태 변수에 설정
+          if (userData.nickName) {
+            setNickName(userData.nickName);
+          }
+          // profilePicture가 존재하면 해당 URL을 상태 변수에 설정
+          if (userData.profilePicture) {
+            setProfilePictureURI(userData.profilePicture);
+          }
+          // 다른 필요한 사용자 데이터도 처리할 수 있습니다.
+        } else {
+          console.log('해당 사용자를 찾을 수 없습니다.');
+        }
+      });
+  
+      // 컴포넌트가 언마운트될 때 감시를 해제합니다.
+      return () => unsubscribe();
+    }, []);
+  
+    //파이어베이스에 저장된 닉네임 가져오기
+    useEffect(() => {
+         // Firestore에서 사용자 데이터 가져오기
+        const fetchUserData = async () => {
         const firestore = getFirestore();
         const userRef = doc(firestore, 'users', user.uid);
-  
+    
         try {
           const docSnapshot = await getDoc(userRef);
+    
           if (docSnapshot.exists()) {
             const userData = docSnapshot.data();
-            // profilePicture가 존재하면 해당 URL을 상태 변수에 설정
-            if (userData.profilePicture) {
-              setProfilePictureURI(userData.profilePicture);
+            // 닉네임이 존재하면 해당 닉네임을 상태 변수에 설정
+            if (userData.nickName) {
+              setNickName(userData.nickName);
             }
             // 다른 필요한 사용자 데이터도 처리할 수 있습니다.
           } else {
@@ -37,12 +91,10 @@ const Profile = ({navigation, user}) => {
           console.error('사용자 데이터 가져오기 오류:', error);
         }
       };
-  
-      // Firestore에서 사용자 데이터 가져오기
+    
       fetchUserData();
-    }, [user.profilePicture]); // user.uid가 변경될 때마다 useEffect를 호출
-  
-
+    }, []);
+    
 
     const markDates = {
         '2023-07-01': {
@@ -85,7 +137,7 @@ const Profile = ({navigation, user}) => {
 
                 <View style={{marginLeft: 25, paddingTop: 50}}>
                     <Text style={styles.nameText}>
-                        홍길동 님
+                      {nickName && `${nickName} 님`}
                     </Text>   
 
                     <Text style={{marginTop: 14, color: '#424242', fontSize: 12}}>
@@ -180,6 +232,7 @@ const Profile = ({navigation, user}) => {
         </SafeAreaView>
     )
 }
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
