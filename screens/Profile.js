@@ -1,16 +1,48 @@
 import {View, Text, SafeAreaView, TouchableOpacity, TextInput, Image, StyleSheet, StatusBar, ScrollView, Platform} from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Ionic from 'react-native-vector-icons/Ionicons';
 import { Calendar } from 'react-native-calendars';
+import { collection, doc, getDoc, getDocs, getFirestore } from 'firebase/firestore';
+import { getDownloadURL, getStorage, ref } from 'firebase/storage';
+import { getAuth } from 'firebase/auth';
 
-const Profile = ({navigation}) => {
+
+const Profile = ({navigation, user}) => {
     const [text, onChangeText] = useState('');
     const [number, onChangeNumber] = useState('');
     const [inputText, setinputText] = useState('');
-    
-    const onPressSaveEdit = () => {
-    }
-    const[selectImage, setSelectImage] = useState(null);
+
+    const [profilePictureURI, setProfilePictureURI] = useState(null);
+
+    useEffect(() => {
+
+      // Firestore에서 사용자 데이터 가져오기
+      const fetchUserData = async () => {
+        const firestore = getFirestore();
+        const userRef = doc(firestore, 'users', user.uid);
+  
+        try {
+          const docSnapshot = await getDoc(userRef);
+          if (docSnapshot.exists()) {
+            const userData = docSnapshot.data();
+            // profilePicture가 존재하면 해당 URL을 상태 변수에 설정
+            if (userData.profilePicture) {
+              setProfilePictureURI(userData.profilePicture);
+            }
+            // 다른 필요한 사용자 데이터도 처리할 수 있습니다.
+          } else {
+            console.log('해당 사용자를 찾을 수 없습니다.');
+          }
+        } catch (error) {
+          console.error('사용자 데이터 가져오기 오류:', error);
+        }
+      };
+  
+      // Firestore에서 사용자 데이터 가져오기
+      fetchUserData();
+    }, [user.profilePicture]); // user.uid가 변경될 때마다 useEffect를 호출
+  
+
 
     const markDates = {
         '2023-07-01': {
@@ -47,7 +79,7 @@ const Profile = ({navigation}) => {
                 <View style={{justifyContent:'center'}}>
                     <Image 
                         style={{backgroundColor: '#EFEFEF',left: 16, width: 100, height: 100, borderRadius: 100}} 
-                        source={{uri: selectImage}} 
+                        source={{uri: profilePictureURI}} 
                     />
                 </View>
 
