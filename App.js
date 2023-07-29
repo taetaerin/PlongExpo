@@ -25,27 +25,40 @@ import { LogBox } from 'react-native';
 
 LogBox.ignoreLogs(['Possible Unhandled Promise Rejection']);
 
-// Ignore all log notifications
+//경고문 무시하기
 LogBox.ignoreAllLogs();
+
 
 export default function App() {
   const Stack = createNativeStackNavigator();
   const Tab = createBottomTabNavigator();
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [profilePicture, setProfilePicture] = useState(null);
+  const [user, setUser] = useState(null);
 
-  const auth = getAuth();
 
   useEffect(() => {
+    const auth = getAuth();
+
     const unsubscribe = onAuthStateChanged(auth, user => {
+      
       setIsLoggedIn(!!user); // 사용자가 로그인한 경우에만 isLoggedIn를 true로 설정
+      setUser(user)
     });
     return unsubscribe;
   }, []);
 
+  const ProfileWithProps = (props) => {
+    return <Profile {...props} user={user}/>;
+  };
+
+  const EditProfileWithProps = (props) => {
+    return <EditProfile {...props} user={user}/>;
+  };
 
 
-      //하단바 생성
+  //하단바 생성
   const BottomTabScreens = () => {
     return (
       <Tab.Navigator
@@ -77,7 +90,7 @@ export default function App() {
         <Tab.Screen name="Post" component={Post} />
         <Tab.Screen name="Participant" component={Participant} />
         <Tab.Screen name="Map" component={Map} />
-        <Tab.Screen name="Profile" component={Profile} />
+        <Tab.Screen name="Profile" component={ProfileWithProps} />
       </Tab.Navigator>
     );
   };
@@ -98,7 +111,7 @@ export default function App() {
           <>
             <Stack.Screen name="Main" component={BottomTabScreens} />
             <Stack.Screen name="Content" component={Content} />
-            <Stack.Screen name="EditProfile" component={EditProfile} />
+            <Stack.Screen name="EditProfile" component={EditProfileWithProps} />
             <Stack.Screen name="PostContent" component={PostContent} />
             <Stack.Screen name="PostUpdate" component={PostUpdate} />
           </>

@@ -6,12 +6,12 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 import { getAuth } from 'firebase/auth';
 import { getStorage, ref, uploadString, getDownloadURL, uploadBytesResumable, connectStorageEmulator } from 'firebase/storage';
-import { storage } from '../firebase';
+import { firestore, storage } from '../firebase';
 import { firebase } from '../firebase';
-import { doc, getFirestore, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, getFirestore, setDoc, updateDoc } from 'firebase/firestore';
 
 
-const EditProfile = ({navigation}) => {
+const EditProfile = ({navigation, user}) => {
     const [text, onChangeText] = React.useState('');
     const [number, onChangeNumber] = React.useState('');
     const [inputText, setinputText] = useState('');
@@ -19,6 +19,10 @@ const EditProfile = ({navigation}) => {
     //사진 선택
     const [image, setImage] = useState(null);
     // console.log(image)
+
+    console.log('edituser', user)
+
+    
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -41,6 +45,7 @@ const EditProfile = ({navigation}) => {
       try {
         const auth = getAuth();
         const user = auth.currentUser;
+        console.log('userr', user)
   
         if (!user) {
           console.log('로그인된 사용자가 없습니다.');
@@ -79,6 +84,31 @@ const EditProfile = ({navigation}) => {
         console.error('이미지 업로드 중 오류:', error);
       }
     };
+
+
+    // useEffect를 사용하여 Firestore에서 이미지 URI를 가져와서 image 상태 변수에 설정
+    useEffect(() => {
+        const fetchProfilePicture = async () => {
+          if (!user) {
+            return;
+          }
+    
+          const userRef = doc(firestore, 'users', user.uid);
+          try {
+            const docSnapshot = await getDoc(userRef);
+            if (docSnapshot.exists()) {
+              const userData = docSnapshot.data();
+              if (userData.profilePicture) {
+                setImage(userData.profilePicture);
+              }
+            }
+          } catch (error) {
+            console.error('프로필 사진 가져오기 오류:', error);
+          }
+        };
+    
+        fetchProfilePicture();
+      }, []);
     
 
     return (
