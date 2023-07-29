@@ -9,12 +9,12 @@ import { getStorage } from 'firebase/storage';
 // Your web app's Firebase configuration
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCJVKaJYUpKus8liMU-_FFVgHYdRRMA3gQ",
-  authDomain: "plongapp.firebaseapp.com",
-  projectId: "plongapp",
-  storageBucket: "plongapp.appspot.com",
-  messagingSenderId: "748141945320",
-  appId: "1:748141945320:web:3477d53924d3ba2f79445d"
+  apiKey: "AIzaSyAAbUkoPBFpN5wy3U4Y8le9UZnXoW7O06U",
+  authDomain: "plongplong-1a446.firebaseapp.com",
+  projectId: "plongplong-1a446",
+  storageBucket: "plongplong-1a446.appspot.com",
+  messagingSenderId: "709179252984",
+  appId: "1:709179252984:web:3abcb4b5bc0098ccf61b0d"
 };
 
 // Initialize Firebase

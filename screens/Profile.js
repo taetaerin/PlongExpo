@@ -65,7 +65,7 @@ const Profile = ({navigation, user}) => {
   
       // 컴포넌트가 언마운트될 때 감시를 해제합니다.
       return () => unsubscribe();
-    }, []);
+    }, [user.profilePicture]);
   
     //파이어베이스에 저장된 닉네임 가져오기
     useEffect(() => {
@@ -93,7 +93,7 @@ const Profile = ({navigation, user}) => {
       };
     
       fetchUserData();
-    }, []);
+    }, [user.nickName]);
     
 
     const markDates = {
