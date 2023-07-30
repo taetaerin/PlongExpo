@@ -1,22 +1,46 @@
-import {View, Text, SafeAreaView, TouchableOpacity,ScrollView, TextInput, Image, StyleSheet, Platform,  Pressable, TouchableWithoutFeedback, Keyboard, Alert} from 'react-native'
+import {View, Text, SafeAreaView, TouchableOpacity, TextInput, Image, StyleSheet, Platform,  Pressable, TouchableWithoutFeedback, Keyboard, Alert} from 'react-native'
 import React, { useEffect, useState } from 'react';
 import Ionic from 'react-native-vector-icons/Ionicons';
 import * as ImagePicker from 'expo-image-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import { getAuth } from 'firebase/auth';
-import { getStorage, ref, uploadString, getDownloadURL, uploadBytesResumable, connectStorageEmulator } from 'firebase/storage';
-import { firestore, storage } from '../firebase';
-import { firebase } from '../firebase';
-import { collection, doc, getDoc, getDocs, getFirestore, onSnapshot, query, setDoc, updateDoc, where } from 'firebase/firestore';
+import { getStorage, ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import { collection, doc,  getDocs, getFirestore, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 
 
 const EditProfile = ({ navigation, user }) => {
+  //닉네임
   const [nickName, setNickName] = useState('');
-  const [isNicknameAvailable, setIsNicknameAvailable] = useState(true); // 기본값을 true로 설정
-
+  //닉네임 사용 여부 - true: 사용가능 
+  const [isNicknameAvailable, setIsNicknameAvailable] = useState(true); 
+  //이전 닉네임 저장
+  const [prevNickName, setPrevNickName] = useState('');
+ 
+  //프로필 이미지
   const [image, setImage] = useState(null);
+  //프로필 이미지 변경 - true: 이미지 변경
+  const [isImageChanged, setIsImageChanged] = useState(false);
+  
+  //닉네임관련 - 완료 버튼
+  const [isNicknameChanged, setIsNicknameChanged] = useState(false);
 
+
+  //닉네임 변경
+  const changedNickName= (text) => {
+    setNickName(text)
+    // 닉네임이 변경되었으므로 isNicknameChanged를 true로 설정
+    setIsNicknameChanged(true);
+
+    //만약 변경한 닉네임이랑 이전 닉네임이 같을 시
+    if (text == prevNickName) {
+      setIsNicknameChanged(false);
+    } else {
+      setIsNicknameChanged(true);
+    }
+  }
+
+  //image-picker 라이브러리
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -25,35 +49,41 @@ const EditProfile = ({ navigation, user }) => {
       quality: 1,
     });
 
+    //사용자가 이미지 선택 취소 하지 않을 시 실행
     if (!result.cancelled) {
       setImage(result.uri);
+      //이미지 변경
+      setIsImageChanged(true);
     }
   };
 
+  //완료 버튼 누를 시 파이어베이스에 저장
   const updateUserProfile = async () => {
     try {
       const auth = getAuth();
       const currentUser = auth.currentUser;
 
-      if (!currentUser) {
-        console.log('로그인된 사용자가 없습니다.');
-        return;
-      }
-
-      if (!image) {
-        console.log('이미지를 선택해주세요.');
-        return;
-      }
-
+      //닉네임이 없을 시
       if (!nickName) {
         Alert.alert('닉네임을 입력해주세요.');
         return;
       }
 
-      if (!isNicknameAvailable) {
-        // 닉네임이 중복된 경우 알림창을 표시하고 함수를 종료합니다.
-        console.log('이미 존재하는 닉네임입니다.');
-        Alert.alert('닉네임 중복', '이미 존재하는 닉네임입니다. 다른 닉네임을 입력해주세요.');
+      //닉네임 변경시 
+      if (nickName !== prevNickName) {
+        //중복 여부 함수 실행
+        const isNicknameAvailable = await checkNicknameAvailability();
+        //닉네임 중복 시
+        if (!isNicknameAvailable) {
+          Alert.alert('이미 존재하는 닉네임입니다.');
+          return;
+        }
+      }
+
+      //닉네임 변경, 프로필 이미지 변경 X
+      if (nickName === prevNickName && !isImageChanged) {
+        //닉네임 사용 가능
+        setIsNicknameAvailable(true);
         return;
       }
 
@@ -77,10 +107,14 @@ const EditProfile = ({ navigation, user }) => {
         await updateDoc(userRef, {
           profilePicture: downloadURL,
           nickName: nickName
-        }, { merge: true });
+        }, 
+        { merge: true }
+        );
 
+        console.log('완료')
         navigation.navigate('Profile');
       });
+
     } catch (error) {
       console.error('이미지 업로드 중 오류:', error);
     }
@@ -94,6 +128,8 @@ const EditProfile = ({ navigation, user }) => {
     const unsubscribe = onSnapshot(userRef, (docSnapshot) => {
       if (docSnapshot.exists()) {
         const userData = docSnapshot.data();
+         // 이전 닉네임 설정
+        setPrevNickName(userData.nickName || '');
         // 닉네임이 존재하면 해당 닉네임을 상태 변수에 설정
         if (userData.nickName) {
           setNickName(userData.nickName);
@@ -102,18 +138,18 @@ const EditProfile = ({ navigation, user }) => {
         if (userData.profilePicture) {
           setImage(userData.profilePicture);
         }
-        // 다른 필요한 사용자 데이터도 처리할 수 있습니다.
       } else {
         console.log('해당 사용자를 찾을 수 없습니다.');
       }
     });
 
-    // 컴포넌트가 언마운트될 때 감시를 해제합니다.
+    // 컴포넌트가 언마운트될 때 감시를 해제
     return () => unsubscribe();
   }, [user]);
 
   // 닉네임 중복 여부를 확인하는 함수
   const checkNicknameAvailability = async () => {
+    //닉네임이 없을 때
     if (!nickName) {
       setIsNicknameAvailable(true); // Set as available if nickname is empty
       return;
@@ -163,9 +199,9 @@ const EditProfile = ({ navigation, user }) => {
                     borderBottomWidth: 0.5,
                     borderBottomColor: '#EAEAEA',
                 }}>
-                        <TouchableOpacity>
-                            <Ionic name="chevron-back-sharp" style={{fontSize:24}} onPress={() => navigation.goBack()}/>
-                        </TouchableOpacity>
+                      <TouchableOpacity>
+                          <Ionic name="chevron-back-sharp" style={{fontSize:24}} onPress={() => navigation.goBack()}/>
+                      </TouchableOpacity>
                 </View>
             
                 <View style={{flex: 1, backgroundColor: '#FBFBFB', paddingHorizontal: 18}}>
@@ -177,12 +213,16 @@ const EditProfile = ({ navigation, user }) => {
                             <View>
                                 {/* 프로필 사진 */}
                                 <View style={{alignItems: 'center', justifyContent: 'center', marginTop: 45}}>
-                                        <TouchableOpacity onPress={pickImage}>
-                                            <Image style={{backgroundColor: '#EFEFEF', alignItems: 'center', justifyContent: 'center',
-                                            width: 150, height: 150, borderRadius: 100}} source={{ uri: image }}/>
-                                        </TouchableOpacity>
+                                    <TouchableOpacity onPress={pickImage}>
+                                        <Image 
+                                          style={{backgroundColor: '#EFEFEF', alignItems: 'center', justifyContent: 'center',
+                                          width: 150, height: 150, borderRadius: 100}} 
+                                          source={{ uri: image }}
+                                        />
+                                    </TouchableOpacity>
                                 </View>
-                                <Ionic name="image" size={30} color='#424242' style={{top:-45, left:228}}/>
+
+                                <Ionic name="image" size={30} color='#B7B7B7' style={{top:-45, left:215}}/>
                                                             
                                 {/* 닉네임 컨테이너 */}
                                 <View style={{marginVertical: 8}}>
@@ -190,7 +230,7 @@ const EditProfile = ({ navigation, user }) => {
                                 
                                     {/* 입력창 */}
                                     <TextInput
-                                        onChangeText={(text) => setNickName(text)}
+                                        onChangeText={changedNickName}
                                         defaultValue={nickName.toLowerCase()}
                                         value={nickName}
                                         placeholder='닉네임을 입력해주세요'
@@ -198,12 +238,11 @@ const EditProfile = ({ navigation, user }) => {
                                         multiline={false}
                                         style={styles.inputText} />
 
-                                    {/* 닉네임이 중복되었을 경우 뜨는 창 */}
-                                    {!isNicknameAvailable && (
-                                        <Text style={{ fontSize: 14, textAlign: 'center', color: '#1AAD55', marginTop: 7}}>
-                                            * 이미 존재하는 닉네임입니다.
-                                        </Text>
-                                    )}
+                                    {!isNicknameAvailable && nickName !== prevNickName && (
+                                      <Text style={{ fontSize: 14, textAlign: 'center', color: '#1AAD55', marginTop: 7 }}>
+                                        * 이미 존재하는 닉네임입니다.
+                                      </Text>)
+                                    }
 
                                 </View>
                             </View>
@@ -212,15 +251,24 @@ const EditProfile = ({ navigation, user }) => {
                 </View>
             </SafeAreaView>
 
-            <Pressable style={styles.button} onPress={updateUserProfile}>
-                <Text style={{color: 'white', fontSize: 20, fontWeight: 600, marginBottom: 10}}>완료</Text>
-            </Pressable>
-            
+            {/* 닉네임 변경 또는 이미지 변경 시 완료 버튼 활성화 */}
+            {isNicknameChanged || isImageChanged ? (
+              <Pressable style={[styles.button, { backgroundColor: '#0BE060' }]}
+                  onPress={updateUserProfile}>
+                  <Text style={{ color: 'white', fontSize: 20, fontWeight: 600, marginBottom: 10 }}>
+                    완료
+                  </Text>
+              </Pressable>
+            ) : (
+              <View style={[ styles.button, { backgroundColor: '#CBCBCB' } ]}>
+                <Text style={{ color: 'white', fontSize: 20, fontWeight: 600, marginBottom: 10 }}>
+                  완료
+                </Text>
+              </View>
+            )}
         </View>
     )
 };
-
-
 
 const styles = StyleSheet.create({
     container: {

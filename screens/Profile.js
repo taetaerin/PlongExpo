@@ -13,35 +13,8 @@ const Profile = ({navigation, user}) => {
     //프로필 설정
     const [profilePictureURI, setProfilePictureURI] = useState(null);
 
-    //파이어베이스에 저장된 이미지 uri 가져오기
-    // useEffect(() => {
-    //     // Firestore에서 사용자 데이터 가져오기
-    //     const fetchUserData = async () => {
-    //     const firestore = getFirestore();
-    //     const userRef = doc(firestore, 'users', user.uid);
-  
-    //     try {
-    //       const docSnapshot = await getDoc(userRef);
-    //       if (docSnapshot.exists()) {
-    //         const userData = docSnapshot.data();
-    //         // profilePicture가 존재하면 해당 URL을 상태 변수에 설정
-    //         if (userData.profilePicture) {
-    //           setProfilePictureURI(userData.profilePicture);
-    //         }
-    //         // 다른 필요한 사용자 데이터도 처리할 수 있습니다.
-    //       } else {
-    //         console.log('해당 사용자를 찾을 수 없습니다.');
-    //       }
-    //     } catch (error) {
-    //       console.error('사용자 데이터 가져오기 오류:', error);
-    //     }
-    // };
-  
-    //   // Firestore에서 사용자 데이터 가져오기
-    //   fetchUserData();
-    // }, []); 
 
-    //실험용 
+    //파이어베이스 - 파이어스토어 닉네임, 프로필 사진 가져오기
     useEffect(() => {
       const firestore = getFirestore();
       const userRef = doc(firestore, 'users', user.uid);
@@ -57,7 +30,6 @@ const Profile = ({navigation, user}) => {
           if (userData.profilePicture) {
             setProfilePictureURI(userData.profilePicture);
           }
-          // 다른 필요한 사용자 데이터도 처리할 수 있습니다.
         } else {
           console.log('해당 사용자를 찾을 수 없습니다.');
         }
@@ -69,7 +41,7 @@ const Profile = ({navigation, user}) => {
   
     //파이어베이스에 저장된 닉네임 가져오기
     useEffect(() => {
-         // Firestore에서 사용자 데이터 가져오기
+        // Firestore에서 사용자 데이터 가져오기
         const fetchUserData = async () => {
         const firestore = getFirestore();
         const userRef = doc(firestore, 'users', user.uid);
@@ -83,7 +55,6 @@ const Profile = ({navigation, user}) => {
             if (userData.nickName) {
               setNickName(userData.nickName);
             }
-            // 다른 필요한 사용자 데이터도 처리할 수 있습니다.
           } else {
             console.log('해당 사용자를 찾을 수 없습니다.');
           }
@@ -91,8 +62,7 @@ const Profile = ({navigation, user}) => {
           console.error('사용자 데이터 가져오기 오류:', error);
         }
       };
-    
-      fetchUserData();
+        fetchUserData();
     }, [user.nickName]);
     
 
@@ -131,8 +101,7 @@ const Profile = ({navigation, user}) => {
                 <View style={{justifyContent:'center'}}>
                     <Image 
                         style={{backgroundColor: '#EFEFEF',left: 16, width: 100, height: 100, borderRadius: 100}} 
-                        source={{uri: profilePictureURI}} 
-                    />
+                        source={{uri: profilePictureURI}} />
                 </View>
 
                 <View style={{marginLeft: 25, paddingTop: 50}}>
@@ -144,8 +113,6 @@ const Profile = ({navigation, user}) => {
                         플로깅으로 같이 환경을 깨끗이 만들어요~!
                     </Text>  
                 </View>
-     
-
             </View>
 
             <View style={{marginTop: 24, marginBottom: 8}}> 
@@ -164,8 +131,7 @@ const Profile = ({navigation, user}) => {
                     arrowColor: '#0BE060',
                     dotColor: '#0BE060',
                     todayTextColor: '#0BE060',
-                 }}
-                />
+                 }} />
             </View>
 
             <View style={{backgroundColor: '#E4EAF1', borderRadius: 5, marginHorizontal: 18, marginVertical: 10}}>
@@ -185,10 +151,9 @@ const Profile = ({navigation, user}) => {
                 </View>
               </TouchableOpacity>
 
-            <View style={styles.line}>
-            </View>
+              <View style={styles.line}></View>
 
-            <TouchableOpacity style={styles.touchBox} onPress={() => onPressSaveEdit()} >
+              <TouchableOpacity style={styles.touchBox} onPress={() => onPressSaveEdit()} >
                   <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                       <Text style={styles.text}>
                           내가 작성한 모집글
@@ -197,35 +162,26 @@ const Profile = ({navigation, user}) => {
                 </View>
               </TouchableOpacity>
 
-            <View style={styles.line}>
-            </View>
+              <View style={styles.line}></View>
 
-            <TouchableOpacity style={styles.touchBox} onPress={() => navigation.navigate('EditProfile')} >
-                  <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                      <Text style={styles.text}>
-                          프로필 관리
-                      </Text>
-                      <Ionic name= "chevron-forward-sharp" size={20} color="#CBCBCB" />
-                </View>
+              <TouchableOpacity style={styles.touchBox} onPress={() => navigation.navigate('EditProfile')} >
+                    <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                        <Text style={styles.text}>
+                            프로필 관리
+                        </Text>
+                        <Ionic name= "chevron-forward-sharp" size={20} color="#CBCBCB" />
+                  </View>
               </TouchableOpacity>
             </View>
 
-            <View style={{marginBottom: 14,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent:'center'}}>
-            <Text style={{
-                fontSize: 14,
-                color: '#A5A5A5'
-            }}>
-                로그아웃  |
-            </Text>
-                <Image style={{
-                    marginLeft:7,
-                    width:56,
-                    height:14,
-                    resizeMode:'contain'                 
-                }}source={require('../assets/images/Logo.png')}/>
+            <View style={{marginBottom: 14, flexDirection: 'row', alignItems: 'center', justifyContent:'center'}}>
+              <Text style={{fontSize: 14,color: '#A5A5A5'}}>
+                  로그아웃  |
+              </Text>
+              <Image 
+                style={{ marginLeft:7, width:56, height:14, resizeMode:'contain'}}
+                source={require('../assets/images/Logo.png')}
+              />
             </View>
           </ScrollView>
           
@@ -251,7 +207,7 @@ const styles = StyleSheet.create({
     subTitle: {
         fontSize: 18,
         left: 18,
-        color: '#424242'
+        color: '#424242',
     },
     text: {
         fontSize: 16,
@@ -270,7 +226,6 @@ const styles = StyleSheet.create({
       justifyContent:'center', 
       marginVertical: 15
     }
-    
 }
 )
 
