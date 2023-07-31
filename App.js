@@ -45,9 +45,11 @@ export default function App() {
       
       setIsLoggedIn(!!user); // 사용자가 로그인한 경우에만 isLoggedIn를 true로 설정
       setUser(user)
+
     });
     return unsubscribe;
   }, []);
+
 
   const ProfileWithProps = (props) => {
     return <Profile {...props} user={user}/>;
@@ -57,6 +59,13 @@ export default function App() {
     return <EditProfile {...props} user={user}/>;
   };
 
+  const PostUpdateWithProps = (props) => {
+    return <PostUpdate {...props} user={user}/>;
+  };
+
+  const SignUpWithProps = (props) => {
+    return <SignUp {...props} user={user}/>;
+  };
 
   //하단바 생성
   const BottomTabScreens = () => {
@@ -131,7 +140,7 @@ export default function App() {
 {!isLoggedIn ? ( // 로그인 상태가 아닌 경우에는 로그인 화면을 렌더링
           <>
             <Stack.Screen name="SignIn" component={SignIn} />
-            <Stack.Screen name="SignUp" component={SignUp} />
+            <Stack.Screen name="SignUp" component={SignUpWithProps} />
           </>
         ) : (
           <>
@@ -139,7 +148,7 @@ export default function App() {
             <Stack.Screen name="Content" component={Content} />
             <Stack.Screen name="EditProfile" component={EditProfileWithProps} />
             <Stack.Screen name="PostContent" component={PostContent} />
-            <Stack.Screen name="PostUpdate" component={PostUpdate} />
+            <Stack.Screen name="PostUpdate" component={PostUpdateWithProps} />
           </>
         )}
 >>>>>>> 04681e1 (firebase 로그인, 회원가입, 프로필이미지 업로드)

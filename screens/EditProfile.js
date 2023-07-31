@@ -4,7 +4,7 @@ import Ionic from 'react-native-vector-icons/Ionicons';
 import * as ImagePicker from 'expo-image-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
-import { getAuth } from 'firebase/auth';
+import { getAuth, updateProfile } from 'firebase/auth';
 import { getStorage, ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import { collection, doc,  getDocs, getFirestore, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 
@@ -24,6 +24,8 @@ const EditProfile = ({ navigation, user }) => {
   
   //닉네임관련 - 완료 버튼
   const [isNicknameChanged, setIsNicknameChanged] = useState(false);
+
+  console.log('user 정보', user)
 
 
   //닉네임 변경
@@ -112,6 +114,10 @@ const EditProfile = ({ navigation, user }) => {
         );
 
         console.log('완료')
+        await updateProfile(user, {
+          photoURL: downloadURL,
+          displayName: nickName,
+        });
         navigation.navigate('Profile');
       });
 

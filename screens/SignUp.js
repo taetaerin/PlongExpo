@@ -4,12 +4,12 @@ import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionic from 'react-native-vector-icons/Ionicons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { addDoc, collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
 import { firestore } from '../firebase';
 
         
-const SignUp = ({navigation}) => {
+const SignUp = ({navigation, user}) => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -186,7 +186,12 @@ const SignUp = ({navigation}) => {
           };
 
           // 문서 ID를 user.uid로 설정하여 데이터를 Firestore에 저장
-          await setDoc(userRef, userData);         
+          await setDoc(userRef, userData);      
+
+          await updateProfile(user, {
+            displayName: nickName,
+          });
+
         }
 
         alert("회원가입이 완료되었습니다!");
