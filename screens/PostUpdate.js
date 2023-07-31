@@ -152,6 +152,7 @@ const handlePostSubmit = async () => {
                     <Image style={{backgroundColor: '#EFEFEF', width: 50, height: 50, borderRadius: 10}} source={{ uri: image }}/>
                     <TouchableOpacity onPress={handleRemoveImage}>
                         <Ionic name="close-circle-outline" style={styles.closeIcon} />
+                        <Text>dd</Text>
                     </TouchableOpacity>
                 </View>
             )
