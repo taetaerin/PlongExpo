@@ -1,16 +1,70 @@
 import {View, Text, SafeAreaView, TouchableOpacity, TextInput, Image, StyleSheet, StatusBar, ScrollView, Platform} from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Ionic from 'react-native-vector-icons/Ionicons';
 import { Calendar } from 'react-native-calendars';
+import { collection, doc, getDoc, getDocs, getFirestore, onSnapshot } from 'firebase/firestore';
+import { getDownloadURL, getStorage, ref } from 'firebase/storage';
+import { getAuth } from 'firebase/auth';
 
-const Profile = ({navigation}) => {
-    const [text, onChangeText] = useState('');
-    const [number, onChangeNumber] = useState('');
-    const [inputText, setinputText] = useState('');
+
+const Profile = ({navigation, user}) => {
+    //닉네임 설정
+    const [nickName, setNickName] = useState('');
+    //프로필 설정
+    const [profilePictureURI, setProfilePictureURI] = useState(null);
+
+
+    //파이어베이스 - 파이어스토어 닉네임, 프로필 사진 가져오기
+    useEffect(() => {
+      const firestore = getFirestore();
+      const userRef = doc(firestore, 'users', user.uid);
+  
+      const unsubscribe = onSnapshot(userRef, (docSnapshot) => {
+        if (docSnapshot.exists()) {
+          const userData = docSnapshot.data();
+          // 닉네임이 존재하면 해당 닉네임을 상태 변수에 설정
+          if (userData.nickName) {
+            setNickName(userData.nickName);
+          }
+          // profilePicture가 존재하면 해당 URL을 상태 변수에 설정
+          if (userData.profilePicture) {
+            setProfilePictureURI(userData.profilePicture);
+          }
+        } else {
+          console.log('해당 사용자를 찾을 수 없습니다.');
+        }
+      });
+  
+      // 컴포넌트가 언마운트될 때 감시를 해제합니다.
+      return () => unsubscribe();
+    }, [user.profilePicture]);
+  
+    //파이어베이스에 저장된 닉네임 가져오기
+    useEffect(() => {
+        // Firestore에서 사용자 데이터 가져오기
+        const fetchUserData = async () => {
+        const firestore = getFirestore();
+        const userRef = doc(firestore, 'users', user.uid);
     
-    const onPressSaveEdit = () => {
-    }
-    const[selectImage, setSelectImage] = useState(null);
+        try {
+          const docSnapshot = await getDoc(userRef);
+    
+          if (docSnapshot.exists()) {
+            const userData = docSnapshot.data();
+            // 닉네임이 존재하면 해당 닉네임을 상태 변수에 설정
+            if (userData.nickName) {
+              setNickName(userData.nickName);
+            }
+          } else {
+            console.log('해당 사용자를 찾을 수 없습니다.');
+          }
+        } catch (error) {
+          console.error('사용자 데이터 가져오기 오류:', error);
+        }
+      };
+        fetchUserData();
+    }, [user.nickName]);
+    
 
     const markDates = {
         '2023-07-01': {
@@ -47,21 +101,18 @@ const Profile = ({navigation}) => {
                 <View style={{justifyContent:'center'}}>
                     <Image 
                         style={{backgroundColor: '#EFEFEF',left: 16, width: 100, height: 100, borderRadius: 100}} 
-                        source={{uri: selectImage}} 
-                    />
+                        source={{uri: profilePictureURI}} />
                 </View>
 
                 <View style={{marginLeft: 25, paddingTop: 50}}>
                     <Text style={styles.nameText}>
-                        홍길동 님
+                      {nickName && `${nickName} 님`}
                     </Text>   
 
                     <Text style={{marginTop: 14, color: '#424242', fontSize: 12}}>
                         플로깅으로 같이 환경을 깨끗이 만들어요~!
                     </Text>  
                 </View>
-     
-
             </View>
 
             <View style={{marginTop: 24, marginBottom: 8}}> 
@@ -80,8 +131,7 @@ const Profile = ({navigation}) => {
                     arrowColor: '#0BE060',
                     dotColor: '#0BE060',
                     todayTextColor: '#0BE060',
-                 }}
-                />
+                 }} />
             </View>
 
             <View style={{backgroundColor: '#E4EAF1', borderRadius: 5, marginHorizontal: 18, marginVertical: 10}}>
@@ -101,10 +151,9 @@ const Profile = ({navigation}) => {
                 </View>
               </TouchableOpacity>
 
-            <View style={styles.line}>
-            </View>
+              <View style={styles.line}></View>
 
-            <TouchableOpacity style={styles.touchBox} onPress={() => onPressSaveEdit()} >
+              <TouchableOpacity style={styles.touchBox} onPress={() => onPressSaveEdit()} >
                   <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                       <Text style={styles.text}>
                           내가 작성한 모집글
@@ -113,41 +162,33 @@ const Profile = ({navigation}) => {
                 </View>
               </TouchableOpacity>
 
-            <View style={styles.line}>
-            </View>
+              <View style={styles.line}></View>
 
-            <TouchableOpacity style={styles.touchBox} onPress={() => navigation.navigate('EditProfile')} >
-                  <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                      <Text style={styles.text}>
-                          프로필 관리
-                      </Text>
-                      <Ionic name= "chevron-forward-sharp" size={20} color="#CBCBCB" />
-                </View>
+              <TouchableOpacity style={styles.touchBox} onPress={() => navigation.navigate('EditProfile')} >
+                    <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                        <Text style={styles.text}>
+                            프로필 관리
+                        </Text>
+                        <Ionic name= "chevron-forward-sharp" size={20} color="#CBCBCB" />
+                  </View>
               </TouchableOpacity>
             </View>
 
-            <View style={{marginBottom: 14,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent:'center'}}>
-            <Text style={{
-                fontSize: 14,
-                color: '#A5A5A5'
-            }}>
-                로그아웃  |
-            </Text>
-                <Image style={{
-                    marginLeft:7,
-                    width:56,
-                    height:14,
-                    resizeMode:'contain'                 
-                }}source={require('../assets/images/Logo.png')}/>
+            <View style={{marginBottom: 14, flexDirection: 'row', alignItems: 'center', justifyContent:'center'}}>
+              <Text style={{fontSize: 14,color: '#A5A5A5'}}>
+                  로그아웃  |
+              </Text>
+              <Image 
+                style={{ marginLeft:7, width:56, height:14, resizeMode:'contain'}}
+                source={require('../assets/images/Logo.png')}
+              />
             </View>
           </ScrollView>
           
         </SafeAreaView>
     )
 }
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -166,7 +207,7 @@ const styles = StyleSheet.create({
     subTitle: {
         fontSize: 18,
         left: 18,
-        color: '#424242'
+        color: '#424242',
     },
     text: {
         fontSize: 16,
@@ -185,7 +226,6 @@ const styles = StyleSheet.create({
       justifyContent:'center', 
       marginVertical: 15
     }
-    
 }
 )
 
