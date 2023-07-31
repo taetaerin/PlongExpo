@@ -289,6 +289,7 @@ const SignUp = ({navigation, user}) => {
                             autoCapitalize = 'none'
                             style={[styles.inputContainer, styles.inputMargin]}
                             />
+                            <Text>ddd</Text>
 
                           <View>
                             <TextInput 
