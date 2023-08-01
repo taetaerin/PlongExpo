@@ -22,6 +22,7 @@ const person = [
 
 const PostContent = ({navigation, route}) => {
   const { item } = route.params
+  console.log('item', item)
 
   return (
     <SafeAreaView style={{backgroundColor:'white', flex:1}}>
@@ -49,14 +50,14 @@ const PostContent = ({navigation, route}) => {
           <View style={{paddingHorizontal: 18, paddingBottom: 10, borderBottomWidth: 0.5, borderBottomColor: '#EAEAEA'}}>
               {/* 사용자 정보 컨테이너 */}
               <View style={{flexDirection: 'row', marginVertical: 14}}>
-                  <Image source={item.avatar} style={styles.avatar}/>
+                  <Image source={{url: item.avatar}} style={styles.avatar}/>
 
                   {/* 사용자 이름, 게시물 날짜 */}
                   <View style={{flex: 1}}>
                       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
                           <View>
-                            <Text style={styles.name}>{item.name}</Text>
-                            <Text style={styles.date}>{item.date}</Text>
+                            <Text style={styles.name}>{item.nickName}</Text>
+                            <Text style={styles.date}>{item.dateTime}</Text>
                           </View>
 
                           {/* more 아이콘 */}
@@ -66,10 +67,10 @@ const PostContent = ({navigation, route}) => {
               </View>
 
               {/* 사용자 작성 글 */}
-              <Text style={styles.text}>{item.text}</Text>
+              <Text style={styles.text}>{item.content}</Text>
         
               {/* 사용자 업로드 사진 */}
-              {item.image && <Image source={item.image} style={styles.image} resizeMode='cover'/>}
+              {item.imageUrl && <Image source={{url: item.imageUrl}} style={styles.image} resizeMode='cover' />} 
               
               {/* 새싹하고 댓글 아이콘 */}
               <View style={{flexDirection: 'row', marginTop: 14}}>
@@ -141,6 +142,7 @@ const styles = StyleSheet.create({
     height: 37,
     borderRadius: 50,
     marginRight: 10,
+    backgroundColor: '#E7E7E7'
   },
   name: {
     fontSize: 15,

@@ -1,42 +1,45 @@
-import { FlatList, SafeAreaView, ScrollView, StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
+import { FlatList, SafeAreaView, ScrollView, StyleSheet, Text, View, Image, TouchableOpacity, RefreshControl} from 'react-native';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Ionic from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import { collection, getDocs } from 'firebase/firestore';
+import { firestore } from '../firebase';
 
-const posts = [
+const hardPosts = [
   {
     id: 1,
-    name: '홍길동',
-    date: '2023.05.06 11시 30분',
-    text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.',
-    avatar: require('../assets/images/avatar.jpeg'),
+    nickName: '홍길동',
+    dateTime: '2023.05.06 11시 30분',
+    content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.',
+    // avatar: require('../assets/images/avatar.jpeg'),
     image: null,
     leaf: 20,
     comment: 5,
   },
   {
     id: 2,
-    name: '임지수',
-    date: '2023.05.06 11시 20분',
-    text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.',
-    avatar: require('../assets/images/avatar.jpeg'),
-    image: require('../assets/images/image1.png'),
+    nickName: '임지수',
+    dateTime: '2023.05.06 11시 20분',
+    content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.',
+    // avatar: require('../assets/images/avatar.jpeg'),
+    // imageUrl: require('../assets/images/image1.png'),
     leaf: 20,
     comment: 5,
   },
   {
     id: 3,
-    name: '김주은',
-    date: '2023.05.06 11시 19분',
-    text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.',
-    avatar: require('../assets/images/avatar.jpeg'),
-    image: require('../assets/images/image1.png'),
+    nickName: '김주은',
+    dateTime: '2023.05.06 11시 19분',
+    content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.',
+    // avatar: require('../assets/images/avatar.jpeg'),
+    // imageUrl: require('../assets/images/image1.png'),
     leaf: 20,
     comment: 5,
   },
 ]
 
+// console.log(posts)
 const PostCard = ({ name, image, date, text, avatar, leaf, comment, id}) => {
   // item을 사용하는 코드 작성
   return (
@@ -45,7 +48,12 @@ const PostCard = ({ name, image, date, text, avatar, leaf, comment, id}) => {
 
         <View style={{flexDirection: 'row', marginVertical: 14}}>
             {/* 아바타 이미지 */}
-            <Image source={avatar} style={styles.avatar}/>
+            {avatar ? (
+              <Image source={{url: avatar}} style={styles.avatar}/>
+            ) : (
+              <View style={styles.avatar}/>
+            )}
+            
 
             {/* 사용자 이름, 게시물 날짜 */}
             <View style={{flex: 1}}>
@@ -67,7 +75,7 @@ const PostCard = ({ name, image, date, text, avatar, leaf, comment, id}) => {
         <Text style={styles.text}>{text}</Text>
         
         {/* 사용자 업로드 사진 */}
-        {image && <Image source={image} style={styles.image} resizeMode='cover'/>}
+        {image && <Image source={{url : image}} style={styles.image} resizeMode='cover'/>}
 
         {/* 새싹하고 댓글 아이콘 */}
         <View style={{flexDirection: 'row', marginTop: 14}}>
@@ -85,7 +93,39 @@ const PostCard = ({ name, image, date, text, avatar, leaf, comment, id}) => {
   );
 }
 
-const Post = ({navigation}) => {
+const Post = ({navigation, route}) => {
+  const [posts, setPosts] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+
+  //post 사용자에게 보여지게
+  const fetchPosts = async () => {
+    try {
+      //파이어베이스에 있는 posts 가져오기
+      const querySnapshot = await getDocs(collection(firestore, 'posts'));
+      const fetchedPosts = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      fetchedPosts.sort((a, b) => b.dateTime.localeCompare(a.dateTime));
+      setPosts(fetchedPosts);
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+    }
+  };
+
+
+  //사용자가 새로고침
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await fetchPosts();
+    setRefreshing(false);
+  };
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+
   return (
     <SafeAreaView style={{backgroundColor: 'white', flex: 1}}>
         <View 
@@ -118,13 +158,16 @@ const Post = ({navigation}) => {
           keyExtractor={(item, index) => {
             return item.id;
           }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }
           renderItem={({ item }) => 
-            <TouchableOpacity key={item.id} onPress={() => navigation.navigate('PostContent', {item})}>
+            <TouchableOpacity onPress={() => navigation.navigate('PostContent', {item})}>
               <PostCard 
-                image={item.image} 
-                name={item.name} 
-                date={item.date} 
-                text={item.text} 
+                image={item.imageUrl} 
+                name={item.nickName} 
+                date={item.dateTime} 
+                text={item.content} 
                 avatar={item.avatar} 
                 leaf={item.leaf} 
                 comment={item.comment}
@@ -149,6 +192,7 @@ const styles = StyleSheet.create({
     height: 37,
     borderRadius: 50,
     marginRight: 10,
+    backgroundColor: '#E7E7E7'
   },
   name: {
     fontSize: 15,

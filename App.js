@@ -145,7 +145,7 @@ export default function App() {
             <Stack.Screen name="ParUpdate" component={ParUpdate}/>
             <Stack.Screen name="EditProfile" component={EditProfileWithProps} />
             <Stack.Screen name="PostContent" component={PostContent} />
-            <Stack.Screen name="PostUpdate" component={PostUpdate} />
+            <Stack.Screen name="PostUpdate" component={PostUpdateWithProps} />
           </>
         )}
 

@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import Ionic from 'react-native-vector-icons/Ionicons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import * as ImagePicker from 'expo-image-picker';
-import { addDoc, collection, doc, getFirestore, setDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
 import { firestore } from '../firebase';
 import moment from 'moment';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
@@ -54,9 +54,13 @@ const handlePostSubmit = async () => {
         });
   
         console.log('글이 성공적으로 저장되었습니다.');
+
+        //파이어베이스 postDocRef 가져오기
+        const postDocSnap = await getDoc(postDocRef);
+        const newPost = { ...postDocSnap.data()};
+        
+        navigation.navigate('Post');
     
-      // 예를 들어, 저장된 글 상세 페이지로 이동하기:
-        //navigation.navigate('PostDetail', { postId: newDocRef.id }); // 저장된 글 ID를 넘겨줄 수도 있습니다.
     } catch (error) {
       console.error('글 저장에 실패했습니다.', error);
     }
@@ -159,8 +163,6 @@ const handlePostSubmit = async () => {
                     <Image style={{backgroundColor: '#EFEFEF', width: 50, height: 50, borderRadius: 10}} source={{ uri: image }}/>
                     <TouchableOpacity onPress={handleRemoveImage}>
                         <Ionic name="close-circle-outline" style={styles.closeIcon} />
-                        <Text>dd</Text>
-
                     </TouchableOpacity>
                 </View>
             )
