@@ -7,6 +7,8 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import Home from './screens/Home';
 import Post from './screens/Post';
 import Participant from './screens/Participant';
+import ParContent from './screens/ParContent';
+import ParUpdate from './screens/ParUpdate';
 import Map from './screens/Map';
 import Profile from './screens/Profile';
 import Content from './screens/Content';
@@ -45,11 +47,9 @@ export default function App() {
       
       setIsLoggedIn(!!user); // 사용자가 로그인한 경우에만 isLoggedIn를 true로 설정
       setUser(user)
-
     });
     return unsubscribe;
   }, []);
-
 
   const ProfileWithProps = (props) => {
     return <Profile {...props} user={user}/>;
@@ -108,7 +108,9 @@ export default function App() {
     return (
         <NavigationContainer>
           <Stack.Navigator screenOptions={{headerShown:false}}>
-<<<<<<< HEAD
+
+
+
             {/* 로그인 true 바로 홈화면 로그인 false 면 로그인 화면 */}
             {/* {isSignedIn ? (
                 <>
@@ -121,38 +123,34 @@ export default function App() {
                 </>
               )} */}
       
-=======
-{/*   
->>>>>>> 04681e1 (firebase 로그인, 회원가입, 프로필이미지 업로드)
-              <Stack.Screen name="SignIn" component={SignIn} />
+              {/* <Stack.Screen name="SignIn" component={SignIn} />
               <Stack.Screen name="SignUp" component={SignUp} /> 
               <Stack.Screen name="Main" component={BottomTabScreens} />
               <Stack.Screen name="Content" component={Content} />
-<<<<<<< HEAD
-              <Stack.Screen name="EditProfile" component={EditProfile} />  
-              <Stack.Screen name="PostContent" component={PostContent} /> 
-              <Stack.Screen name="PostUpdate" component={PostUpdate} /> 
-=======
               <Stack.Screen name="EditProfile" component={EditProfile} /> 
               <Stack.Screen name="PostContent" component={PostContent} /> 
-              <Stack.Screen name="PostUpdate" component={PostUpdate} />  */}
+              <Stack.Screen name="PostUpdate" component={PostUpdate} />  */} 
 
 {!isLoggedIn ? ( // 로그인 상태가 아닌 경우에는 로그인 화면을 렌더링
           <>
             <Stack.Screen name="SignIn" component={SignIn} />
             <Stack.Screen name="SignUp" component={SignUpWithProps} />
+
           </>
         ) : (
           <>
             <Stack.Screen name="Main" component={BottomTabScreens} />
             <Stack.Screen name="Content" component={Content} />
+            <Stack.Screen name="ParContent" component={ParContent}/>
+            <Stack.Screen name="ParUpdate" component={ParUpdate}/>
             <Stack.Screen name="EditProfile" component={EditProfileWithProps} />
             <Stack.Screen name="PostContent" component={PostContent} />
-            <Stack.Screen name="PostUpdate" component={PostUpdateWithProps} />
+            <Stack.Screen name="PostUpdate" component={PostUpdate} />
           </>
         )}
->>>>>>> 04681e1 (firebase 로그인, 회원가입, 프로필이미지 업로드)
-              
+
+
+
           </Stack.Navigator>
         </NavigationContainer>
     );

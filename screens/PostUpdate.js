@@ -66,6 +66,7 @@ const handlePostSubmit = async () => {
 
   //image-picker 라이브러리 사용
   const pickImage = async () => {
+
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsEditing: true,
@@ -74,6 +75,7 @@ const handlePostSubmit = async () => {
       });
   
       if (!result.canceled) {
+
         const storage = getStorage();
         const imageRef = ref(storage, `post_uploadImg/${user.uid}_${Date.now()}.jpg`);
 
@@ -95,6 +97,7 @@ const handlePostSubmit = async () => {
         }
       }
     };
+
 
 
   return (
@@ -120,7 +123,9 @@ const handlePostSubmit = async () => {
                 게시판 글쓰기
             </Text>
 
+
             <TouchableOpacity onPress={handlePostSubmit}>
+
                 <Text style={{fontSize: 16}}>
                     등록
                 </Text>
@@ -139,12 +144,14 @@ const handlePostSubmit = async () => {
                         value={content}
                         onChangeText={handleContentChange}
                         multiline
+
                     />
                 </View>
 
             </TouchableWithoutFeedback>
 
         </KeyboardAwareScrollView>
+
 
         <View style={{height: 90, paddingHorizontal: 18}}>
             {image ? (
@@ -153,12 +160,15 @@ const handlePostSubmit = async () => {
                     <TouchableOpacity onPress={handleRemoveImage}>
                         <Ionic name="close-circle-outline" style={styles.closeIcon} />
                         <Text>dd</Text>
+
                     </TouchableOpacity>
                 </View>
             )
             :
+
             (<View style={{height: 50, paddingHorizontal: 20, marginBottom: 8}}></View>)
             }
+
 
 
             {/* 이미지 업로드*/}
@@ -180,10 +190,12 @@ const styles = StyleSheet.create({
         padding: 8,
     },
     closeIcon: {
+
         fontSize: 22,
         position: 'absolute',    
         right: -12,
         top: -10,
         color: '#424242'
+
     },
 })

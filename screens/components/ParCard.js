@@ -4,7 +4,9 @@ import React from 'react'
 
 let dimesion = (Dimensions.get('window').width);
 
-const ImplementCard = ({avatar, name, image, title, location, date}) => {
+
+const ImplementCard = ({avatar, name, image, title, location, where, date, day, time, meterials, situation, content}) => {
+
   return (
     <View style={styles.container}>
         <View style={styles.item}>
@@ -30,7 +32,9 @@ const ImplementCard = ({avatar, name, image, title, location, date}) => {
              <Text style={styles.b}>{date}</Text>   
             </View>
             </View>
-            <Text style={styles.b}>모집중</Text>
+
+            <Text style={styles.b}>{situation}</Text>
+
         </View>
     </View>
   )
