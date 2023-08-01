@@ -59,6 +59,13 @@ export default function App() {
     return <EditProfile {...props} user={user}/>;
   };
 
+  const PostUpdateWithProps = (props) => {
+    return <PostUpdate {...props} user={user}/>;
+  };
+
+  const SignUpWithProps = (props) => {
+    return <SignUp {...props} user={user}/>;
+  };
 
   //하단바 생성
   const BottomTabScreens = () => {
@@ -104,10 +111,31 @@ export default function App() {
 
 
 
+            {/* 로그인 true 바로 홈화면 로그인 false 면 로그인 화면 */}
+            {/* {isSignedIn ? (
+                <>
+                  <Stack.Screen name="Home" component={Home} />
+                </>
+              ) : (
+                <>
+                  <Stack.Screen name="SignIn" component={SignIn} />
+                  <Stack.Screen name="SignUp" component={SignUp} />
+                </>
+              )} */}
+      
+              {/* <Stack.Screen name="SignIn" component={SignIn} />
+              <Stack.Screen name="SignUp" component={SignUp} /> 
+              <Stack.Screen name="Main" component={BottomTabScreens} />
+              <Stack.Screen name="Content" component={Content} />
+              <Stack.Screen name="EditProfile" component={EditProfile} /> 
+              <Stack.Screen name="PostContent" component={PostContent} /> 
+              <Stack.Screen name="PostUpdate" component={PostUpdate} />  */} 
+
 {!isLoggedIn ? ( // 로그인 상태가 아닌 경우에는 로그인 화면을 렌더링
           <>
             <Stack.Screen name="SignIn" component={SignIn} />
-            <Stack.Screen name="SignUp" component={SignUp} />
+            <Stack.Screen name="SignUp" component={SignUpWithProps} />
+
           </>
         ) : (
           <>
@@ -121,7 +149,8 @@ export default function App() {
           </>
         )}
 
-              
+
+
           </Stack.Navigator>
         </NavigationContainer>
     );

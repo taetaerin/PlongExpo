@@ -26,6 +26,8 @@ const EditProfile = ({ navigation, user }) => {
   const [isNicknameChanged, setIsNicknameChanged] = useState(false);
 
 
+  console.log('user 정보', user)
+
   //닉네임 변경
   const changedNickName= (text) => {
     setNickName(text)
@@ -112,6 +114,13 @@ const EditProfile = ({ navigation, user }) => {
         );
 
         console.log('완료')
+
+
+        await updateProfile(user, {
+          photoURL: downloadURL,
+          displayName: nickName,
+        });
+
         navigation.navigate('Profile');
       });
 
