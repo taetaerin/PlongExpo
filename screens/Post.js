@@ -3,8 +3,9 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import React, { useEffect, useState } from 'react';
 import Ionic from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import { collection, getDocs } from 'firebase/firestore';
-import { firestore } from '../firebase';
+import { arrayRemove, arrayUnion, collection, doc, getDoc, getDocs, increment, onSnapshot, updateDoc } from 'firebase/firestore';
+import firebase, { firestore } from '../firebase';
+import { getAuth } from 'firebase/auth';
 
 const hardPosts = [
   {
@@ -40,8 +41,47 @@ const hardPosts = [
 ]
 
 // console.log(posts)
-const PostCard = ({ name, image, date, text, avatar, leaf, comment, id}) => {
-  // item을 사용하는 코드 작성
+const PostCard = ({ name, image, date, text, avatar, leaf, comment, id,uid, likes, likesCount, }) => {
+
+  //이파리 클릭 기능
+  const [liked, setLiked] = useState(false);
+  
+  // 정상
+  const handleLike = async () => {
+    try {
+      // const auth = getAuth();
+      // const currentUserUID = auth.currentUser ? auth.currentUser.uid : null;
+
+      // if (!currentUserUID) {
+      //   console.log("로그인된 사용자가 아닙니다.");
+      //   return;
+      // }
+
+      const postDocRef = doc(firestore, 'posts', id);
+
+      // 좋아요를 토글하기 전에 좋아요 여부를 업데이트합니다.
+      const newLikedStatus = !liked;
+
+      if (newLikedStatus) {
+        // 좋아요: 좋아요 수를 1 증가시키고 Firestore 업데이트
+        const newLikesCount = likesCount + 1;
+        await updateDoc(postDocRef, { likes: newLikesCount });
+      } else {
+        // 좋아요 취소: 좋아요 수를 1 감소시키고 Firestore 업데이트
+        const newLikesCount = likesCount - 1;
+        await updateDoc(postDocRef, { likes: newLikesCount });
+      }
+
+      // 글의 좋아요 상태를 로컬 상태에 업데이트합니다.
+      setLiked(newLikedStatus);
+    } catch (error) {
+      console.error('좋아요 업데이트 중 오류가 발생했습니다:', error);
+    }
+  };
+
+
+  
+
   return (
     
     <View style={{paddingBottom: 10, paddingHorizontal: 18, borderBottomWidth: 0.5, borderBottomColor: '#EAEAEA'}}>
@@ -79,10 +119,17 @@ const PostCard = ({ name, image, date, text, avatar, leaf, comment, id}) => {
 
         {/* 새싹하고 댓글 아이콘 */}
         <View style={{flexDirection: 'row', marginTop: 14}}>
-            <View style={{flexDirection: 'row', alignItems: 'center', marginRight: 10}}>
-                <MaterialCommunityIcons name='seed-outline' size={24} style={{marginRight: 4}} />
-                <Text style={{fontSize: 14}}>{leaf}</Text>
-            </View>
+            <TouchableOpacity onPress={handleLike}>
+              <View style={{flexDirection: 'row', alignItems: 'center', marginRight: 10}}>
+                  {liked ? (
+                    <MaterialCommunityIcons name="seed-outline" size={24} color="green" style={{ marginRight: 4 }} />
+                  ) : (
+                    <MaterialCommunityIcons name="seed-outline" size={24} style={{ marginRight: 4 }} />
+                  )}
+                  <Text style={{fontSize: 14}}>{likesCount}</Text>
+              </View>
+            </TouchableOpacity>
+
 
             <View style={{flexDirection: 'row', alignItems: 'center', marginRight: 10}}>
                 <Ionic name='ios-chatbubble-ellipses-outline' size={23} style={{marginRight: 4}} />
@@ -97,7 +144,7 @@ const Post = ({navigation, route}) => {
   const [posts, setPosts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
-  //post 사용자에게 보여지게
+  //post 사용자에게 보여지게 - 테스트용
   const fetchPosts = async () => {
     try {
       //파이어베이스에 있는 posts 가져오기
@@ -113,17 +160,31 @@ const Post = ({navigation, route}) => {
     }
   };
 
-
-  //사용자가 새로고침
-  const handleRefresh = async () => {
-    setRefreshing(true);
-    await fetchPosts();
-    setRefreshing(false);
-  };
-
   useEffect(() => {
     fetchPosts();
   }, []);
+
+  // 게시판 데이터 가져오기 - 실시간 (이거 사용하기)
+  // const fetchPosts = async () => {
+  //   try {
+  //     const postCollectionRef = collection(firestore, 'posts');
+  //     onSnapshot(postCollectionRef, (querySnapshot) => {
+  //       const fetchedPosts = querySnapshot.docs.map((doc) => ({
+  //         id: doc.id,
+  //         ...doc.data(),
+  //       }));
+  //       fetchedPosts.sort((a, b) => b.dateTime.localeCompare(a.dateTime));
+  //       setPosts(fetchedPosts);
+  //     });
+  //   } catch (error) {
+  //     console.error('Error fetching posts:', error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchPosts();
+  // }, []);
+
 
 
   return (
@@ -158,9 +219,9 @@ const Post = ({navigation, route}) => {
           keyExtractor={(item, index) => {
             return item.id;
           }}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-          }
+          // refreshControl={
+          //   <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          // }
           renderItem={({ item }) => 
             <TouchableOpacity onPress={() => navigation.navigate('PostContent', {item})}>
               <PostCard 
@@ -169,9 +230,15 @@ const Post = ({navigation, route}) => {
                 date={item.dateTime} 
                 text={item.content} 
                 avatar={item.avatar} 
-                leaf={item.leaf} 
+                leaf={item.likes} 
                 comment={item.comment}
-                key={item.id}
+                id={item.id}
+                likesCount={item.likes} 
+                uid={item.uid}
+                likes={item.likes}
+                
+              
+
               />
             </TouchableOpacity>
           }

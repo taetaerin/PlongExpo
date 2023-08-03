@@ -51,6 +51,7 @@ const handlePostSubmit = async () => {
             avatar: user.photoURL,
             imageUrl: image, // 이미지 URL
             dateTime: dateTime, // 생성 시간 (서버 시간 기준)
+            likes : 0,
         });
   
         console.log('글이 성공적으로 저장되었습니다.');
