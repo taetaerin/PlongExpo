@@ -1,4 +1,4 @@
-import { FlatList, SafeAreaView, ScrollView, StyleSheet, Text, View, Image, TouchableOpacity, RefreshControl} from 'react-native';
+import { FlatList, SafeAreaView, ScrollView, StyleSheet, Text, View, Image, TouchableOpacity, RefreshControl, ActionSheetIOS} from 'react-native';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import React, { useEffect, useState } from 'react';
 import Ionic from 'react-native-vector-icons/Ionicons';
@@ -6,6 +6,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { arrayRemove, arrayUnion, collection, doc, getDoc, getDocs, increment, onSnapshot, updateDoc } from 'firebase/firestore';
 import firebase, { firestore } from '../firebase';
 import { getAuth } from 'firebase/auth';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 const hardPosts = [
   {
@@ -79,6 +80,57 @@ const PostCard = ({ name, image, date, text, avatar, leaf, comment, id,uid, like
     }
   };
 
+  const [currentUser, setCurrentUser] = useState(null);
+
+  const auth = getAuth();
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      setCurrentUser(user);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+
+  const isCurrentUserAuthor = currentUser && currentUser.uid === uid;
+
+  const handleAction = () => {
+    if (isCurrentUserAuthor) {
+
+      // 로그인한 사용자가 글 작성자인 경우
+      ActionSheetIOS.showActionSheetWithOptions(
+        {
+          options: ['수정하기', '삭제하기', '취소'],
+          destructiveButtonIndex: 1,
+          cancelButtonIndex: 2,
+        },
+        (buttonIndex) => {
+          if (buttonIndex === 0) {
+            // '수정하기' 선택 시 동작
+            // ...
+          } else if (buttonIndex === 1) {
+            // '삭제하기' 선택 시 동작
+            // ...
+          }
+        }
+      );
+    } else {
+      // 로그인한 사용자가 글 작성자가 아닌 경우
+      ActionSheetIOS.showActionSheetWithOptions(
+        {
+          options: ['신고하기', '취소'],
+          cancelButtonIndex: 1,
+        },
+        (buttonIndex) => {
+          if (buttonIndex === 0) {
+            // '신고하기' 선택 시 동작
+            // ...
+          }
+        }
+      );
+    }
+  };
 
   
 
@@ -104,9 +156,9 @@ const PostCard = ({ name, image, date, text, avatar, leaf, comment, id,uid, like
                     </View>
 
                     {/* more 아이콘 */}
-                    {/* <TouchableOpacity onPress={() => navigation.navigate('')}> */}
+                    <TouchableOpacity onPress={handleAction}>
                       <Ionic name='md-ellipsis-horizontal' size={17} color='#424242' />
-                    {/* </TouchableOpacity> */}
+                    </TouchableOpacity>
                 </View>
             </View>
         </View>
