@@ -1,9 +1,9 @@
-import { FlatList, SafeAreaView, ScrollView, StyleSheet, Text, View, Image, TouchableOpacity, RefreshControl, ActionSheetIOS} from 'react-native';
+import { FlatList, SafeAreaView, ScrollView, StyleSheet, Text, View, Image, TouchableOpacity, RefreshControl, ActionSheetIOS, Alert} from 'react-native';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import React, { useEffect, useState } from 'react';
 import Ionic from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import { arrayRemove, arrayUnion, collection, doc, getDoc, getDocs, increment, onSnapshot, updateDoc } from 'firebase/firestore';
+import { arrayRemove, arrayUnion, collection, deleteDoc, doc, getDoc, getDocs, increment, onSnapshot, updateDoc } from 'firebase/firestore';
 import firebase, { firestore } from '../firebase';
 import { getAuth } from 'firebase/auth';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
@@ -41,26 +41,34 @@ const hardPosts = [
   },
 ]
 
-// console.log(posts)
+
 const PostCard = ({ name, image, date, text, avatar, leaf, comment, id,uid, likes, likesCount, }) => {
 
   //이파리 클릭 기능
   const [liked, setLiked] = useState(false);
+
+  //게시물 삭제하기
+  const handleDelete = async () => {
+    try {
+      // 게시물을 삭제하기 위해 게시물 문서의 레퍼런스를 가져오기
+      const postDocRef = doc(firestore, 'posts', id);
   
-  // 정상
+      // 게시물 문서를 삭제
+      await deleteDoc(postDocRef);
+  
+      // 게시물 삭제 후, 화면을 새로고침 -> 나중에 삭제해주기
+      fetchPosts();
+    } catch (error) {
+      console.error('게시물 삭제 중 오류가 발생했습니다:', error);
+    }
+  };
+  
+  // 이파리(좋아요) 기능
   const handleLike = async () => {
     try {
-      // const auth = getAuth();
-      // const currentUserUID = auth.currentUser ? auth.currentUser.uid : null;
-
-      // if (!currentUserUID) {
-      //   console.log("로그인된 사용자가 아닙니다.");
-      //   return;
-      // }
-
       const postDocRef = doc(firestore, 'posts', id);
 
-      // 좋아요를 토글하기 전에 좋아요 여부를 업데이트합니다.
+      // 좋아요를 토글하기 전에 좋아요 여부를 업데이트
       const newLikedStatus = !liked;
 
       if (newLikedStatus) {
@@ -73,7 +81,7 @@ const PostCard = ({ name, image, date, text, avatar, leaf, comment, id,uid, like
         await updateDoc(postDocRef, { likes: newLikesCount });
       }
 
-      // 글의 좋아요 상태를 로컬 상태에 업데이트합니다.
+      // 글의 좋아요 상태를 로컬 상태에 업데이트
       setLiked(newLikedStatus);
     } catch (error) {
       console.error('좋아요 업데이트 중 오류가 발생했습니다:', error);
@@ -95,9 +103,9 @@ const PostCard = ({ name, image, date, text, avatar, leaf, comment, id,uid, like
 
   const isCurrentUserAuthor = currentUser && currentUser.uid === uid;
 
-  const handleAction = () => {
+  //더보기 아이콘 눌렀을때
+  const handleAction = async () => {
     if (isCurrentUserAuthor) {
-
       // 로그인한 사용자가 글 작성자인 경우
       ActionSheetIOS.showActionSheetWithOptions(
         {
@@ -105,13 +113,13 @@ const PostCard = ({ name, image, date, text, avatar, leaf, comment, id,uid, like
           destructiveButtonIndex: 1,
           cancelButtonIndex: 2,
         },
-        (buttonIndex) => {
+        async (buttonIndex) => {
           if (buttonIndex === 0) {
             // '수정하기' 선택 시 동작
             // ...
           } else if (buttonIndex === 1) {
             // '삭제하기' 선택 시 동작
-            // ...
+            await handleDelete();
           }
         }
       );
@@ -125,15 +133,13 @@ const PostCard = ({ name, image, date, text, avatar, leaf, comment, id,uid, like
         (buttonIndex) => {
           if (buttonIndex === 0) {
             // '신고하기' 선택 시 동작
-            // ...
+            Alert.alert('해당 게시물이 신고되었습니다')
           }
         }
       );
     }
   };
-
   
-
   return (
     
     <View style={{paddingBottom: 10, paddingHorizontal: 18, borderBottomWidth: 0.5, borderBottomColor: '#EAEAEA'}}>
@@ -216,7 +222,7 @@ const Post = ({navigation, route}) => {
     fetchPosts();
   }, []);
 
-  // 게시판 데이터 가져오기 - 실시간 (이거 사용하기)
+  // 게시판 데이터 가져오기 - 실시간 (이거 사용하기) 절대 지우지 마셈!!!!!1
   // const fetchPosts = async () => {
   //   try {
   //     const postCollectionRef = collection(firestore, 'posts');
@@ -236,7 +242,6 @@ const Post = ({navigation, route}) => {
   // useEffect(() => {
   //   fetchPosts();
   // }, []);
-
 
 
   return (
