@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, Pressable, TextInput, Button } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Image, Pressable, TextInput, Button, Platform, ScrollView } from 'react-native';
 import React, {useState} from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionic from 'react-native-vector-icons/Ionicons';
@@ -6,33 +6,36 @@ import Participant from './Participant';
 import * as ImagePicker from 'expo-image-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import DateTimePicker from 'react-native-modal-datetime-picker';
+import { locale } from 'moment';
 
-// Date.prototype.format = function(f) {
-//   if (!this.valueOf()) return " ";
 
-//   var weekName = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
-//   var d = this;
+Date.prototype.format = function(f) {
+  if (!this.valueOf()) return " ";
+
+  var weekName = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
+  var d = this;
    
-//   return f.replace(/(yyyy|yy|MM|dd|E|hh|mm|ss|a\/p)/gi, function($1) {
-//       switch ($1) {
-//           case "yyyy": return d.getFullYear();
-//           case "yy": return (d.getFullYear() % 1000).zf(2);
-//           case "MM": return (d.getMonth() + 1).zf(2);
-//           case "dd": return d.getDate().zf(2);
-//           case "E": return weekName[d.getDay()];
-//           case "HH": return d.getHours().zf(2);
-//           case "hh": return ((h = d.getHours() % 12) ? h : 12).zf(2);
-//           case "mm": return d.getMinutes().zf(2);
-//           case "ss": return d.getSeconds().zf(2);
-//           case "a/p": return d.getHours() < 12 ? "오전" : "오후";
-//           default: return $1;
-//       }
-//   });
-// };
+  return f.replace(/(yyyy|yy|MM|dd|E|hh|mm|ss|a\/p)/gi, function($1) {
+      switch ($1) {
+          case "yyyy": return d.getFullYear();
+          case "yy": return (d.getFullYear() % 1000).zf(2);
+          case "MM": return (d.getMonth() + 1).zf(2);
+          case "dd": return d.getDate().zf(2);
+          case "E": return weekName[d.getDay()];
+          case "HH": return d.getHours().zf(2);
+          case "hh": return ((h = d.getHours() % 12) ? h : 12).zf(2);
+          case "mm": return d.getMinutes().zf(2);
+          case "ss": return d.getSeconds().zf(2);
+          case "a/p": return d.getHours() < 12 ? "오전" : "오후";
+          default: return $1;
+      }
+  });
+};
 
-// String.prototype.string = function(len){var s = '', i = 0; while (i++ < len) { s += this; } return s;};
-// String.prototype.zf = function(len){return "0".string(len - this.length) + this;};
-// Number.prototype.zf = function(len){return this.toString().zf(len);};
+String.prototype.string = function(len){var s = '', i = 0; while (i++ < len) { s += this; } return s;};
+String.prototype.zf = function(len){return "0".string(len - this.length) + this;};
+Number.prototype.zf = function(len){return this.toString().zf(len);};
 
 const ParUpdate = ({route, navigation}) => {
     //사진 선택
@@ -44,24 +47,7 @@ const ParUpdate = ({route, navigation}) => {
   };
   const [text, value, onChangeText] = React.useState("");
 
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-
-  const showDatePicker = () => {
-      setDatePickerVisibility(true);
-  };
-
-  const hideDatePicker = () => {
-      setDatePickerVisibility(false);
-  };
-
-  const handleConfirm = (date) => {
-    console.warn("dateFormat: ", date.format("yyyy-MM-dd"));
-    hideDatePicker();
-    onChangeText(date.format("yyyy-MM-dd"))
-  };
-
-  const placeholder = "YYYY - MM - DD";
-
+ 
 
   const pickImage = async () => {
       // No permissions request is necessary for launching the image library
@@ -77,8 +63,29 @@ const ParUpdate = ({route, navigation}) => {
       }
     };
 
+
+    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+
+    const showDatePicker = () => {
+        setDatePickerVisibility(true);
+    };
+
+    const hideDatePicker = () => {
+        setDatePickerVisibility(false);
+    };
+
+    const handleConfirm = (date) => {
+        console.warn("dateFormat: ", date.format("yyyy-MM-dd"));
+        hideDatePicker();
+        onChangeText(date.format("yyyy-MM-dd"))
+    };
+
+    const placeholder = "YYYY - MM - DD";
+    
+
   return (
     <SafeAreaView style={{backgroundColor: 'white', flex: 1}} >
+      <ScrollView>
         <View >
             {/* 상단바 */}
             <View 
@@ -134,27 +141,83 @@ const ParUpdate = ({route, navigation}) => {
                   
                   <View>
                   <TouchableOpacity onPress={showDatePicker}>
-      <TextInput
-        pointerEvents="none"
-        style={styles.input}
-        placeholder={placeholder}
-        placeholderTextColor="#C3C3C3"
-        underlineColorAndroid="transparent"
-        editable={false}
-        value={text}
-      />
-      <DateTimePickerModal
-        headerTextIOS={placeholder}
-        isVisible={isDatePickerVisible}
-        mode="date"
-        onConfirm={handleConfirm}
-        onCancel={hideDatePicker}
-      />
-  </TouchableOpacity>	
+    
+                <TextInput 
+                  pointerEvents="none"
+                  style={styles.input}
+                  placeholder="YYYY - MM - DD"
+                  placeholderTextColor="#C3C3C3"
+                  underlineColorAndroid="transparent"
+                  editable={false}
+                  value={text}
+                  ></TextInput>
+                  
+                <DateTimePickerModal
+                  headerTextIOS={placeholder}
+                  isVisible={isDatePickerVisible}
+                  mode="date"
+                  onConfirm={handleConfirm}
+                  onCancel={hideDatePicker}>
+                </DateTimePickerModal>
+              </TouchableOpacity>	
                         </View>
-                                  </View>
+                        </View>
+                        <View style={{flexDirection: 'row'}}>
+                          <View style={{marginLeft: 30}}>
+                  <TextInput 
+                      pointerEvents="none"
+                      style={styles.time}
+                      placeholder="00시"
+                      placeholderTextColor="#C3C3C3"
+                      underlineColorAndroid="transparent"
+                      editable={false}
+                      value={text}
+                      />
+                      </View>
+                      <TextInput 
+                      pointerEvents="none"
+                      style={styles.time}
+                      placeholder="00분"
+                      placeholderTextColor="#C3C3C3"
+                      underlineColorAndroid="transparent"
+                      editable={false}
+                      value={text}
+                      />
+                      </View>
+                      
+                  <View style={{flexDirection: 'row', marginTop: 10}}>
+                  <Ionic name='location-outline' size={28} color='#424242'></Ionic>          
+                        <TextInput
+                        style={styles.input}
+                        onChangeText={onChangeText}
+                        value={text}
+                        placeholder="장소를 입력하세요."
+                        placeholderTextColor={'#7F7F7F'}
+                        >
+                      </TextInput>
+                      
+                      </View>
+                      <TextInput
+                        style={styles.others}
+                        onChangeText={onChangeText}
+                        value={text}
+                        placeholder="기타를 입력하세요."
+                        placeholderTextColor={'#7F7F7F'}
+                        >
+                      </TextInput>
+                      <View style={styles.line}></View>
+                      <Text style={styles.openchat}>오픈채팅 주소 입력</Text>
+                      <TextInput
+                        style={styles.chat}
+                        onChangeText={onChangeText}
+                        value={text}
+                        placeholderTextColor={'#7F7F7F'}
+                        >
+                      </TextInput>
+
                                 </View>
                                 </View>
+                                </ScrollView>
                                 </SafeAreaView>
                   )
                 }
@@ -182,7 +245,7 @@ const styles = StyleSheet.create({
     },
     line: {
       borderBottomColor: '#CBCBCB',
-      marginTop: 150,
+      marginTop: 100,
       borderBottomWidth: 0.8,
       width: '100%'
     },
@@ -200,8 +263,44 @@ const styles = StyleSheet.create({
       padding: 10,
       borderColor: '#C3C3C3',
       borderRadius: 5
-      
+    },
+    time: {
+      marginLeft: 10,
+      height: 40,
+      width: 82,
+      borderWidth: 1,
+      padding: 10,
+      borderColor: '#C3C3C3',
+      borderRadius: 5,
+      marginTop: 10
+    },
+
+    others: {
+      marginLeft: 38,
+      height: 40,
+      width: 310,
+      borderWidth: 1,
+      padding: 10,
+      borderColor: '#C3C3C3',
+      borderRadius: 5,
+      marginTop: 10
+    },
+    chat: {
+      height: 40,
+      width: '100%',
+      borderWidth: 1,
+      padding: 10,
+      borderColor: '#C3C3C3',
+      borderRadius: 5,
+      marginTop: 10
+    },
+    openchat: {
+      color: '#424242',
+      fontWeight: 'bold',
+      fontSize: 16,
+      marginTop: 10
     }
+
     
 })
 
