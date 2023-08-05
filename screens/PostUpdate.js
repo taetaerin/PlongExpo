@@ -10,22 +10,21 @@ import moment from 'moment';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 
 const PostUpdate = ({navigation, user}) => {
-
+    
 //내용 작성
 const [content, setContent] = useState('');
-
 
 //사진 선택
 const [image, setImage] = useState(null);
 
 //X버튼 누를 시 이미지 삭제
 const handleRemoveImage = () => {
-setImage(null);
+    setImage(null);
 };
 
 
 const handleContentChange = (text) => {
-setContent(text);
+    setContent(text);
 };
 
   

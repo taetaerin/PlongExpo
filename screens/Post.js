@@ -7,6 +7,7 @@ import { arrayRemove, arrayUnion, collection, deleteDoc, doc, getDoc, getDocs, i
 import firebase, { firestore } from '../firebase';
 import { getAuth } from 'firebase/auth';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import { useNavigation } from '@react-navigation/native';
 
 const hardPosts = [
   {
@@ -43,6 +44,13 @@ const hardPosts = [
 
 
 const PostCard = ({ name, image, date, text, avatar, leaf, comment, id,uid, likes, likesCount, }) => {
+
+  const navigation = useNavigation();
+
+  const handleEdit = async () => {
+    //PostEdit로 postId 보내주기
+    navigation.navigate('PostEdit', { postId: id });
+  };
 
   //이파리 클릭 기능
   const [liked, setLiked] = useState(false);
@@ -116,7 +124,7 @@ const PostCard = ({ name, image, date, text, avatar, leaf, comment, id,uid, like
         async (buttonIndex) => {
           if (buttonIndex === 0) {
             // '수정하기' 선택 시 동작
-            // ...
+            await handleEdit();
           } else if (buttonIndex === 1) {
             // '삭제하기' 선택 시 동작
             await handleDelete();
@@ -276,9 +284,9 @@ const Post = ({navigation, route}) => {
           keyExtractor={(item, index) => {
             return item.id;
           }}
-          // refreshControl={
-          //   <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-          // }
+          refreshControl={
+            <RefreshControl refreshing={refreshing} />
+          }
           renderItem={({ item }) => 
             <TouchableOpacity onPress={() => navigation.navigate('PostContent', {item})}>
               <PostCard 
@@ -293,9 +301,6 @@ const Post = ({navigation, route}) => {
                 likesCount={item.likes} 
                 uid={item.uid}
                 likes={item.likes}
-                
-              
-
               />
             </TouchableOpacity>
           }
