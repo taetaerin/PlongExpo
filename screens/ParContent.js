@@ -1,11 +1,13 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, Pressable } from 'react-native';
-import React from 'react';
+import { StyleSheet, Text, TouchableOpacity, View, Image, Pressable, Alert } from 'react-native';
+import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionic from 'react-native-vector-icons/Ionicons';
 import Participant from './Participant';
 
 const ParContent = ({route, navigation}) => {
     const {data} = route.params;
+    const [isParticipation, setIsParticipation] = useState(false);
+    const [parComplete, setParComplete] = useState(false);
 
   return (
     <SafeAreaView style={{backgroundColor: 'white', flex: 1}} >
@@ -16,11 +18,15 @@ const ParContent = ({route, navigation}) => {
                 width: '100%', 
                 backgroundColor: 'white', 
                 height: 44, 
+                alignItems: 'center',
                 paddingHorizontal: 18,
                 flexDirection: 'row',
-                justifyContent:'flex-end',
-                top: 10}}
+                justifyContent:'space-between',
+                }}
                 >
+                    <TouchableOpacity>
+                      <Ionic name="chevron-back-sharp" style={{fontSize:24}} onPress={() => navigation.goBack()} />
+                  </TouchableOpacity>
                     <TouchableOpacity>
                     <Ionic name= "md-ellipsis-horizontal" size={17} color='#424242' />
                     </TouchableOpacity>
@@ -63,12 +69,24 @@ const ParContent = ({route, navigation}) => {
                 <View style={{marginTop: 40}}>
                     <Text style={styles.content}>{data.content}</Text>
                 </View>
-                <Pressable style={styles.button} onPress={() => {
-                    console.log('참여가 완료되었습니다.');
+                <View style={{marginBottom: 165}}></View>
+                {/* 참여하기버튼 */}
+                {!isParticipation ? (
+                <Pressable disabled={parComplete} style={[styles.button,{ backgroundColor: '#0BE060'}]} 
+                onPress={() => {
+                    setParComplete(true)
+                    Alert.alert('참여가 완료되었습니다.');
                 }}>
                     <Text style={{color: 'white', fontSize: 20, fontWeight: 600, marginBottom: 10}}>참여하기</Text>
                 </Pressable>
-
+                ):(
+                    <Pressable disabled={parComplete} style={[styles.btn, { backgroundColor: '#CBCBCB' }]} 
+                    onPress={() => {
+                        setParComplete(true)
+                    }}>
+                        <Text style={{color: 'white', fontSize: 20, fontWeight: 600, marginBottom: 10}}>참여하기</Text> 
+                    </Pressable>
+                )}
 
                
             </View>
@@ -133,13 +151,23 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: 0,
         right: 0,
-        marginTop: 455,
+        bottom: 0,
         height: 60,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor:'#0BE060',
-
+    },
+    btn: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: 0,
+        height: 60,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#CBCBCB' ,
     }
+
     
 
 
