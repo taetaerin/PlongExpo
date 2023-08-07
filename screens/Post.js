@@ -65,7 +65,7 @@ const PostCard = ({ name, image, date, text, avatar, leaf, comment, id,uid, like
       await deleteDoc(postDocRef);
   
       // 게시물 삭제 후, 화면을 새로고침 -> 나중에 삭제해주기
-      fetchPosts();
+      // fetchPosts();
     } catch (error) {
       console.error('게시물 삭제 중 오류가 발생했습니다:', error);
     }

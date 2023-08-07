@@ -25,6 +25,8 @@ import { useEffect, useState } from 'react';
 
 import { LogBox } from 'react-native';
 import PostEdit from './screens/PostEdit';
+import CommentContainer from './screens/CommentContainer';
+import CommentInput from './screens/CommentInput';
 
 LogBox.ignoreLogs(['Possible Unhandled Promise Rejection']);
 
@@ -66,6 +68,14 @@ export default function App() {
 
   const SignUpWithProps = (props) => {
     return <SignUp {...props} user={user}/>;
+  };
+
+  const CommentContainerWithProps = (props) => {
+    return <CommentContainer {...props} user={user} />;
+  };
+
+  const CommentInputWithProps = (props) => {
+    return <CommentInput {...props} user={user} />;
   };
 
   //하단바 생성
@@ -125,6 +135,9 @@ export default function App() {
             <Stack.Screen name="PostContent" component={PostContent} />
             <Stack.Screen name="PostUpdate" component={PostUpdateWithProps} />
             <Stack.Screen name="PostEdit" component={PostEdit} />
+            <Stack.Screen name="CommentContainer" component={CommentContainerWithProps} />
+            <Stack.Screen name="CommentInput" component={CommentInputWithProps} />
+            
           </>
         )}
 
