@@ -35,6 +35,7 @@ const CommentInput = ({postId}) => {
         timestamp: dateTime,
         nickName: user.displayName,
         avatar: user.photoURL,
+        uid: user.uid
       });
 
       // Clear the comment input after adding the comment

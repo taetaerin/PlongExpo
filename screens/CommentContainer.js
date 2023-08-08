@@ -1,28 +1,81 @@
-import { collection, getDocs, onSnapshot, orderBy, query, where } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDocs, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { ActionSheetIOS, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Ionic from 'react-native-vector-icons/Ionicons';
 import { firestore } from '../firebase';
 import { getAuth } from 'firebase/auth';
 
-const person = [
-    {
-      name: '주으닝',
-      avatar: require('../assets/images/avatar.jpeg'),
-      text: '수고하셨어요!!',
-      date: '1분전',
-    },
-    {
-      name: '태링',
-      avatar: require('../assets/images/avatar.jpeg'),
-      text: '플로깅 재밌네요 다음에 같이 또 해요~!!',
-      date: '2023.05.07',
-    }
-  ]
 
 
-  const CommentContainer = ({postId}) => {
+  const CommentContainer = ({postId, uid}) => {
     const [comments, setComments] = useState([]);
+    const [currentUser, setCurrentUser] = useState(null);
+
+    const auth = getAuth();
+
+    useEffect(() => {
+      const unsubscribe = auth.onAuthStateChanged((user) => {
+        setCurrentUser(user);
+      });
+
+      return () => unsubscribe();
+    }, []);
+
+
+    const isCurrentUserAuthor = currentUser && currentUser.uid === uid;
+
+    const handleAction = async (commentId) => {
+      console.log('a', commentId)
+      if (isCurrentUserAuthor) {
+        // 로그인한 사용자가 글 작성자인 경우
+        ActionSheetIOS.showActionSheetWithOptions(
+          {
+            options: ['수정하기', '삭제하기', '취소'],
+            destructiveButtonIndex: 1,
+            cancelButtonIndex: 2,
+          },
+          async (buttonIndex) => {
+            if (buttonIndex === 0) {
+              // '수정하기' 선택 시 동작
+              await handleEdit();
+            } else if (buttonIndex === 1) {
+              // '삭제하기' 선택 시 동작
+              await handleDelete(commentId);
+            }
+          }
+        );
+      } else {
+        // 로그인한 사용자가 글 작성자가 아닌 경우
+        ActionSheetIOS.showActionSheetWithOptions(
+          {
+            options: ['신고하기', '취소'],
+            cancelButtonIndex: 1,
+          },
+          (buttonIndex) => {
+            if (buttonIndex === 0) {
+              // '신고하기' 선택 시 동작
+              Alert.alert('해당 게시물이 신고되었습니다')
+            }
+          }
+        );
+      }
+    };
+
+    //댓글 삭제하기
+    const handleDelete = async (commentId) => {
+      try {
+        // 게시물을 삭제하기 위해 게시물 문서의 레퍼런스를 가져오기
+        const commentsDocRef = doc(firestore, 'comments', commentId);
+    
+        // 게시물 문서를 삭제
+        await deleteDoc(commentsDocRef);
+    
+        // 게시물 삭제 후, 화면을 새로고침 -> 나중에 삭제해주기
+        // fetchPosts();
+      } catch (error) {
+        console.error('댓글 삭제 중 오류가 발생했습니다:', error);
+      }
+    };
 
 
     useEffect(() => {
@@ -32,7 +85,13 @@ const person = [
             const commentsRef = collection(firestore, 'comments');
             const q = query(commentsRef, where('postId', '==', postId), orderBy('timestamp', 'asc'));
             const querySnapshot = await getDocs(q);
-            const fetchedComments = querySnapshot.docs.map((doc) => doc.data());
+            const fetchedComments = querySnapshot.docs.map((doc) => {
+              const commentData = doc.data();
+              return {
+                ...commentData,
+                id: doc.id, // 추가: 댓글의 id 값을 포함시킴
+              };
+            });
             setComments(fetchedComments);
           } catch (error) {
             console.error('Error fetching comments:', error);
@@ -48,6 +107,8 @@ const person = [
     
         return () => unsubscribe();
       }, [postId]);
+
+    
 
     return(
       <View>
@@ -73,7 +134,10 @@ const person = [
                               <View style={{flexDirection: 'row', justifyContent:'center', alignItems:'center'}}>
                                   <Text style={{fontSize: 12, color: '#8E8E8E',marginRight: 10}}>{data.timestamp}</Text>
                                   {/* more 아이콘 */}
-                                  <Ionic name='md-ellipsis-horizontal' size={17} color='#424242' />
+                                  <TouchableOpacity onPress={() => handleAction(data.id)}>
+                                    <Ionic name='md-ellipsis-horizontal' size={17} color='#424242' />
+                                  </TouchableOpacity>
+                                    
                               </View>
                           </View>
                         <Text style={{marginTop: 8, fontSize: 14}}>{data.text}</Text>

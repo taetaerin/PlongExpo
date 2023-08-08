@@ -73,7 +73,7 @@ const PostContent = ({navigation, route}) => {
           </View>
           
           {/* 댓글 컨테이너 */}
-          <CommentContainer postId={item.id} />
+          <CommentContainer postId={item.id} uid={item.uid} />
           
       </View>
       </TouchableWithoutFeedback>
