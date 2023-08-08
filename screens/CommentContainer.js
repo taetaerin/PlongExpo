@@ -1,6 +1,6 @@
 import { collection, deleteDoc, doc, getDocs, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
-import { ActionSheetIOS, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActionSheetIOS, Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Ionic from 'react-native-vector-icons/Ionicons';
 import { firestore } from '../firebase';
 import { getAuth } from 'firebase/auth';
@@ -22,10 +22,9 @@ import { getAuth } from 'firebase/auth';
     }, []);
 
 
-    const isCurrentUserAuthor = currentUser && currentUser.uid === uid;
+    const handleAction = async (commentId, commentUid) => {
+      const isCurrentUserAuthor = currentUser && currentUser.uid === commentUid;
 
-    const handleAction = async (commentId) => {
-      console.log('a', commentId)
       if (isCurrentUserAuthor) {
         // 로그인한 사용자가 글 작성자인 경우
         ActionSheetIOS.showActionSheetWithOptions(
@@ -134,7 +133,7 @@ import { getAuth } from 'firebase/auth';
                               <View style={{flexDirection: 'row', justifyContent:'center', alignItems:'center'}}>
                                   <Text style={{fontSize: 12, color: '#8E8E8E',marginRight: 10}}>{data.timestamp}</Text>
                                   {/* more 아이콘 */}
-                                  <TouchableOpacity onPress={() => handleAction(data.id)}>
+                                  <TouchableOpacity onPress={() => handleAction(data.id, data.uid)}>
                                     <Ionic name='md-ellipsis-horizontal' size={17} color='#424242' />
                                   </TouchableOpacity>
                                     
