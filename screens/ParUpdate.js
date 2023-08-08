@@ -1,41 +1,14 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image, Pressable, TextInput, Button, Platform, ScrollView } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionic from 'react-native-vector-icons/Ionicons';
 import Participant from './Participant';
 import * as ImagePicker from 'expo-image-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import DateTimePicker from 'react-native-modal-datetime-picker';
-import { locale } from 'moment';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { PreventRemoveContext } from '@react-navigation/native';
 
-
-Date.prototype.format = function(f) {
-  if (!this.valueOf()) return " ";
-
-  var weekName = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
-  var d = this;
-   
-  return f.replace(/(yyyy|yy|MM|dd|E|hh|mm|ss|a\/p)/gi, function($1) {
-      switch ($1) {
-          case "yyyy": return d.getFullYear();
-          case "yy": return (d.getFullYear() % 1000).zf(2);
-          case "MM": return (d.getMonth() + 1).zf(2);
-          case "dd": return d.getDate().zf(2);
-          case "E": return weekName[d.getDay()];
-          case "HH": return d.getHours().zf(2);
-          case "hh": return ((h = d.getHours() % 12) ? h : 12).zf(2);
-          case "mm": return d.getMinutes().zf(2);
-          case "ss": return d.getSeconds().zf(2);
-          case "a/p": return d.getHours() < 12 ? "오전" : "오후";
-          default: return $1;
-      }
-  });
-};
-
-String.prototype.string = function(len){var s = '', i = 0; while (i++ < len) { s += this; } return s;};
-String.prototype.zf = function(len){return "0".string(len - this.length) + this;};
-Number.prototype.zf = function(len){return this.toString().zf(len);};
 
 const ParUpdate = ({route, navigation}) => {
     //사진 선택
@@ -63,25 +36,42 @@ const ParUpdate = ({route, navigation}) => {
       }
     };
 
-
-    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-
-    const showDatePicker = () => {
-        setDatePickerVisibility(true);
-    };
-
-    const hideDatePicker = () => {
-        setDatePickerVisibility(false);
-    };
-
-    const handleConfirm = (date) => {
-        console.warn("dateFormat: ", date.format("yyyy-MM-dd"));
-        hideDatePicker();
-        onChangeText(date.format("yyyy-MM-dd"))
-    };
-
-    const placeholder = "YYYY - MM - DD";
+    //날짜선택
+    const [dateOfPlong, setDateOfPlong] = useState("");
+    const [timeOfPlong, setTimeOfPlong] = useState("")
     
+    const [date, setDate] = useState(new Date());
+    const [showPicker, setShowPicker] = useState(false);
+    const toggleDatepicker = () => {
+      setShowPicker(!showPicker);
+    };
+    const onChange = ({type}, selectedDate) => {
+      if (type == "set"){
+        const currentDate = selectedDate
+        setDate(currentDate);
+        if (Platform.OS ===" android"){
+          toggleDatepicker();
+          setDateOfPlong(formatDate(currentDate));
+        }
+      } else {
+        toggleDatepicker();
+      }
+    };
+
+    const confirmIOSDate = () => {
+      setDateOfPlong(formatDate(date));
+      toggleDatepicker();
+    };
+
+    const formatDate = (rawDate) => {
+      let date = new Date(rawDate);
+
+      let year = date.getFullYear();
+      let month = date.getMonth() +1;
+      let day = date.getDate();
+
+      return `${year}-${month}-${day}`;
+    }
 
   return (
     <SafeAreaView style={{backgroundColor: 'white', flex: 1}} >
@@ -139,40 +129,87 @@ const ParUpdate = ({route, navigation}) => {
                   <Ionic name='calendar-outline' size={28} color='#424242'></Ionic>
                   
                   
+            
                   <View>
-                  <TouchableOpacity onPress={showDatePicker}>
-    
-                <TextInput 
-                  pointerEvents="none"
-                  style={styles.input}
-                  placeholder="YYYY - MM - DD"
-                  placeholderTextColor="#C3C3C3"
-                  underlineColorAndroid="transparent"
-                  editable={false}
-                  value={text}
-                  ></TextInput>
                   
-                <DateTimePickerModal
-                  headerTextIOS={placeholder}
-                  isVisible={isDatePickerVisible}
-                  mode="date"
-                  onConfirm={handleConfirm}
-                  onCancel={hideDatePicker}>
-                </DateTimePickerModal>
-              </TouchableOpacity>	
+                      {showPicker && ( 
+                      <DateTimePicker
+                          mode="date"
+                          display="spinner"
+                          value={date}
+                          onChange={onChange}
+                          style={styles.datePicker}
+                        />
+                        )}
+                        {showPicker && Platform.OS === "ios" &&(
+                        <View style={{ justifyContent:'space-around',
+                    flexDirection: 'row'}}
+                     
+                        >
+                          <TouchableOpacity style={[
+                            styles.button,
+                            styles.pickerButtton,
+                            {backgroundColor: "#F0F0F0"}
+                          ]}
+                          onPress={toggleDatepicker}>
+                            <Text
+                            style={[
+                              styles.buttonText,
+                              {color: '#3C80E1'}
+                            ]}>취소</Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity style={[
+                            styles.button,
+                            styles.pickerButtton,
+                            {backgroundColor: "#F0F0F0"}
+                          ]}
+                          onPress={confirmIOSDate}>
+                            <Text
+                            style={[
+                              styles.buttonText,
+                              {color: '#3C80E1'}
+                            ]}>확인</Text>
+                          </TouchableOpacity>
                         </View>
-                        </View>
+                        )}
+                        {!showPicker && ( 
+                        <Pressable
+                          onPress={toggleDatepicker}>
+                        <TextInput
+                           style={styles.input}
+                           placeholder="YYYY - MM - DD"
+                           placeholderTextColor="#C3C3C3"                        
+                           editable={false}
+                           value={dateOfPlong}
+                           onChangeText={setDateOfPlong}
+                           onPressIn={toggleDatepicker}
+                           >
+                        </TextInput>
+                        </Pressable>
+                        )}
+                                         
+                                            
+                 </View>
+
+                       </View>
                         <View style={{flexDirection: 'row'}}>
                           <View style={{marginLeft: 30}}>
+                          {/* <DateTimePicker
+                          mode="time"
+                          display="spinner"
+                          value={date}
+                          onChange={onChange}
+                          style={styles.datePicker}
+                        /> */}
+                            <Pressable>
                   <TextInput 
-                      pointerEvents="none"
                       style={styles.time}
                       placeholder="00시"
                       placeholderTextColor="#C3C3C3"
-                      underlineColorAndroid="transparent"
                       editable={false}
                       value={text}
                       />
+                      </Pressable>
                       </View>
                       <TextInput 
                       pointerEvents="none"
@@ -299,7 +336,28 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       fontSize: 16,
       marginTop: 10
+    },
+    datePicker: {
+      height: 120,
+      marginTop: -10
+    },
+    button: {
+      height: 30,
+      justifyContent: "center",
+      alignItems: "center",
+      borderRadius: 50,
+      marginBottom: 10
+    },
+    buttonText: {
+      fontSize: 14,
+      fontWeight: "500",
+
+    },
+    pickerButtton: {
+      paddingHorizontal: 20,
+      
     }
+
 
     
 })
