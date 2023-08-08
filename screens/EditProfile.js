@@ -4,7 +4,7 @@ import Ionic from 'react-native-vector-icons/Ionicons';
 import * as ImagePicker from 'expo-image-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
-import { getAuth } from 'firebase/auth';
+import { getAuth, updateProfile } from 'firebase/auth';
 import { getStorage, ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import { collection, doc,  getDocs, getFirestore, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 

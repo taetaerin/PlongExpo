@@ -24,6 +24,9 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useEffect, useState } from 'react';
 
 import { LogBox } from 'react-native';
+import PostEdit from './screens/PostEdit';
+import CommentContainer from './screens/CommentContainer';
+import CommentInput from './screens/CommentInput';
 
 LogBox.ignoreLogs(['Possible Unhandled Promise Rejection']);
 
@@ -65,6 +68,14 @@ export default function App() {
 
   const SignUpWithProps = (props) => {
     return <SignUp {...props} user={user}/>;
+  };
+
+  const CommentContainerWithProps = (props) => {
+    return <CommentContainer {...props} user={user} />;
+  };
+
+  const CommentInputWithProps = (props) => {
+    return <CommentInput {...props} user={user} />;
   };
 
   //하단바 생성
@@ -109,33 +120,10 @@ export default function App() {
         <NavigationContainer>
           <Stack.Navigator screenOptions={{headerShown:false}}>
 
-
-
-            {/* 로그인 true 바로 홈화면 로그인 false 면 로그인 화면 */}
-            {/* {isSignedIn ? (
-                <>
-                  <Stack.Screen name="Home" component={Home} />
-                </>
-              ) : (
-                <>
-                  <Stack.Screen name="SignIn" component={SignIn} />
-                  <Stack.Screen name="SignUp" component={SignUp} />
-                </>
-              )} */}
-      
-              {/* <Stack.Screen name="SignIn" component={SignIn} />
-              <Stack.Screen name="SignUp" component={SignUp} /> 
-              <Stack.Screen name="Main" component={BottomTabScreens} />
-              <Stack.Screen name="Content" component={Content} />
-              <Stack.Screen name="EditProfile" component={EditProfile} /> 
-              <Stack.Screen name="PostContent" component={PostContent} /> 
-              <Stack.Screen name="PostUpdate" component={PostUpdate} />  */} 
-
-{!isLoggedIn ? ( // 로그인 상태가 아닌 경우에는 로그인 화면을 렌더링
+          {!isLoggedIn ? ( // 로그인 상태가 아닌 경우에는 로그인 화면을 렌더링
           <>
             <Stack.Screen name="SignIn" component={SignIn} />
             <Stack.Screen name="SignUp" component={SignUpWithProps} />
-
           </>
         ) : (
           <>
@@ -146,6 +134,10 @@ export default function App() {
             <Stack.Screen name="EditProfile" component={EditProfileWithProps} />
             <Stack.Screen name="PostContent" component={PostContent} />
             <Stack.Screen name="PostUpdate" component={PostUpdateWithProps} />
+            <Stack.Screen name="PostEdit" component={PostEdit} />
+            <Stack.Screen name="CommentContainer" component={CommentContainerWithProps} />
+            <Stack.Screen name="CommentInput" component={CommentInputWithProps} />
+            
           </>
         )}
 

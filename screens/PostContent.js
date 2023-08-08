@@ -4,21 +4,7 @@ import Ionic from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import CommentInput from './CommentInput';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-
-const person = [
-  {
-    name: '주으닝',
-    avatar: require('../assets/images/avatar.jpeg'),
-    text: '수고하셨어요!!',
-    date: '1분전',
-  },
-  {
-    name: '태링',
-    avatar: require('../assets/images/avatar.jpeg'),
-    text: '플로깅 재밌네요 다음에 같이 또 해요~!!',
-    date: '2023.05.07',
-  }
-]
+import CommentContainer from './CommentContainer';
 
 const PostContent = ({navigation, route}) => {
   const { item } = route.params
@@ -87,52 +73,18 @@ const PostContent = ({navigation, route}) => {
           </View>
           
           {/* 댓글 컨테이너 */}
-          <CommentContainer />
+          <CommentContainer postId={item.id} uid={item.uid} />
           
       </View>
       </TouchableWithoutFeedback>
       </KeyboardAwareScrollView>
           {/* 댓글 입력창 */}
-          <CommentInput />
+          <CommentInput postId={item.id} />
     </SafeAreaView>
   )
 }
 
-const CommentContainer = () => {
-  return(
-    <View>
-          {person.map((data, index) => {
-            return(
-              <View>
 
-                <View style={{paddingHorizontal: 18, borderBottomWidth: 0.5, borderBottomColor: '#EAEAEA'}}>
-                    { /* 사용자 정보 컨테이너 */}
-                    <View style={{flexDirection: 'row', marginVertical: 14}}>
-                      <Image source={data.avatar} style={styles.avatar}/>
-
-                      {/* 사용자 이름, 게시물 날짜 */}
-                      <View style={{flex: 1}}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-
-                              <Text style={styles.name}>{data.name}</Text>
-
-                            <View style={{flexDirection: 'row', justifyContent:'center', alignItems:'center'}}>
-                                <Text style={{fontSize: 12, color: '#8E8E8E',marginRight: 10}}>{data.date}</Text>
-                                {/* more 아이콘 */}
-                                <Ionic name='md-ellipsis-horizontal' size={17} color='#424242' />
-                            </View>
-                        </View>
-                      <Text style={{marginTop: 8, fontSize: 14}}>{data.text}</Text>
-                      </View>
-
-                    </View>
-                </View>
-              </View>
-            )
-          })}
-    </View>
-  )
-}
 
 export default PostContent
 

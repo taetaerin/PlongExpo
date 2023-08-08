@@ -1,19 +1,48 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet, KeyboardAvoidingView } from 'react-native';
+import { firestore } from '../firebase';
+import { addDoc, collection } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import moment from 'moment';
 
-const CommentInput = () => {
+
+const CommentInput = ({postId}) => {
   const [comment, setComment] = useState('');
+
+  const auth = getAuth()
+  const user = auth.currentUser; 
 
   const handleCommentChange = (text) => {
     setComment(text);
   };
 
-  const handlePostComment = () => {
-    // 댓글 전송 로직을 구현하면 됩니다.
-    // 예: 댓글을 서버로 전송하거나 다른 처리를 수행합니다.
-    console.log('Post Comment:', comment);
-    // 댓글 입력창 초기화
-    setComment('');
+  const handleAddComment = async () => {
+    try {
+      if (!comment.trim()) {
+        return;
+      }
+
+      const currentTime = new Date();
+  
+      const dateTime = moment(currentTime).format('YYYY.MM.DD HH시 mm분');
+      
+      const commentsRef = collection(firestore, 'comments');
+
+      // Create a new comment document in Firestore
+      await addDoc(commentsRef, {
+        postId: postId,
+        text: comment,
+        timestamp: dateTime,
+        nickName: user.displayName,
+        avatar: user.photoURL,
+        uid: user.uid
+      });
+
+      // Clear the comment input after adding the comment
+      setComment('');
+    } catch (error) {
+      console.error('Error adding comment:', error);
+    }
   };
 
   return (
@@ -29,7 +58,7 @@ const CommentInput = () => {
           onChangeText={handleCommentChange}
           multiline
         />
-        <TouchableOpacity onPress={handlePostComment}>
+        <TouchableOpacity onPress={handleAddComment}>
           <View style={styles.button}>
             <Text style={styles.buttonText}>전송</Text>
           </View>
