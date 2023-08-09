@@ -77,6 +77,7 @@ const ParUpdate = ({route, navigation}) => {
     <SafeAreaView style={{backgroundColor: 'white', flex: 1}} >
       <ScrollView>
         <View >
+          <KeyboardAwareScrollView>
             {/* 상단바 */}
             <View 
                  style={{
@@ -88,6 +89,7 @@ const ParUpdate = ({route, navigation}) => {
                     justifyContent:'space-between',
                     flexDirection: 'row'}}
                     >
+                      
                         <TouchableOpacity>
                             <Ionic name="chevron-back-sharp" style={{fontSize:24}} onPress={() => navigation.goBack()} />
                         </TouchableOpacity>
@@ -253,6 +255,7 @@ const ParUpdate = ({route, navigation}) => {
                       </TextInput>
 
                                 </View>
+                                </KeyboardAwareScrollView>
                                 </View>
                                 </ScrollView>
                                 </SafeAreaView>
