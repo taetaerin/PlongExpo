@@ -3,48 +3,34 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import React, { useEffect, useState } from 'react';
 import Ionic from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import { arrayRemove, arrayUnion, collection, deleteDoc, doc, getDoc, getDocs, increment, onSnapshot, updateDoc } from 'firebase/firestore';
+import { arrayRemove, arrayUnion, collection, deleteDoc, doc, getDoc, getDocs, increment, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 import firebase, { firestore } from '../firebase';
 import { getAuth } from 'firebase/auth';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 import { useNavigation } from '@react-navigation/native';
 
-const hardPosts = [
-  {
-    id: 1,
-    nickName: '홍길동',
-    dateTime: '2023.05.06 11시 30분',
-    content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.',
-    // avatar: require('../assets/images/avatar.jpeg'),
-    image: null,
-    leaf: 20,
-    comment: 5,
-  },
-  {
-    id: 2,
-    nickName: '임지수',
-    dateTime: '2023.05.06 11시 20분',
-    content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.',
-    // avatar: require('../assets/images/avatar.jpeg'),
-    // imageUrl: require('../assets/images/image1.png'),
-    leaf: 20,
-    comment: 5,
-  },
-  {
-    id: 3,
-    nickName: '김주은',
-    dateTime: '2023.05.06 11시 19분',
-    content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.',
-    // avatar: require('../assets/images/avatar.jpeg'),
-    // imageUrl: require('../assets/images/image1.png'),
-    leaf: 20,
-    comment: 5,
-  },
-]
 
+const PostCard = ({ name, image, date, text, avatar, leaf, comment, id,uid, likes, likesCount}) => {
 
-const PostCard = ({ name, image, date, text, avatar, leaf, comment, id,uid, likes, likesCount, }) => {
+  //ㅗㅗ
+  const [commentCount, setCommentCount] = useState(0);
 
+  useEffect(() => {
+    const commentsRef = collection(firestore, 'comments');
+    const q = query(commentsRef, where('postId', '==', id));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      setCommentCount(querySnapshot.size); // 댓글 수를 가져와서 설정
+
+      // 해당 게시물의 commentCount 업데이트
+      const postDocRef = doc(firestore, 'posts', id);
+      updateDoc(postDocRef, { commentCount: querySnapshot.size });
+    });
+
+    return () => unsubscribe(); // 구독 해제
+  }, [id]);
+  
+
+  
   const navigation = useNavigation();
 
   const handleEdit = async () => {
@@ -64,8 +50,6 @@ const PostCard = ({ name, image, date, text, avatar, leaf, comment, id,uid, like
       // 게시물 문서를 삭제
       await deleteDoc(postDocRef);
   
-      // 게시물 삭제 후, 화면을 새로고침 -> 나중에 삭제해주기
-      // fetchPosts();
     } catch (error) {
       console.error('게시물 삭제 중 오류가 발생했습니다:', error);
     }
@@ -199,7 +183,7 @@ const PostCard = ({ name, image, date, text, avatar, leaf, comment, id,uid, like
 
             <View style={{flexDirection: 'row', alignItems: 'center', marginRight: 10}}>
                 <Ionic name='ios-chatbubble-ellipses-outline' size={23} style={{marginRight: 4}} />
-                <Text style={{fontSize: 14}}>{comment}</Text>
+                <Text style={{fontSize: 14}}>{commentCount}</Text>
             </View>
         </View>
     </View>
@@ -210,7 +194,7 @@ const Post = ({navigation, route}) => {
   const [posts, setPosts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
-  //post 사용자에게 보여지게 - 테스트용
+  //post 사용자에게 보여지게 - 테스트용 절대 지우지 마셈!!!!!1
   const fetchPosts = async () => {
     try {
       //파이어베이스에 있는 posts 가져오기
@@ -231,6 +215,7 @@ const Post = ({navigation, route}) => {
   }, []);
 
   // 게시판 데이터 가져오기 - 실시간 (이거 사용하기) 절대 지우지 마셈!!!!!1
+ 
   // const fetchPosts = async () => {
   //   try {
   //     const postCollectionRef = collection(firestore, 'posts');
@@ -251,7 +236,7 @@ const Post = ({navigation, route}) => {
   //   fetchPosts();
   // }, []);
 
-
+  
   return (
     <SafeAreaView style={{backgroundColor: 'white', flex: 1}}>
         <View 

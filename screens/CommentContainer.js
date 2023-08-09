@@ -7,10 +7,12 @@ import { getAuth } from 'firebase/auth';
 
 
 
-  const CommentContainer = ({postId, uid}) => {
+  const CommentContainer = ({postId, uid, }) => {
+    //댓글
     const [comments, setComments] = useState([]);
+    //현재 사용자
     const [currentUser, setCurrentUser] = useState(null);
-
+    
     const auth = getAuth();
 
     useEffect(() => {
@@ -22,6 +24,7 @@ import { getAuth } from 'firebase/auth';
     }, []);
 
 
+    //commentId - 댓글 id , commmentUid - 댓글 작성한 사람 id
     const handleAction = async (commentId, commentUid) => {
       const isCurrentUserAuthor = currentUser && currentUser.uid === commentUid;
 
@@ -78,7 +81,6 @@ import { getAuth } from 'firebase/auth';
 
 
     useEffect(() => {
-        // Fetch comments for the specific post from Firestore
         const fetchComments = async () => {
           try {
             const commentsRef = collection(firestore, 'comments');
