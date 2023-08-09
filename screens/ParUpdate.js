@@ -7,6 +7,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { PreventRemoveContext } from '@react-navigation/native';
+import LocationSearchScreen from './LocationSearchScreen';
 
 
 const ParUpdate = ({route, navigation}) => {
@@ -17,12 +18,12 @@ const ParUpdate = ({route, navigation}) => {
   const onPressSaveEdit = () => {
 
   };
+  
   const [text, value, onChangeText] = React.useState("");
 
- 
 
+  //이미지 저장 라이브러리
   const pickImage = async () => {
-      // No permissions request is necessary for launching the image library
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsEditing: true,
@@ -35,108 +36,121 @@ const ParUpdate = ({route, navigation}) => {
       }
     };
 
-    //날짜선택
-    const [dateOfPlong, setDateOfPlong] = useState("");
-    const [date, setDate] = useState(new Date());
-    const [showPicker, setShowPicker] = useState(false);
-    //시간선택
-    const [timeOfPlong, setTimeOfPlong] = useState("");
-    const [time, setTime] = useState(new Date());
-    const [showTPicker, setShowTPicker] = useState(false);
-    //날짜피커
-    const toggleDatepicker = () => {
-      setShowPicker(!showPicker);
-    };
-    //시간피커
-    const toggleTimepicker = () => {
-      setShowTPicker(!showTPicker);
-    }
-    //날짜변경
-    const onChange = ({type}, selectedDate) => {
-      if (type == "set"){
-        const currentDate = selectedDate
-        setDate(currentDate);
-        if (Platform.OS ===" android"){
-          toggleDatepicker();
-          setDateOfPlong(formatDate(currentDate));
-        }
-      } else {
+  //날짜선택
+  const [dateOfPlong, setDateOfPlong] = useState("");
+  const [date, setDate] = useState(new Date());
+  const [showPicker, setShowPicker] = useState(false);
+
+  //시간선택
+  const [timeOfPlong, setTimeOfPlong] = useState("");
+  const [time, setTime] = useState(new Date());
+  const [showTPicker, setShowTPicker] = useState(false);
+
+  //날짜피커
+  const toggleDatepicker = () => {
+    setShowPicker(!showPicker);
+  };
+
+  //시간피커
+  const toggleTimepicker = () => {
+    setShowTPicker(!showTPicker);
+  }
+
+  //날짜변경
+  const onChange = ({type}, selectedDate) => {
+    if (type == "set"){
+      const currentDate = selectedDate
+      setDate(currentDate);
+      if (Platform.OS ===" android"){
         toggleDatepicker();
+        setDateOfPlong(formatDate(currentDate));
       }
-    };
-    //시간변경
-    const onChangeTime = ({type}, selectedTime) => {
-      if (type == "set"){
-        const currentTime = selectedTime
-        setTime(currentTime);
-        if (Platform.OS ===" android"){
-          toggleTimepicker();
-          setTimeOfPlong(formatTime(currentTime));
-        }
-      } else {
-        toggleTimepicker();
-      }
-    };
-
-    const confirmIOSDate = () => {
-      setDateOfPlong(formatDate(date));
+    } else {
       toggleDatepicker();
-    };
-    const confirmIOSTime = () => {
-      setTimeOfPlong(formatTime(time));
+    }
+  };
+
+  //시간변경
+  const onChangeTime = ({type}, selectedTime) => {
+    if (type == "set"){
+      const currentTime = selectedTime
+      setTime(currentTime);
+      if (Platform.OS ===" android"){
+        toggleTimepicker();
+        setTimeOfPlong(formatTime(currentTime));
+      }
+    } else {
       toggleTimepicker();
-    };
-    //날짜 포맷
-    const formatDate = (rawDate) => {
-      let date = new Date(rawDate);
-
-      let year = date.getFullYear();
-      let month = date.getMonth() +1;
-      let day = date.getDate();
-
-      return `${year}-${month}-${day}`;
     }
-    //시간 포맷
-    const formatTime = (rawTime) => {
-      let time = new Date(rawTime);
+  };
 
-      let hours = time.getHours(); // 시
-      let minutes = time.getMinutes();  // 분
 
-      return `${hours}시 ${minutes}분`;
-    }
+  const confirmIOSDate = () => {
+    setDateOfPlong(formatDate(date));
+    toggleDatepicker();
+  };
+
+  const confirmIOSTime = () => {
+    setTimeOfPlong(formatTime(time));
+    toggleTimepicker();
+  };
+
+  //날짜 포맷
+  const formatDate = (rawDate) => {
+    let date = new Date(rawDate);
+
+    let year = date.getFullYear();
+    let month = date.getMonth() +1;
+    let day = date.getDate();
+
+    return `${year}-${month}-${day}`;
+  }
+
+  //시간 포맷
+  const formatTime = (rawTime) => {
+    let time = new Date(rawTime);
+
+    let hours = time.getHours(); // 시
+    let minutes = time.getMinutes();  // 분
+
+    return `${hours}시 ${minutes}분`;
+  }
 
   return (
-    <SafeAreaView style={{backgroundColor: 'white', flex: 1}} >
+    <SafeAreaView style={{backgroundColor: 'white', flex: 1}}>
+      {/* 상단바 */}
+      <View 
+        style={{
+          width: '100%', 
+          backgroundColor: 'white', 
+          height: 44, 
+          alignItems: 'center', 
+          paddingHorizontal: 18,
+          justifyContent:'space-between',
+          flexDirection: 'row'}}
+      >
+          {/* 뒤로가기 */}
+          <TouchableOpacity>
+              <Ionic name="chevron-back-sharp" style={{fontSize:24}} onPress={() => navigation.goBack()} />
+          </TouchableOpacity>
+
+          <TouchableOpacity>
+              <Text style={styles.update}>등록</Text>
+          </TouchableOpacity>
+      </View>
+
       <ScrollView>
         <View >
           <KeyboardAwareScrollView>
-            {/* 상단바 */}
-            <View 
-                 style={{
-                    width: '100%', 
-                    backgroundColor: 'white', 
-                    height: 44, 
-                    alignItems: 'center', 
-                    paddingHorizontal: 18,
-                    justifyContent:'space-between',
-                    flexDirection: 'row'}}
-                    >
-                      
-                        <TouchableOpacity>
-                            <Ionic name="chevron-back-sharp" style={{fontSize:24}} onPress={() => navigation.goBack()} />
-                        </TouchableOpacity>
-                        <TouchableOpacity>
-                            <Text style={styles.update}>등록</Text>
-                        </TouchableOpacity>
-                </View>
-                  {/* 사진선택 */}
-                <TouchableOpacity onPress={pickImage}>
-                    <Image style={{backgroundColor: 'rgba(0, 0, 0, 0.2)', height: 146, width: 390}} 
-                     source={{ uri:image }}/>
+            
+            {/* 사진선택 */}
+            <TouchableOpacity onPress={pickImage}>
+                <Image style={{backgroundColor: 'rgba(0, 0, 0, 0.2)', height: 146, width: 390}} 
+                  source={{ uri:image }} />
                 <Ionic name="camera-outline" style={{fontSize:28, color: 'white',marginTop: -30, left: 347}} />
             </TouchableOpacity>
-                  <View style={styles.wrapper}>
+
+            <View style={styles.wrapper}>
                   <View style={{justifyContent: 'space-between'}}>
                     {/* 모임이름입력 */}
                   <TextInput
@@ -289,26 +303,15 @@ const ParUpdate = ({route, navigation}) => {
                      
                       </View>
                       
-                  <View style={{flexDirection: 'row', marginTop: 10}}>
-                  <Ionic name='location-outline' size={28} color='#424242'></Ionic>          
-                        <TextInput
-                        style={styles.input}
-                        onChangeText={onChangeText}
-                        value={text}
-                        placeholder="장소를 입력하세요."
-                        placeholderTextColor={'#7F7F7F'}
-                        >
-                      </TextInput>
+                  <View style={{marginTop: 10, flexDirection: 'row'}}>
+                        <Ionic name='location-outline' size={28} color='#424242'></Ionic>          
+                      
+                        {/* 위치 정보 검색 */}
+                        <LocationSearchScreen />
+               
                       
                       </View>
-                      <TextInput
-                        style={styles.others}
-                        onChangeText={onChangeText}
-                        value={text}
-                        placeholder="기타를 입력하세요."
-                        placeholderTextColor={'#7F7F7F'}
-                        >
-                      </TextInput>
+  
                       <View style={styles.line}></View>
                       <Text style={styles.openchat}>오픈채팅 주소 입력</Text>
                       <TextInput
@@ -330,8 +333,8 @@ const ParUpdate = ({route, navigation}) => {
 
 const styles = StyleSheet.create({
   wrapper : {
-    // backgroundColor: 'yellow',
-    paddingHorizontal: 20,
+    backgroundColor: 'yellow',
+    marginHorizontal: 18,
   },
     update: {
         fontSize: 16,

@@ -10,9 +10,9 @@ import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 import { useNavigation } from '@react-navigation/native';
 
 
-const PostCard = ({ name, image, date, text, avatar, leaf, comment, id,uid, likes, likesCount}) => {
+const PostCard = ({ name, image, date, text, avatar, id, uid, likesCount}) => {
 
-  //ㅗㅗ
+  //댓글 개수 기능
   const [commentCount, setCommentCount] = useState(0);
 
   useEffect(() => {
@@ -26,7 +26,7 @@ const PostCard = ({ name, image, date, text, avatar, leaf, comment, id,uid, like
       updateDoc(postDocRef, { commentCount: querySnapshot.size });
     });
 
-    return () => unsubscribe(); // 구독 해제
+    return () => unsubscribe(); 
   }, [id]);
   
 
@@ -280,12 +280,9 @@ const Post = ({navigation, route}) => {
                 date={item.dateTime} 
                 text={item.content} 
                 avatar={item.avatar} 
-                leaf={item.likes} 
-                comment={item.comment}
                 id={item.id}
                 likesCount={item.likes} 
                 uid={item.uid}
-                likes={item.likes}
               />
             </TouchableOpacity>
           }

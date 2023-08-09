@@ -32,15 +32,12 @@ import { getAuth } from 'firebase/auth';
         // 로그인한 사용자가 글 작성자인 경우
         ActionSheetIOS.showActionSheetWithOptions(
           {
-            options: ['수정하기', '삭제하기', '취소'],
-            destructiveButtonIndex: 1,
-            cancelButtonIndex: 2,
+            options: ['삭제하기', '취소'],
+            destructiveButtonIndex: 0,
+            cancelButtonIndex: 1,
           },
           async (buttonIndex) => {
             if (buttonIndex === 0) {
-              // '수정하기' 선택 시 동작
-              await handleEdit();
-            } else if (buttonIndex === 1) {
               // '삭제하기' 선택 시 동작
               await handleDelete(commentId);
             }
@@ -158,8 +155,8 @@ import { getAuth } from 'firebase/auth';
 
 const styles = StyleSheet.create({
     avatar: {
-      width: 37,
-      height: 37,
+      width: 30,
+      height: 30,
       borderRadius: 50,
       marginRight: 10,
       backgroundColor: '#E7E7E7'

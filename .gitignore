@@ -18,3 +18,6 @@ web-build/
 
 # Ignore firebase.js
 firebase.js
+
+# Ignore kakao.js
+kakao.js

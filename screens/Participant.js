@@ -104,49 +104,57 @@ const Participant = ({navigation}) => {
  
   return (
     <SafeAreaView style={{backgroundColor: 'white'}}>
-      <ScrollView>
-        <View 
-          style={{
-          flexDirection: 'row', 
-          alignItems: 'center',
-          justifyContent:'space-between', 
-          marginHorizontal: 14,
-          height: 44}}>
+      {/* 상단바 */}
+      <View 
+        style={{
+        flexDirection: 'row', 
+        alignItems: 'center',
+        justifyContent:'space-between', 
+        marginHorizontal: 14,
+        height: 44}}>
         <TouchableOpacity onPress={() => navigation.navigate('ParUpdate')}>
-        <Ionic name="md-add" size={27} color='#424242'></Ionic>
+          <Ionic name="md-add" size={27} color='#424242'></Ionic>
         </TouchableOpacity>
+
         <Text style={styles.title}>모집글</Text>
+
         <Ionic name="md-search-outline" size={27} color='#424242'></Ionic>
       </View>
-
-        <View style={{ flexDirection: 'row', marginTop:30}}>
+      
+      {/* 모집중 모집완료 스크랩 */}
+      <View style={{ flexDirection: 'row', marginTop:30, marginBottom: 10}}>
         <TouchableOpacity>
           <Text style={styles.subtitle}>모집중</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
+        </TouchableOpacity>
+        <TouchableOpacity>
           <Text style={styles.subtitle}>모집완료</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
+        </TouchableOpacity>
+        <TouchableOpacity>
           <Text style={styles.subtitle}>스크랩</Text>
-          </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
+      </View>
+
+      <ScrollView>
+
         <View style={styles.container}>
-         
-        {Par.map((data, index) => {
-            return(
-              <TouchableOpacity onPress={() => navigation.navigate('ParContent', {data})} >
-                <ImplementCard  key={index} avatar={data.avatar} name={data.name} title={data.title} image={data.image}
-                location={data.location} where={data.where} date={data.date} day={data.day} time={data.time} 
-                meterials={data.meterials} situation={data.situation} content={data.content}/>
-              </TouchableOpacity>
-            )
-          })}
+      
+          {Par.map((data, index) => {
+              return(
+                <TouchableOpacity onPress={() => navigation.navigate('ParContent', {data})} >
+                  <ImplementCard  key={index} avatar={data.avatar} name={data.name} title={data.title} image={data.image}
+                  location={data.location} where={data.where} date={data.date} day={data.day} time={data.time} 
+                  meterials={data.meterials} situation={data.situation} content={data.content}/>
+                </TouchableOpacity>
+              )
+            })}
           
-          </View>
-    </ScrollView>
+        </View>
+        
+        <View style={{height: 100}} />
+      </ScrollView>
     </SafeAreaView>
   )
-  }
+}
 
 
 const styles = StyleSheet.create({
