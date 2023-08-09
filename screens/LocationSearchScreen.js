@@ -35,7 +35,7 @@ const LocationSearchScreen = () => {
 
   return (
     <View>
-        <View style={{flexDirection: 'row'}}>
+        <View style={{flexDirection: 'row', justifyContent: 'center', alignItems:'center'}}>
             <TextInput
                 style={styles.input}
                 placeholder="장소명을 입력하세요."
@@ -66,7 +66,6 @@ const styles = StyleSheet.create({
   input: {
     height: 40,
     marginLeft: 10,
-    marginRight: 5,
     width: 260,
     borderWidth: 1,
     padding: 10,
@@ -75,8 +74,9 @@ const styles = StyleSheet.create({
   },
   others: {
     marginLeft: 10,
+    flex: 1,
     height: 40,
-    width: 310,  
+    width: 300,  
     borderWidth: 1,
     padding: 10,
     borderColor: '#C3C3C3',

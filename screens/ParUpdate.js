@@ -151,287 +151,248 @@ const ParUpdate = ({route, navigation}) => {
             </TouchableOpacity>
 
             <View style={styles.wrapper}>
-                  <View style={{justifyContent: 'space-between'}}>
-                    {/* 모임이름입력 */}
+                <View style={{justifyContent: 'space-between'}}>
+                
+                  {/* 모임이름입력 */}
                   <TextInput
-                  style={styles.title}
-                  onChangeText={onChangeText}
-                  value={text}
-                  placeholder="모임이름입력"
-                  placeholderTextColor={'#7F7F7F'}
+                    style={styles.title}
+                    onChangeText={onChangeText}
+                    value={text}
+                    placeholder="모임이름입력"
+                    placeholderTextColor={'#7F7F7F'}
                   />
+
                  {/* 내용작성 */}
                   <TextInput
-                  style={styles.content}
-                   editable
-                   multiline
-                   numberOfLines={10}
-                   maxLength={100}
-                     onChangeText={onChangeText}
+                    style={styles.content}
+                    editable
+                    multiline
+                    numberOfLines={10}
+                    maxLength={100}
+                    onChangeText={onChangeText}
                     value={value}
                     placeholder="내용 작성"
-                  ></TextInput>
-                 <View style={styles.line}></View>
-                  </View>
+                  />
                   
-                  <Text style={styles.information}>모임 정보</Text>
-                  <View style={{flexDirection: 'row', marginTop: 10}}>
-                  <Ionic name='calendar-outline' size={28} color='#424242'></Ionic>
+                  <View style={styles.line}></View>
+                </View>
                   
-                  
-                  {/* 날짜선택 */}
-                  <View>
-                      {showPicker && ( 
-                      <DateTimePicker
-                          mode="date"
-                          display="spinner"
-                          value={date}
-                          onChange={onChange}
-                          style={styles.datePicker}
-                          locale="ko"
-                        />
-                        )}
-                        {/* 취소 / 확인 버튼 */}
-                        {showPicker && Platform.OS === "ios" &&(
-                        <View style={{ justifyContent:'space-around',
-                    flexDirection: 'row'}}
-                        >
-                          <TouchableOpacity style={[
-                            styles.button,
-                            styles.pickerButtton,
-                            {backgroundColor: "#F0F0F0"}
-                          ]}
-                          onPress={toggleDatepicker}>
-                            <Text
-                            style={[
-                              styles.buttonText,
-                              {color: '#3C80E1'}
-                            ]}>취소</Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity style={[
-                            styles.button,
-                            styles.pickerButtton,
-                            {backgroundColor: "#F0F0F0"}
-                          ]}
-                          onPress={confirmIOSDate}>
-                            <Text
-                            style={[
-                              styles.buttonText,
-                              {color: '#3C80E1'}
-                            ]}>확인</Text>
-                          </TouchableOpacity>
-                        </View>
-                        )}
-                        {/* 날짜입력칸 */}
-                        {!showPicker && ( 
-                        <Pressable
-                          onPress={toggleDatepicker}>
-                        <TextInput
-                           style={styles.input}
-                           placeholder="YYYY - MM - DD"
-                           placeholderTextColor="#C3C3C3"                        
-                           editable={false}
-                           value={dateOfPlong}
-                           onChangeText={setDateOfPlong}
-                           onPressIn={toggleDatepicker}
-                           >
-                        </TextInput>
-                        </Pressable>
-                        )}                       
-                        </View>
-                       </View>
+                <Text style={styles.information}>모임 정보</Text>
 
-                       {/* 시간선택 */}
-                        <View style={{flexDirection: 'row'}}>
-                          <View style={{marginLeft: 30}}>
-                          {showTPicker && ( 
+
+                {/* 날짜 */}
+                <View style={{flexDirection: 'row', marginTop: 10}}>
+                
+                  {/* 날짜 아이콘*/}
+                  <Ionic name='calendar-outline' size={28} color='#424242' />
+              
+                      {/* 날짜선택 */}
+                      <View>
+                          {showPicker && ( 
                           <DateTimePicker
-                          mode="time"
-                          display="spinner"
-                          value={date}
-                          onChange={onChangeTime}
-                          style={styles.datePicker}
-                        />
+                              mode="date"
+                              display="spinner"
+                              value={date}
+                              onChange={onChange}
+                              style={styles.datePicker}
+                              locale="ko"
+                          />
                           )}
+
                           {/* 취소 / 확인 버튼 */}
-                          {showTPicker && Platform.OS === "ios" &&(
-                        <View style={{ justifyContent:'space-around',
-                    flexDirection: 'row'}}
-                        >
-                          <TouchableOpacity style={[
-                            styles.button,
-                            styles.pickerButtton,
-                            {backgroundColor: "#F0F0F0"}
-                          ]}
-                          onPress={toggleTimepicker}>
-                            <Text
-                            style={[
-                              styles.buttonText,
-                              {color: '#3C80E1'}
-                            ]}>취소</Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity style={[
-                            styles.button,
-                            styles.pickerButtton,
-                            {backgroundColor: "#F0F0F0"}
-                          ]}
-                          onPress={confirmIOSTime}>
-                            <Text
-                            style={[
-                              styles.buttonText,
-                              {color: '#3C80E1'}
-                            ]}>확인</Text>
-                          </TouchableOpacity>
-                        </View>
-                        )}
-                        {/* 시간 입력 칸 */}
-                        {!showTPicker && ( 
-                            <Pressable onPress={toggleTimepicker}>
-                  <TextInput 
-                      style={styles.time}
-                      placeholder="00시  00분"
-                      placeholderTextColor="#C3C3C3"
-                      editable={false}
-                      onChangeText={setTimeOfPlong}
-                      value={timeOfPlong}
-                      onPressIn={toggleTimepicker}
+                          {showPicker && Platform.OS === "ios" && (
+                            <View style={{ justifyContent:'space-around', flexDirection: 'row'}}>
+                              <TouchableOpacity style={[styles.button, styles.pickerButtton, {backgroundColor: "#F0F0F0"}]}
+                                onPress={toggleDatepicker}>
+                                <Text style={[styles.buttonText, {color: '#3C80E1'}]}>취소</Text>
+                              </TouchableOpacity>
+                              <TouchableOpacity style={[styles.button, styles.pickerButtton, {backgroundColor: "#F0F0F0"}]}
+                                onPress={confirmIOSDate}>
+                                <Text style={[styles.buttonText, {color: '#3C80E1'}]}>확인</Text>
+                              </TouchableOpacity>
+                            </View>
+                            )}
+
+
+                            {/* 날짜입력칸 */}
+                            {!showPicker && ( 
+                              <Pressable
+                                onPress={toggleDatepicker}>
+                                <TextInput
+                                  style={styles.input}
+                                  placeholder="YYYY - MM - DD"
+                                  placeholderTextColor="#C3C3C3"                        
+                                  editable={false}
+                                  value={dateOfPlong}
+                                  onChangeText={setDateOfPlong}
+                                  onPressIn={toggleDatepicker}
+                                  >
+                                </TextInput>
+                              </Pressable>
+                            )}                       
+                      </View>
+                </View>
+
+                {/* 시간 */}
+                <View style={{flexDirection: 'row'}}>
+                  <View style={{marginLeft: 30}}>
+                    {showTPicker && ( 
+                      <DateTimePicker
+                        mode="time"
+                        display="spinner"
+                        value={date}
+                        onChange={onChangeTime}
+                        style={styles.datePicker}
                       />
+                    )}
+
+                    {/* 취소 / 확인 버튼 */}
+                    {showTPicker && Platform.OS === "ios" && (
+                      <View style={{ justifyContent:'space-around', flexDirection: 'row'}}>
+                        <TouchableOpacity style={[styles.button, styles.pickerButtton, {backgroundColor: "#F0F0F0"}]}
+                          onPress={toggleTimepicker}>
+                          <Text style={[styles.buttonText, {color: '#3C80E1'}]}>취소</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={[styles.button, styles.pickerButtton, {backgroundColor: "#F0F0F0"}]}
+                          onPress={confirmIOSTime}>
+                          <Text style={[styles.buttonText, {color: '#3C80E1'}]}>확인</Text>
+                        </TouchableOpacity>
+                      </View>
+                    )}
+
+                    {/* 시간 입력 칸 */}
+                    {!showTPicker && ( 
+                      <Pressable onPress={toggleTimepicker}>
+                        <TextInput 
+                          style={styles.time}
+                          placeholder="00시  00분"
+                          placeholderTextColor="#C3C3C3"
+                          editable={false}
+                          onChangeText={setTimeOfPlong}
+                          value={timeOfPlong}
+                          onPressIn={toggleTimepicker}
+                        />
                       </Pressable>
-                        )}
-                      </View>
-
-                     
-                      </View>
+                    )}
+                  </View>
+                </View>
                       
-                  <View style={{marginTop: 10, flexDirection: 'row'}}>
-                        <Ionic name='location-outline' size={28} color='#424242'></Ionic>          
-                      
-                        {/* 위치 정보 검색 */}
-                        <LocationSearchScreen />
-               
-                      
-                      </View>
+                {/* 장소 */}
+                <View style={{marginTop: 10, flexDirection: 'row'}}>
+                  <Ionic name='location-outline' size={28} color='#424242'></Ionic>          
+                          
+                  {/* 위치 정보 검색 */}
+                  <LocationSearchScreen />
+          
+                </View>
   
-                      <View style={styles.line}></View>
-                      <Text style={styles.openchat}>오픈채팅 주소 입력</Text>
-                      <TextInput
-                        style={styles.chat}
-                        onChangeText={onChangeText}
-                        value={text}
-                        placeholderTextColor={'#7F7F7F'}
-                        >
-                      </TextInput>
-                      <View style={{marginBottom: 50}}></View>
+                <View style={{borderBottomColor: '#CBCBCB', marginTop: 30, marginBottom: 10, borderBottomWidth: 0.8, width: '100%'}}></View>
+                
+                {/* 오픈 채팅 */}
+                <View>
+                  <Text style={styles.openchat}>오픈채팅 주소 입력</Text>
+                  <TextInput
+                    style={styles.chat}
+                    onChangeText={onChangeText}
+                    value={text}
+                    placeholderTextColor={'#7F7F7F'}
+                  />
+                </View>
+      
+                <View style={{marginBottom: 50}}></View>
 
-                                </View>
-                                </KeyboardAwareScrollView>
-                                </View>
-                                </ScrollView>
-                                </SafeAreaView>
-                  )
-                }
+            </View>
+
+          </KeyboardAwareScrollView>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  )
+}
 
 const styles = StyleSheet.create({
   wrapper : {
-    backgroundColor: 'yellow',
     marginHorizontal: 18,
   },
-    update: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        
-    },
-    title: {
-      marginTop: 20,
-      fontSize: 22,
-      fontWeight: 'bold'
-    },
-    content: {
-      marginTop: 30,
-      fontSize: 18,
-      fontWeight: 'bold'
-
-    },
-    line: {
-      borderBottomColor: '#CBCBCB',
-      marginTop: 100,
-      borderBottomWidth: 0.8,
-      width: '100%'
-    },
-    information: {
-      marginTop: 10,
-      color: '#41993F',
+  update: {
       fontSize: 16,
-      fontWeight: 'bold'
-    },
-    input: {
-      marginLeft: 10,
-      height: 40,
-      width: 310,
-      borderWidth: 1,
-      padding: 10,
-      borderColor: '#C3C3C3',
-      borderRadius: 5
-    },
-    time: {
-      marginLeft: 9,
-      height: 40,
-      width: 150,
-      borderWidth: 1,
-      padding: 10,
-      borderColor: '#C3C3C3',
-      borderRadius: 5,
-      marginTop: 10
-    },
-
-    others: {
-      marginLeft: 38,
-      height: 40,
-      width: 310,
-      borderWidth: 1,
-      padding: 10,
-      borderColor: '#C3C3C3',
-      borderRadius: 5,
-      marginTop: 10
-    },
-    chat: {
-      height: 40,
-      width: '100%',
-      borderWidth: 1,
-      padding: 10,
-      borderColor: '#C3C3C3',
-      borderRadius: 5,
-      marginTop: 10
-    },
-    openchat: {
-      color: '#424242',
       fontWeight: 'bold',
-      fontSize: 16,
-      marginTop: 10
-    },
-    datePicker: {
-      height: 120,
-      marginTop: -10
-    },
-    button: {
-      height: 30,
-      justifyContent: "center",
-      alignItems: "center",
-      borderRadius: 50,
-      marginBottom: 10
-    },
-    buttonText: {
-      fontSize: 14,
-      fontWeight: "500",
-
-    },
-    pickerButtton: {
-      paddingHorizontal: 20,
-      
-    }
-
-
-    
+  },
+  title: {
+    marginTop: 20,
+    fontSize: 22,
+    fontWeight: 'bold'
+  },
+  content: {
+    marginTop: 30,
+    fontSize: 18,
+    fontWeight: 'bold'
+  },
+  line: {
+    borderBottomColor: '#CBCBCB',
+    marginTop: 100,
+    borderBottomWidth: 0.8,
+    width: '100%'
+  },
+  information: {
+    marginTop: 10,
+    color: '#41993F',
+    fontSize: 16,
+    fontWeight: 'bold'
+  },
+  input: {
+    marginLeft: 10,
+    height: 40,
+    width: 300,
+    borderWidth: 1,
+    padding: 10,
+    borderColor: '#C3C3C3',
+    borderRadius: 5
+  },
+  time: {
+    marginLeft: 9,
+    height: 40,
+    width: 150,
+    borderWidth: 1,
+    padding: 10,
+    borderColor: '#C3C3C3',
+    borderRadius: 5,
+    marginTop: 10
+  },
+  chat: {
+    height: 40,
+    width: '100%',
+    borderWidth: 1,
+    padding: 10,
+    borderColor: '#C3C3C3',
+    borderRadius: 5,
+    marginTop: 10
+  },
+  openchat: {
+    color: '#424242',
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginTop: 10
+  },
+  datePicker: {
+    height: 120,
+    marginTop: -10
+  },
+  button: {
+    height: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 50,
+    marginBottom: 10
+  },
+  buttonText: {
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  pickerButtton: {
+    paddingHorizontal: 20,
+  }    
 })
 
 
