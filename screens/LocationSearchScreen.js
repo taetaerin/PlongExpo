@@ -3,9 +3,9 @@ import { View, TextInput, Button, StyleSheet } from 'react-native';
 import * as Location from 'expo-location';
 import kakao from '../kakao';
 
-const LocationSearchScreen = () => {
+const LocationSearchScreen = ({onLocationChange}) => {
   const [address, setAddress] = useState('');
-  const [otherText, setOtherText] = useState('');
+
 
   const handleSearch = async () => {
     const query = encodeURIComponent(address);
@@ -25,6 +25,7 @@ const LocationSearchScreen = () => {
         const firstResult = data.documents[0];
         const resultAddress = firstResult.address_name;
         setAddress(resultAddress);
+        onLocationChange(resultAddress);
       } else {
         setAddress('주소를 찾을 수 없습니다.');
       }
@@ -47,16 +48,7 @@ const LocationSearchScreen = () => {
             <Button title="검색" onPress={handleSearch} />
         </View>
 
-        <View>
-            <TextInput
-                style={styles.others}
-                onChangeText={(text) => setOtherText(text)}
-                value={otherText}
-                placeholder="기타를 입력하세요."
-                placeholderTextColor={'#7F7F7F'}
-            >
-            </TextInput>
-        </View>
+        
     </View>
 
   );

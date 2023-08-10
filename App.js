@@ -138,8 +138,6 @@ export default function App() {
             <Stack.Screen name="PostEdit" component={PostEdit} />
             <Stack.Screen name="CommentContainer" component={CommentContainerWithProps} />
             <Stack.Screen name="CommentInput" component={CommentInputWithProps} />
-            {/* <Stack.Screen name="LocationSearchScreen" component={LocationSearchScreen} /> */}
-
           </>
         )}
 
