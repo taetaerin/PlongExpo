@@ -8,7 +8,6 @@ import CommentContainer from './CommentContainer';
 
 const PostContent = ({navigation, route}) => {
   const { item } = route.params
-  console.log('item', item)
 
   return (
     <SafeAreaView style={{backgroundColor:'white', flex:1}}>

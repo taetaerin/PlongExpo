@@ -47,8 +47,9 @@ const ParUpdate = ({route, navigation}) => {
     const collectionRef = collection(firestore, 'participant');
 
     const currentTime = new Date();
-  
     const dateTime = moment(currentTime).format('YYYY.MM.DD HH시 mm분');
+
+    // const date = moment(date).format('YYYY년 M월 D일');
 
     // 새로운 문서를 생성하고 데이터를 저장
     try {
@@ -151,6 +152,7 @@ const ParUpdate = ({route, navigation}) => {
   //날짜선택
   const [dateOfPlong, setDateOfPlong] = useState("");
   const [date, setDate] = useState(new Date());
+  console.log('date', date)
   const [showPicker, setShowPicker] = useState(false);
 
   //시간선택

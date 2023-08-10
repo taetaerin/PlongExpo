@@ -1,8 +1,10 @@
 import { View, Text, ScrollView,  StyleSheet, SafeAreaView, Image,  TouchableOpacity, Platform, Pressable, TouchableHighlight } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Ionic from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import ImplementCard from './components/ParCard'; 
+import { collection, onSnapshot } from 'firebase/firestore';
+import { firestore } from '../firebase';
 
 
 const Par = [
@@ -99,6 +101,28 @@ const Par = [
 
 
 const Participant = ({navigation}) => {
+  const [participant, setParticipant] = useState([]);
+
+  // 게시판 데이터 가져오기 - 실시간 (이거 사용하기) 절대 지우지 마셈!!!!!1
+  const fetchParticipant = async () => {
+    try {
+      const participantCollectionRef = collection(firestore, 'participant');
+      onSnapshot(participantCollectionRef, (querySnapshot) => {
+        const fetchParticipant = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        // fetchParticipant.sort((a, b) => b.dateTime.localeCompare(a.dateTime));
+        setParticipant(fetchParticipant);
+      });
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchParticipant();
+  }, []);
   
 
  
@@ -138,12 +162,20 @@ const Participant = ({navigation}) => {
 
         <View style={styles.container}>
       
-          {Par.map((data, index) => {
+          {participant.map((data, index) => {
               return(
-                <TouchableOpacity onPress={() => navigation.navigate('ParContent', {data})} >
-                  <ImplementCard  key={index} avatar={data.avatar} name={data.name} title={data.title} image={data.image}
-                  location={data.location} where={data.where} date={data.date} day={data.day} time={data.time} 
-                  meterials={data.meterials} situation={data.situation} content={data.content}/>
+                <TouchableOpacity onPress={() => navigation.navigate('ParContent', {data})}>
+                  <ImplementCard  
+                    key={index} 
+                    avatar={data.avatar} 
+                    name={data.nickName} 
+                    title={data.title} 
+                    content={data.content}
+                    image={data.imageUrl}
+                    location={data.location} 
+                    date={data.date} 
+                    openText ={data.openText}
+                  />
                 </TouchableOpacity>
               )
             })}
@@ -158,14 +190,8 @@ const Participant = ({navigation}) => {
 
 
 const styles = StyleSheet.create({
- 
-  // container: {
-  //   flex: 1,
-  //   paddingTop: Platform.OS === 'android' ? 20 : 0,
-  //   backgroundColor: '#F5F5F5'
-  // },
+
    title: {
-    
     fontSize: 22,
     textAlign: 'center',
     color: '#48566A'
@@ -176,13 +202,11 @@ const styles = StyleSheet.create({
     marginLeft: 18,
     fontWeight: 'bold'
   },
-
-  
   container: {
     flexDirection: 'row',
-    justifyContent: "space-around",
     flexWrap: 'wrap',
-    paddingHorizontal: 10,
+    justifyContent:'space-between',
+    marginHorizontal: 10,
     marginBottom: 10,
   },
 })
