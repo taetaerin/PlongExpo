@@ -27,6 +27,7 @@ import { LogBox } from 'react-native';
 import PostEdit from './screens/PostEdit';
 import CommentContainer from './screens/CommentContainer';
 import CommentInput from './screens/CommentInput';
+import LocationSearchScreen from './screens/LocationSearchScreen';
 
 LogBox.ignoreLogs(['Possible Unhandled Promise Rejection']);
 
@@ -137,7 +138,6 @@ export default function App() {
             <Stack.Screen name="PostEdit" component={PostEdit} />
             <Stack.Screen name="CommentContainer" component={CommentContainerWithProps} />
             <Stack.Screen name="CommentInput" component={CommentInputWithProps} />
-            
           </>
         )}
 

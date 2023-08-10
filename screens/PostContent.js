@@ -62,12 +62,12 @@ const PostContent = ({navigation, route}) => {
               <View style={{flexDirection: 'row', marginTop: 14}}>
                   <View style={{flexDirection: 'row', alignItems: 'center', marginRight: 10}}>
                       <MaterialCommunityIcons name='seed-outline' size={24} style={{marginRight: 4}} />
-                      <Text style={{fontSize: 14}}>{item.leaf}</Text>
+                      <Text style={{fontSize: 14}}>{item.likes}</Text>
                   </View>
 
                   <View style={{flexDirection: 'row', alignItems: 'center', marginRight: 10}}>
                       <Ionic name='ios-chatbubble-ellipses-outline' size={23} style={{marginRight: 4}} />
-                      <Text style={{fontSize: 14}}>{item.comment}</Text>
+                      <Text style={{fontSize: 14}}>{item.likesCount}</Text>
                   </View>
               </View>
           </View>
