@@ -38,6 +38,25 @@ const ParUpdate = ({route, navigation}) => {
   //오픈 채팅 주소
   const [openText, setOpenText] = useState('');
 
+  // 이미지 업로드 및 URL 얻어오는 함수
+  // const uploadImageAndGetURL = async (imageURI) => {
+  //   const storage = getStorage();
+  //   const imageRef = ref(storage, `participant_uploadImg/${user.uid}_${Date.now()}.jpg`);
+    
+  //   try {
+  //       const response = await fetch(imageURI);
+  //       const blob = await response.blob();
+        
+  //       await uploadBytes(imageRef, blob);
+  //       const downloadURL = await getDownloadURL(imageRef);
+        
+  //       return downloadURL;
+  //   } catch (error) {
+  //       console.error('Error uploading image:', error);
+  //       return null;
+  //   }
+  // };
+
   //파이어베이스 사용자 객체 정보
   const auth = getAuth();
   const user = auth.currentUser;
@@ -49,61 +68,65 @@ const ParUpdate = ({route, navigation}) => {
     const currentTime = new Date();
     const dateTime = moment(currentTime).format('YYYY.MM.DD HH시 mm분');
 
-    // const date = moment(date).format('YYYY년 M월 D일');
 
     // 새로운 문서를 생성하고 데이터를 저장
     try {
         //제목이 없을 시
-        if (!title) {
-            alert('제목을 입력해주세요.');
-            return;
-        }
-        //내용이 없을 시
-        if (!content) {
-            alert('내용을 입력해주세요.');
-            return;
-        }
-        //이미지가 없을 시
-        if (!image) {
-          alert('사진을 넣어주세요.');
-          return;
-        }
-        //날짜가 없을 시
-        if (!date) {
-          alert('날짜를 입력해주세요.');
-          return;
-        }
-        //시간이 없을 시
-        if (!time) {
-          alert('시간을 입력해주세요.');
-          return;
-        }
-        //장소가 없을 시
-        if (!selectedLocation) {
-          alert('장소를 입력해주세요.');
-          return;
-        }
+        // if (!title) {
+        //     alert('제목을 입력해주세요.');
+        //     return;
+        // }
+        // //내용이 없을 시
+        // if (!content) {
+        //     alert('내용을 입력해주세요.');
+        //     return;
+        // }
+        // //이미지가 없을 시
+        // if (!image) {
+        //   alert('사진을 넣어주세요.');
+        //   return;
+        // }
+        // //날짜가 없을 시
+        // if (!date) {
+        //   alert('날짜를 입력해주세요.');
+        //   return;
+        // }
+        // //시간이 없을 시
+        // if (!time) {
+        //   alert('시간을 입력해주세요.');
+        //   return;
+        // }
+        // //장소가 없을 시
+        // if (!selectedLocation) {
+        //   alert('장소를 입력해주세요.');
+        //   return;
+        // }
 
-        //오픈채팅이 없을 시
-        if (!openText) {
-          alert('오픈채팅 주소를 입력해주세요.');
-          return;
-        }
-    
-        const participantDocRef = await addDoc(collectionRef, {
-            title: title, // 제목
-            content: content, // 내용
-            uid: user.uid,
-            nickName: user.displayName,
-            avatar: user.photoURL,
-            imageUrl: image, // 이미지 URL
-            dateTime: dateTime, // 생성 시간 (서버 시간 기준)
-            date: date,
-            time: time,
-            location: selectedLocation,
-            locationOther: otherText,
-            openText: openText,
-        });
+        // //오픈채팅이 없을 시
+        // if (!openText) {
+        //   alert('오픈채팅 주소를 입력해주세요.');
+        //   return;
+        // }
+
+        // const uploadedImageURL = await uploadImageAndGetURL(image);
+
+        const participantData = {
+          title,
+          content,
+          uid: user.uid,
+          nickName: user.displayName,
+          avatar: user.photoURL,
+          imageUrl: image,
+          dateTime,
+          date,
+          time,
+          location: selectedLocation,
+          locationOther: otherText,
+          openText,
+          state: '모집중',
+        };
+        
+        await addDoc(collectionRef, participantData);
   
         console.log('글이 성공적으로 저장되었습니다.');
 
@@ -116,6 +139,21 @@ const ParUpdate = ({route, navigation}) => {
   
 
   //이미지 저장 라이브러리
+  // const pickImage = async () => {
+  //   let result = await ImagePicker.launchImageLibraryAsync({
+  //     mediaTypes: ImagePicker.MediaTypeOptions.All,
+  //     allowsEditing: true,
+  //     aspect: [4, 3],
+  //     quality: 1,
+  //   });
+
+  //   //사용자가 이미지 선택 취소 하지 않을 시 실행
+  //   if (!result.canceled) {
+  //     setImage(result.assets[0].uri);
+  //     console.log('image', image)
+  //   }
+  // };
+
   const pickImage = async () => {
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -128,10 +166,8 @@ const ParUpdate = ({route, navigation}) => {
         const storage = getStorage();
         const imageRef = ref(storage, `participant_uploadImg/${user.uid}_${Date.now()}.jpg`);
 
-        const selectedImage = result.assets[0];
-
         // 이미지의 uri를 사용하여 Blob으로 변환
-        const response = await fetch(selectedImage.uri);
+        const response = await fetch(result.uri);
         const blob = await response.blob();
 
         try {
@@ -152,7 +188,6 @@ const ParUpdate = ({route, navigation}) => {
   //날짜선택
   const [dateOfPlong, setDateOfPlong] = useState("");
   const [date, setDate] = useState(new Date());
-  console.log('date', date)
   const [showPicker, setShowPicker] = useState(false);
 
   //시간선택
