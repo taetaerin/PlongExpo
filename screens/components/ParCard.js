@@ -56,11 +56,10 @@ const ImplementCard = ({avatar, name, image, title, location, date, time, conten
                     <Image source={{url: image}} style={styles.itemImage}/>
                     <TouchableOpacity onPress={handleScrap}>
                         {isScrapped ? (
-                            <Ionic style={styles.icon} name='heart-outline' size={20} color='red'></Ionic>
+                            <Ionic style={styles.icon} name='heart' size={20} color='red'></Ionic>
                         ):(
-                            <Ionic style={styles.icon} name='heart-outline' size={20} color='black'></Ionic>
+                            <Ionic style={styles.icon} name='heart-outline' size={20} color='white'></Ionic>
                         )}
-                        {/* <Ionic style={styles.icon} name='heart-sharp' size={20} color={isScrapped ? 'red' : 'white'}></Ionic> */}
                     </TouchableOpacity>
                 </View>
             

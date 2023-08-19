@@ -6,13 +6,20 @@ import Participant from './Participant';
 import { getAuth } from 'firebase/auth';
 import { arrayRemove, arrayUnion, collection, deleteDoc, doc, getDoc, getDocs, increment, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 import firebase, { firestore } from '../firebase';
+import { useIsFocused } from '@react-navigation/native';
 
 
 const ParContent = ({route, navigation}) => {
     const {data} = route.params;
     const [isParticipation, setIsParticipation] = useState(false);
+
+    //참여하기 버튼
     const [parComplete, setParComplete] = useState(false);
 
+    //참가자 수
+    const [participantCount, setParticipantCount] = useState(0);
+
+    //현재 사용자
     const [currentUser, setCurrentUser] = useState(null);
 
     const auth = getAuth();
@@ -116,7 +123,50 @@ const ParContent = ({route, navigation}) => {
         }
     };
 
+    const isFocused = useIsFocused();
 
+    // 데이터 초기화를 위한 useEffect
+    useEffect(() => {
+        if (isFocused) {
+            setParticipantCount(data.participantsUserId?.length || 0);
+            setParComplete(data.participantsUserId?.includes(currentUser?.uid) || false);
+        }
+    }, [isFocused, data.participantsUserId, currentUser?.uid]);
+    
+  
+    const toggleParticipation = async () => {
+        try {
+            const participantDocRef = doc(firestore, 'participant', data.id);
+            const participantDocSnapshot = await getDoc(participantDocRef);
+    
+            if (participantDocSnapshot.exists()) {
+                const participantsUserId = participantDocSnapshot.data().participantsUserId || [];
+                const updatedParticipants = new Set(participantsUserId);
+    
+                const isCurrentUserParticipating = updatedParticipants.has(currentUser.uid);
+    
+                if (isCurrentUserParticipating) {
+                    // 참여를 취소한 경우
+                    updatedParticipants.delete(currentUser.uid);
+                } else {
+                    // 참여한 경우
+                    updatedParticipants.add(currentUser.uid);
+                }
+    
+                await updateDoc(participantDocRef, { participantsUserId: Array.from(updatedParticipants) });
+                setParticipantCount(updatedParticipants.size);
+                setIsParticipation(!isCurrentUserParticipating); // 참여 상태 업데이트
+    
+                // 상태 업데이트 후에만 setParComplete 업데이트
+                setParComplete(updatedParticipants.has(currentUser.uid));
+            }
+        } catch (error) {
+            console.error('참여 상태 변경 중 오류가 발생했습니다:', error);
+        }
+    };
+    
+    
+    
     return (
         <View style={{flex: 1}}>
             <SafeAreaView style={{backgroundColor: 'white'}} >
@@ -156,7 +206,7 @@ const ParContent = ({route, navigation}) => {
                             </View>
 
                             {/* 사람 아이콘 */}
-                            <Ionic style={styles.icon} name='person-outline' size={16} color="#424242"> 기능 구현</Ionic>
+                            <Ionic style={styles.icon} name='person-outline' size={16} color="#424242"> {participantCount}</Ionic>
                         
                         </View>
 
@@ -202,22 +252,33 @@ const ParContent = ({route, navigation}) => {
                     </View>
                 </View>
             </SafeAreaView>
-                {!isParticipation ? (
-                    <Pressable disabled={parComplete} style={[styles.button,{ backgroundColor: '#0BE060'}]} 
-                        onPress={() => {
-                        setParComplete(true)
-                        Alert.alert('참여가 완료되었습니다.');
-                    }}>
-                        <Text style={{color: 'white', fontSize: 20, fontWeight: 600, marginBottom: 10}}>참여하기</Text>
+                {/* 참여하기 버튼 */}
+            {parComplete ? (
+                <Pressable
+                    style={[styles.button, { backgroundColor: '#CBCBCB' }]}
+                    onPress={async () => {
+                        await toggleParticipation();
+                        Alert.alert('참여가 취소되었습니다.');
+                    }}
+                >
+                    <Text style={{ color: 'white', fontSize: 20, fontWeight: '600', marginBottom: 10 }}>참여취소</Text>
+                </Pressable>
+                ) : (
+                    <Pressable
+                        style={[
+                            styles.btn,
+                            { backgroundColor: '#0BE060' }
+                        ]}
+                        onPress={async () => {
+                            await toggleParticipation();
+                            Alert.alert('참여가 완료되었습니다.');
+                        }}
+                    >
+                        <Text style={{ color: 'white', fontSize: 20, fontWeight: '600', marginBottom: 10 }}>
+                            참여하기
+                        </Text>
                     </Pressable>
-                ):(
-                    <Pressable disabled={parComplete} style={[styles.btn, { backgroundColor: '#CBCBCB' }]} 
-                     onPress={() => {
-                        setParComplete(true)
-                    }}>
-                        <Text style={{color: 'white', fontSize: 20, fontWeight: 600, marginBottom: 10}}>참여하기</Text> 
-                    </Pressable>
-            )}
+                )}
         </View>
     )
 }
