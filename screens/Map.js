@@ -49,6 +49,8 @@ const Map = () => {
   const onRegionChange = (region) => {
     console.log(region);
   };
+
+  
   //타이머
   const [seconds, SetSeconds] = useState(0);
   const [minutes, setMinutes] = useState(0);
@@ -134,15 +136,15 @@ const Map = () => {
   };
   
   routeCoordinates = [{ // 이동경로
-    latitude: 37.78825,
-    longitude: -122.4324,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
+    latitude: 37.5,
+    longitude: 127.0,
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01,
   },{ 
-    latitude: 37.78825,
-    longitude: -122.4324,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
+    latitude: 37.49,
+    longitude: 127.01,
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01,
   }]
   
 
@@ -191,11 +193,13 @@ const Map = () => {
        region={location}
        
       >
-        <Polyline coordinates={routeCoordinates} strokeColor="#EF9917" />
+        {/* 이동경로 표시 */}
+        <Polyline coordinates={routeCoordinates} strokeColor="#4DA9FF" strokeWidth={5} />
         <Marker
          draggable
          coordinate={draggableMarkerCoord}
          onDragEnd={(e) => setDraggableMarkerCoord(e.nativeEvent.coordinate)}
+         
         // coordinate={{
         //   latitude: 37.5,
         //   longitude: 127,
@@ -219,26 +223,32 @@ const Map = () => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <View style={{flexDirection: 'row'}}>
-            <Text style={styles.modalText}>킬로미터</Text>
+            <Text style={styles.modalText}>거리(Km)</Text>
             
             <Text style={styles.modalText}>시간</Text>
             <Text style={styles.modalText}>칼로리</Text>
             </View>
+            <View style={{flexDirection:"row"}}>
+           
             <Text style={styles.timer}>
                 {hours < 10 ? "0" + hours : hours}
+                :
                 {minutes < 10 ? "0" + minutes : minutes}
+                :
                 {seconds < 10 ? "0" + seconds : seconds}
                               
             </Text>
+            
+            </View>
             <View style={styles.timerbtn}>
-              <Button title="Start" onPress={startTimer}></Button>
-              <Button title="Stop" onPress={stopTimer}></Button>
-              <Button title="Clear" onPress={clear}></Button>
+              <Button title="시작" onPress={startTimer}></Button>
+              <Button title="중단" onPress={stopTimer}></Button>
+              {/* <Button title="Clear" onPress={clear}></Button> */}
               
             </View>
             <Pressable
               style={[styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}>
+              onPress={() => setModalVisible(!modalVisible)}onPressIn={clear}>
                 <Ionic  name='walk-outline'size={20} color='white'>
               <Text style={styles.btn}>플로깅 종료하기</Text>
               </Ionic>
@@ -249,9 +259,11 @@ const Map = () => {
       <Pressable
         style={[styles.buttonStart]}
         onPress={() => setModalVisible(true)}>
+          
         <Ionic  name='walk-outline'size={20} color='white'>
           <Text style={styles.btn}>플로깅 시작하기</Text>
           </Ionic>
+          
       </Pressable>
     </View>
        </SafeAreaView>
@@ -320,7 +332,7 @@ const styles = StyleSheet.create({
    
   },
   timer: {
-    fontSize: 30
+    fontSize: 24
   },
   timerbtn: {
     flexDirection: 'row',
