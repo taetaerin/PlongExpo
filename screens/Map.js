@@ -389,7 +389,8 @@ import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import MapViewDirections from 'react-native-maps-directions';
-import Ionic from 'react-native-vector-icons/Ionicons'
+import Ionic from 'react-native-vector-icons/Ionicons';
+import google from '../googleMap';
 
 const Map = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -447,7 +448,7 @@ const Map = () => {
             placeholder="출발지를 입력하세요"
             enablePoweredByContainer={false}
             query={{
-              key: 'AIzaSyBipToeNjt4m7NzPcNbTfWEnUgL3gxGoeA',
+              key: google.GOOGLE_API_KEY,
               language: 'ko',
             }}
             debounce={400}
@@ -470,7 +471,7 @@ const Map = () => {
           placeholder="도착지를 입력하세요"
           enablePoweredByContainer={false}
           query={{
-            key: 'AIzaSyBipToeNjt4m7NzPcNbTfWEnUgL3gxGoeA',
+            key: google.GOOGLE_API_KEY,
             language: 'ko',
           }}
           debounce={400}
@@ -514,7 +515,7 @@ const Map = () => {
                   latitude: destination.latitude,
                   longitude: destination.longitude,
                 }}
-                apikey="AIzaSyBipToeNjt4m7NzPcNbTfWEnUgL3gxGoeA"
+                apikey={google.GOOGLE_API_KEY}
                 strokeWidth={3}
                 strokeColor="#0BE060"
                 language="ko"

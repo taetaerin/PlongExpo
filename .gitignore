@@ -21,3 +21,5 @@ firebase.js
 
 # Ignore kakao.js
 kakao.js
+
+googleMap.js
