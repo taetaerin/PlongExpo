@@ -15,14 +15,14 @@ const Map = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [location, setLocation] = useState(null);
   const [distanceTravelled, setDistanceTravelled] = useState(0); // 누적 거리
-  const [kcal, setKcal] = useState(0); // 칼로리
+  
   //지도위치 받아오기
   const onRegionChange = (region) => {
     console.log(region);
   };
 
     //타이머
-  const [seconds, SetSeconds] = useState(0);
+  const [seconds, setSeconds] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [hours, setHours] = useState(0);
   const [customInterval, setCustomInterval] = useState();
@@ -43,20 +43,52 @@ const Map = () => {
 
   const clear = () => {
     stopTimer();
-    SetSeconds(0);
+    setSeconds(0);
     setMinutes(0);
     setHours(0);
   }
 
   const changeTime = () => {
-      SetSeconds((prevState) => {
-          if (prevState + 1 == 60) {
-              setMinutes(minutes + 1);
+      setSeconds((prevState) => {
+          if (prevState + 1 === 60) {
+              setMinutes((prevMinutes) => {
+                if (prevMinutes + 1 === 60) {
+                  setHours((prevHours) => prevHours + 1);
+                }
+              });
               return 0;
           }
+          
           return prevState + 1;
       })
   };
+  //칼로리
+  // const [kcal, setKcal] = useState(0); 
+  const [kcalo, setKcalo] = useState(0);
+  const startKcal = () => {
+    setCustomInterval(
+    setInterval(() => {
+        changeKcal();
+    }, 20000)
+    )
+  }
+  const stopKcal = () => {
+    if (customInterval) {
+      clearInterval(customInterval)
+  }
+  }
+  const clearKcal = () => {
+    stopKcal();
+    setKcalo(0);
+  }
+  const changeKcal = () => {
+    setKcalo((prevState) => {
+    return prevState + 1;
+     
+    })
+  };
+
+
   //출발지
   const [origin, setOrigin] = useState(null);
 
@@ -90,27 +122,28 @@ const Map = () => {
          }
          
          // 좌표값 갱신하기
-         this.setState({
-           latitude,
-           longitude,
-           routeCoordinates: routeCoordinates.concat([newCoordinate]), //이동경로
-           distanceTravelled:distanceTravelled + this.calcDistance(newCoordinate), // 이동거리
-           kcal:this.calcKcal(distanceTravelled), //칼로리 계산
-           prevLatLng: newCoordinate
-         });
+        //  this.setState({
+        //    latitude,
+        //    longitude,
+        //    routeCoordinates: routeCoordinates.concat([newCoordinate]), //이동경로
+        //    distanceTravelled:distanceTravelled + this.calcDistance(newCoordinate), // 이동거리
+        //    kcal:this.calcKcal(distanceTravelled), //칼로리 계산
+        //    prevLatLng: newCoordinate
+        //  });
       }
     );
   
   }
   
-  calcDistance = newLatLng => { //거리 계산
-    const { prevLatLng } = this.state;
-    return haversine(prevLatLng, newLatLng) || 0;
-  };
-  calcKcal = distanceDelta=>{
-    // 이동한 거리를 이용해 kcal 계산해주는 함수. 0.1m당 7kcal로 계산함.
-    return distanceDelta/0.1 * 7;
-  }
+  // calcDistance = newLatLng => { //거리 계산
+  //   const { prevLatLng } = this.state;
+  //   return haversine(prevLatLng, newLatLng) || 0;
+  // };
+  // calcKcal = distanceDelta=>{
+  //   // 이동한 거리를 이용해 kcal 계산해주는 함수. 0.1m당 7kcal로 계산함.
+  //   return distanceDelta/0.1 * 7;
+  // }
+
   // 내 현재 위치 중심으로 지도보여줌
   useLayoutEffect(() => {
     (async () => {
@@ -277,43 +310,48 @@ const Map = () => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
 
-            <View style={{flexDirection: 'row', backgroundColor: 'red', justifyContent: 'space-between', width: 330}}>
-                <Text style={styles.modalText}>킬로미터</Text>
-                <Text style={styles.modalText}>시간</Text>
-                <Text style={styles.modalText}>칼로리</Text>
-            </View>
+            
 
 
-            <View style={{backgroundColor: 'yellow', width: 330, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+            <View style={{ width: 250, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', right: 18, top: 35}}>
                 {/* 칼로리 컨테이터 */}
-                <View>
+                {/* <View>
                     <Text style={styles.timer}>{distanceTravelled} km</Text>
                 </View>
-                <Text style={styles.l}>|</Text>
+                <Text style={styles.l}>|</Text> */}
                 <View>
                     <Text style={styles.timer}>
                         {hours < 10 ? "0" + hours : hours} : {minutes < 10 ? "0" + minutes : minutes} : {seconds < 10 ? "0" + seconds : seconds} 
                     </Text>
                 </View>
-                <Text style={styles.l}>|</Text>
+                {/* <Text style={styles.l}>|</Text> */}
                 <View>
-                    <Text style={styles.timer}>{kcal} kcal</Text>
+                    <Text style={styles.timer}>{kcalo} kcal</Text>
                 </View>
                 </View>
+                <View style={{flexDirection: 'row',  justifyContent: 'space-between', width: 200, marginTop: 10}}>
+                {/* <Text style={styles.modalText}>킬로미터</Text> */}
+                <Text style={styles.modalText}>시간</Text>
+                <Text style={styles.modalText}>칼로리</Text>
+            </View>
 
                     <View style={styles.timerbtn}>
-                    <Button title="시작" onPress={startTimer}></Button>
-                    <Button title="중단" onPress={stopTimer}></Button>
+                    <Button style={styles.startbtn} title="시작" onPress={() => {
+                      startTimer();
+                      startKcal();
+                    }}></Button>
+                    <Button style={styles.stopbtn} title="중단" onPress={() => {
+                      stopTimer();
+                      stopKcal();
+                    }}></Button>
                       {/* <Button title="Clear" onPress={clear}></Button> */}
                     </View>
-                
-
-                
-            
 
             <Pressable
               style={[styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}onPressIn={clear}>
+              onPress={() => setModalVisible(!modalVisible)}onPressIn={() =>
+              {clear(); 
+              clearKcal();}}>
                 <Ionic  name='walk-outline'size={20} color='white'>
                   <Text style={styles.btn}>플로깅 종료하기</Text>
                 </Ionic>
@@ -369,7 +407,7 @@ const styles = StyleSheet.create({
       backgroundColor: 'white',
       borderTopLeftRadius: 20,
       borderTopRightRadius: 20,
-      height: '30%',
+      height: '27%',
       width: '100%',
       alignItems: 'center',
       shadowColor: '#000',
@@ -386,7 +424,7 @@ const styles = StyleSheet.create({
       width: 356, 
       alignSelf: 'center', 
       borderRadius: 5,
-      marginTop: 50
+      marginTop: 15
     },
     modalText: {
       marginTop: 30,
@@ -407,8 +445,10 @@ const styles = StyleSheet.create({
       },
       timerbtn: {
         flexDirection: 'row',
-        
+        fontSize: 18,
+        marginTop: 10
       },
+     
       l: {
         color: '#D9D9D9',
         fontSize: 30
