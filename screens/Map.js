@@ -1,6 +1,3 @@
-
-
-
 import { Modal, SafeAreaView, StyleSheet, View, Text, Button, Pressable} from 'react-native';
 import React, { useEffect, useState, useLayoutEffect } from 'react';
 import MapView, { Marker, AnimatedRegion,Polyline,MarkerAnimated, PROVIDER_GOOGLE } from 'react-native-maps';
@@ -8,85 +5,47 @@ import * as Location from 'expo-location';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import MapViewDirections from 'react-native-maps-directions';
 import Ionic from 'react-native-vector-icons/Ionicons';
-import google from './googleMap';
+import google from '../googleMap';
 
 
 const Map = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [location, setLocation] = useState(null);
-  const [distanceTravelled, setDistanceTravelled] = useState(0); // 누적 거리
-  
-  //지도위치 받아오기
-  const onRegionChange = (region) => {
-    console.log(region);
+
+  //시간
+  const [calories, setCalories] = useState(0);
+  const [timer, setTimer] = useState(0);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+
+  const formatTime = (timeInSeconds) => {
+    const hours = Math.floor(timeInSeconds / 3600);
+    const minutes = Math.floor((timeInSeconds % 3600) / 60);
+    const seconds = timeInSeconds % 60;
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
 
-    //타이머
-  const [seconds, setSeconds] = useState(0);
-  const [minutes, setMinutes] = useState(0);
-  const [hours, setHours] = useState(0);
-  const [customInterval, setCustomInterval] = useState();
+  useEffect(() => {
+    let calorieInterval;
+    let timerInterval;
 
-  const startTimer = () => {
-      setCustomInterval(
-          setInterval(() => {
-              changeTime();
-          }, 1000)
-      )
-  }
+    if (isTimerRunning) {
+      calorieInterval = setInterval(() => {
+        setCalories((prevCalories) => prevCalories + 1);
+      }, 20000);
 
-  const stopTimer = () => {
-      if (customInterval) {
-          clearInterval(customInterval)
-      }
-  }
+      timerInterval = setInterval(() => {
+        setTimer((prevTimer) => prevTimer + 1);
+      }, 1000);
+    } else {
+      clearInterval(calorieInterval);
+      clearInterval(timerInterval);
+    }
 
-  const clear = () => {
-    stopTimer();
-    setSeconds(0);
-    setMinutes(0);
-    setHours(0);
-  }
-
-  const changeTime = () => {
-      setSeconds((prevState) => {
-          if (prevState + 1 === 60) {
-              setMinutes((prevMinutes) => {
-                if (prevMinutes + 1 === 60) {
-                  setHours((prevHours) => prevHours + 1);
-                }
-              });
-              return 0;
-          }
-          
-          return prevState + 1;
-      })
-  };
-  //칼로리
-  // const [kcal, setKcal] = useState(0); 
-  const [kcalo, setKcalo] = useState(0);
-  const startKcal = () => {
-    setCustomInterval(
-    setInterval(() => {
-        changeKcal();
-    }, 20000)
-    )
-  }
-  const stopKcal = () => {
-    if (customInterval) {
-      clearInterval(customInterval)
-  }
-  }
-  const clearKcal = () => {
-    stopKcal();
-    setKcalo(0);
-  }
-  const changeKcal = () => {
-    setKcalo((prevState) => {
-    return prevState + 1;
-     
-    })
-  };
+    return () => {
+      clearInterval(calorieInterval);
+      clearInterval(timerInterval);
+    };
+  }, [isTimerRunning]);
 
 
   //출발지
@@ -95,81 +54,6 @@ const Map = () => {
   //도착지
   const [destination, setDestination] = useState(null);
 
-  componentDidMount = () => {
-
-    // 실시간으로 위치 변화 감지
-    Location.watchPositionAsync({ accuracy: Location.Accuracy.Balanced, timeInterval: 300, distanceInterval: 1 },
-      position => {
-        const { coordinate, routeCoordinates, distanceTravelled,kcal } =   this.state;
-        const { latitude, longitude } = position.coords;
-        
-        //새롭게 이동된 좌표
-        const newCoordinate = {
-          latitude,
-          longitude
-        };
-        
-        if (Platform.OS === "android") {
-          if (this.marker) {
-            this.marker.animateMarkerToCoordinate(
-              newCoordinate,
-              500
-            );
-           }
-
-         } else {
-           coordinate.timing(newCoordinate).start();
-         }
-         
-         // 좌표값 갱신하기
-        //  this.setState({
-        //    latitude,
-        //    longitude,
-        //    routeCoordinates: routeCoordinates.concat([newCoordinate]), //이동경로
-        //    distanceTravelled:distanceTravelled + this.calcDistance(newCoordinate), // 이동거리
-        //    kcal:this.calcKcal(distanceTravelled), //칼로리 계산
-        //    prevLatLng: newCoordinate
-        //  });
-      }
-    );
-  
-  }
-  
-  // calcDistance = newLatLng => { //거리 계산
-  //   const { prevLatLng } = this.state;
-  //   return haversine(prevLatLng, newLatLng) || 0;
-  // };
-  // calcKcal = distanceDelta=>{
-  //   // 이동한 거리를 이용해 kcal 계산해주는 함수. 0.1m당 7kcal로 계산함.
-  //   return distanceDelta/0.1 * 7;
-  // }
-
-  // 내 현재 위치 중심으로 지도보여줌
-  useLayoutEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
-      }
-
-      let location = await Location.getCurrentPositionAsync({});
-
-      setLocation({latitude:location.coords.latitude,longitude:location.coords.longitude,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.008,})
-    console.log(location);
-    })();
-
-  }, []);
-
-  getMapRegion = () => ({
-    latitude: this.state.latitude,
-    longitude: this.state.longitude,
-    latitudeDelta: LATITUDE_DELTA,
-    longitudeDelta: LONGITUDE_DELTA
-  });
- 
   return (
     <SafeAreaView style={styles.container}>
 
@@ -221,28 +105,19 @@ const Map = () => {
           }}
           fetchDetails={true}
         />
-
-        
-        
       </View>
 
       
-        <MapView
+      <MapView
           style={{ flex: 1 }}
-          // mapType="mutedStandard"
-          onRegionChange={onRegionChange}
+          mapType="mutedStandard"
           initialRegion={{
-            latitude: origin?.latitude || 37.5, // 출발지 설정되지 않았을 때 기본 값
-            longitude: origin?.longitude || 127.0, // 출발지 설정되지 않았을 때 기본 값
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
+            latitude: origin?.latitude || 37.78825, // 출발지 설정되지 않았을 때 기본 값
+            longitude: origin?.longitude || -122.4324, // 출발지 설정되지 않았을 때 기본 값
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01,
           }}
-          provider={PROVIDER_GOOGLE}
-       showsUserLocation
-       followUserLocation
-       loadingEnabled
-       region={location}
-        >
+      >
          
           {origin && destination ? (
             <>
@@ -288,13 +163,11 @@ const Map = () => {
           <Pressable
               style={styles.buttonStart}
               onPress={() => setModalVisible(true)}
-          >
-              
+          >   
               <View style={{flexDirection: 'row'}}>
                 <Ionic  name='walk-outline'size={20} color='white'  />
                 <Text style={styles.btnText}>플로깅 시작하기</Text>
               </View>
-                
           </Pressable>
         </View>
         
@@ -306,62 +179,63 @@ const Map = () => {
           onRequestClose={() => {
             Alert.alert('Modal has been closed.');
             setModalVisible(!modalVisible);
-          }}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
+          }}
+        >
 
-            
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
 
-
-            <View style={{ width: 250, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', right: 18, top: 35}}>
-                {/* 칼로리 컨테이터 */}
-                {/* <View>
-                    <Text style={styles.timer}>{distanceTravelled} km</Text>
-                </View>
-                <Text style={styles.l}>|</Text> */}
+              <View style={{ width: 240, top: 24, flexDirection: 'row', justifyContent: 'space-between'}}>
+                {/* 시간 */}
                 <View>
-                    <Text style={styles.timer}>
-                        {hours < 10 ? "0" + hours : hours} : {minutes < 10 ? "0" + minutes : minutes} : {seconds < 10 ? "0" + seconds : seconds} 
-                    </Text>
+                  <Text style={styles.timer}>
+                    {formatTime(timer)}
+                  </Text>
                 </View>
-                {/* <Text style={styles.l}>|</Text> */}
+
+                {/* 칼로리 */}
                 <View>
-                    <Text style={styles.timer}>{kcalo} kcal</Text>
+                  <Text style={styles.timer}>{calories} kcal</Text>
                 </View>
-                </View>
-                <View style={{flexDirection: 'row',  justifyContent: 'space-between', width: 200, marginTop: 10}}>
-                {/* <Text style={styles.modalText}>킬로미터</Text> */}
-                <Text style={styles.modalText}>시간</Text>
-                <Text style={styles.modalText}>칼로리</Text>
-            </View>
+              </View>
 
-                    <View style={styles.timerbtn}>
-                    <Button style={styles.startbtn} title="시작" onPress={() => {
-                      startTimer();
-                      startKcal();
-                    }}></Button>
-                    <Button style={styles.stopbtn} title="중단" onPress={() => {
-                      stopTimer();
-                      stopKcal();
-                    }}></Button>
-                      {/* <Button title="Clear" onPress={clear}></Button> */}
-                    </View>
+              <View style={{flexDirection: 'row', justifyContent: 'space-between', width: 220, marginTop: 18}}>
+                <Text style={styles.modalText}>{"       "}시간</Text>
+                <Text style={styles.modalText}>{"    "}칼로리</Text>
+              </View>
+       
 
-            <Pressable
-              style={[styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}onPressIn={() =>
-              {clear(); 
-              clearKcal();}}>
-                <Ionic  name='walk-outline'size={20} color='white'>
-                  <Text style={styles.btn}>플로깅 종료하기</Text>
-                </Ionic>
-            </Pressable>
+              <View style={styles.timerbtn}>
+                <Button
+                  title="시작"
+                  onPress={() => setIsTimerRunning(true)}
+                />
+
+                <Button
+                  title="중단"
+                  onPress={() => setIsTimerRunning(false)}
+                />             
+
+                <Button
+                  title="리셋"
+                  onPress={() => {
+                    setCalories(0);
+                    setTimer(0);
+                  }}
+                />
+
+              </View>
+
+              <Pressable
+                style={[styles.buttonClose]}
+                onPress={() => setModalVisible(!modalVisible)}>
+                  <Ionic  name='walk-outline'size={20} color='white'>
+                    <Text style={styles.btn}>플로깅 종료하기</Text>
+                  </Ionic>
+              </Pressable>
           </View>
         </View>
       </Modal>
-
-
-
     </SafeAreaView>
   );
 };
@@ -414,7 +288,6 @@ const styles = StyleSheet.create({
       shadowOpacity: 0.25,
       shadowRadius: 4,
       elevation: 5,
-      
     },
     buttonClose: {
       justifyContent: 'center',
@@ -427,9 +300,11 @@ const styles = StyleSheet.create({
       marginTop: 15
     },
     modalText: {
-      marginTop: 30,
-      fontSize: 18,
+      marginTop: 10,
+      fontSize: 16,
       textAlign: 'center', 
+      color: "#424242",
+      opacity: '0.7'
     },
     centeredView: {
       flex: 1,
@@ -438,19 +313,19 @@ const styles = StyleSheet.create({
       marginBottom:59,
     },
 
-      timer: {
-        fontSize: 24,
-        marginTop: 10,
-        fontWeight: 'bold'
-      },
-      timerbtn: {
-        flexDirection: 'row',
-        fontSize: 18,
-        marginTop: 10
-      },
+    timer: {
+      fontSize: 24,
+      fontWeight: 'bold'
+    },
+    
+    timerbtn: {
+      flexDirection: 'row',
+      fontSize: 18,
+      marginTop: 10,
+      justifyContent: 'center',
+    },
      
-      l: {
-        color: '#D9D9D9',
-        fontSize: 30
-      }
 });
+
+
+
