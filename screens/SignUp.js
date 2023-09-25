@@ -181,7 +181,6 @@ const SignUp = ({navigation, user}) => {
 
           const userData = {
             email,
-            password,
             uid: user.uid,
             name,
             phone,

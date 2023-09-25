@@ -172,9 +172,9 @@ const PostCard = ({ name, image, date, text, avatar, id, uid, likesCount}) => {
             <TouchableOpacity onPress={handleLike}>
               <View style={{flexDirection: 'row', alignItems: 'center', marginRight: 10}}>
                   {liked ? (
-                    <MaterialCommunityIcons name="seed-outline" size={24} color="green" style={{ marginRight: 4 }} />
+                    <Ionic name='leaf-outline' size={24} color="green" style={{ marginRight: 4 }} />
                   ) : (
-                    <MaterialCommunityIcons name="seed-outline" size={24} style={{ marginRight: 4 }} />
+                    <Ionic name='leaf-outline' size={24} style={{ marginRight: 4 }} />
                   )}
                   <Text style={{fontSize: 14}}>{likesCount}</Text>
               </View>
@@ -195,38 +195,16 @@ const Post = ({navigation, route}) => {
   const [refreshing, setRefreshing] = useState(false);
 
   //post 사용자에게 보여지게 - 테스트용 절대 지우지 마셈!!!!!1
-  const fetchPosts = async () => {
-    try {
-      //파이어베이스에 있는 posts 가져오기
-      const querySnapshot = await getDocs(collection(firestore, 'posts'));
-      const fetchedPosts = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      fetchedPosts.sort((a, b) => b.dateTime.localeCompare(a.dateTime));
-      setPosts(fetchedPosts);
-    } catch (error) {
-      console.error('Error fetching posts:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchPosts();
-  }, []);
-
-  // 게시판 데이터 가져오기 - 실시간 (이거 사용하기) 절대 지우지 마셈!!!!!1
- 
   // const fetchPosts = async () => {
   //   try {
-  //     const postCollectionRef = collection(firestore, 'posts');
-  //     onSnapshot(postCollectionRef, (querySnapshot) => {
-  //       const fetchedPosts = querySnapshot.docs.map((doc) => ({
-  //         id: doc.id,
-  //         ...doc.data(),
-  //       }));
-  //       fetchedPosts.sort((a, b) => b.dateTime.localeCompare(a.dateTime));
-  //       setPosts(fetchedPosts);
-  //     });
+  //     //파이어베이스에 있는 posts 가져오기
+  //     const querySnapshot = await getDocs(collection(firestore, 'posts'));
+  //     const fetchedPosts = querySnapshot.docs.map((doc) => ({
+  //       id: doc.id,
+  //       ...doc.data(),
+  //     }));
+  //     fetchedPosts.sort((a, b) => b.dateTime.localeCompare(a.dateTime));
+  //     setPosts(fetchedPosts);
   //   } catch (error) {
   //     console.error('Error fetching posts:', error);
   //   }
@@ -235,6 +213,28 @@ const Post = ({navigation, route}) => {
   // useEffect(() => {
   //   fetchPosts();
   // }, []);
+
+  // 게시판 데이터 가져오기 - 실시간 (이거 사용하기) 절대 지우지 마셈!!!!!1
+ 
+  const fetchPosts = async () => {
+    try {
+      const postCollectionRef = collection(firestore, 'posts');
+      onSnapshot(postCollectionRef, (querySnapshot) => {
+        const fetchedPosts = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        fetchedPosts.sort((a, b) => b.dateTime.localeCompare(a.dateTime));
+        setPosts(fetchedPosts);
+      });
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
 
   
   return (
@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#E7E7E7'
   },
   name: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: '500',
   }, 
   date: {
@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
   },
   text: {
     lineHeight: 21,
-    fontSize: 14
+    fontSize: 15
   },
   image: {
     width: '100%',
