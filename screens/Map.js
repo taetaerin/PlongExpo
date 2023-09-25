@@ -228,7 +228,8 @@ const Map = () => {
 
               <Pressable
                 style={[styles.buttonClose]}
-                onPress={() => setModalVisible(!modalVisible)}>
+                onPress={() => {setModalVisible(!modalVisible)
+                }}>
                   <Ionic  name='walk-outline'size={20} color='white'>
                     <Text style={styles.btn}>플로깅 종료하기</Text>
                   </Ionic>
