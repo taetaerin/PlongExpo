@@ -72,7 +72,7 @@ const Home = ({navigation}) => {
           alignItems: 'center', 
           justifyContent:'center'}}
         >
-          <Image source={logo} style={{width: 116, height: 38, resizeMode: 'contain'}} />
+          <Image source={logo} style={{width: 100, height: 20,top: -6, resizeMode: 'contain'}} />
       </View>
       <ScrollView>
   

@@ -172,9 +172,9 @@ const PostCard = ({ name, image, date, text, avatar, id, uid, likesCount}) => {
             <TouchableOpacity onPress={handleLike}>
               <View style={{flexDirection: 'row', alignItems: 'center', marginRight: 10}}>
                   {liked ? (
-                    <MaterialCommunityIcons name="seed-outline" size={24} color="green" style={{ marginRight: 4 }} />
+                    <Ionic name='leaf-outline' size={24} color="green" style={{ marginRight: 4 }} />
                   ) : (
-                    <MaterialCommunityIcons name="seed-outline" size={24} style={{ marginRight: 4 }} />
+                    <Ionic name='leaf-outline' size={24} style={{ marginRight: 4 }} />
                   )}
                   <Text style={{fontSize: 14}}>{likesCount}</Text>
               </View>
@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#E7E7E7'
   },
   name: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: '500',
   }, 
   date: {
@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
   },
   text: {
     lineHeight: 21,
-    fontSize: 14,
+    fontSize: 15
   },
   image: {
     width: '100%',

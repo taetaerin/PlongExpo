@@ -238,6 +238,7 @@ import {View, Text, SafeAreaView, TouchableOpacity, TextInput, Image, StyleSheet
 import React, { useEffect, useState } from 'react'
 import Ionic from 'react-native-vector-icons/Ionicons';
 import { Calendar } from 'react-native-calendars';
+import {LocaleConfig} from 'react-native-calendars';
 import { collection, doc, getDoc, getDocs, getFirestore, onSnapshot, query, where } from 'firebase/firestore';
 import { getDownloadURL, getStorage, ref } from 'firebase/storage';
 import { getAuth } from 'firebase/auth';
@@ -378,6 +379,13 @@ const Profile = ({navigation, user}) => {
     if (selectedDate) {
       markedDates[selectedDate] = { selected: true, selectedColor: '#0BE060' };
     }
+    LocaleConfig.locales['ko'] = {
+      monthNames: ['01','02','03','04','05','06','07','08','09','10','11','12'],
+      dayNames: ['일요일','월요일', '화요일','수요일','목요일','금요일','토요일'],
+      dayNamesShort: ['일', '월','화','수','목','금','토'],
+    };
+    LocaleConfig.defaultLocale = 'ko';
+   
 
     return (
         <SafeAreaView style={styles.container}>
@@ -438,9 +446,9 @@ const Profile = ({navigation, user}) => {
                  }} />
             </View>
 
-            <View style={{backgroundColor: '#E4EAF1', borderRadius: 5, marginHorizontal: 18, marginVertical: 10}}>
-                 <Text style={styles.text}>시간: {selectedDateInfo.timer} 초</Text>
-                 <Text style={styles.text}>칼로리:{selectedDateInfo.calories}</Text>
+            <View style={{backgroundColor: '#E4EAF1', borderRadius: 5, marginHorizontal: 18, marginVertical: 10, height: 55}}>
+                 <Text style={styles.txt}>시간: {selectedDateInfo.timer} 초</Text>
+                 <Text style={styles.txt}>칼로리: {selectedDateInfo.calories} kcal</Text>
             </View>
 
          
@@ -511,6 +519,13 @@ const styles = StyleSheet.create({
         fontSize: 18,
         left: 18,
         color: '#424242',
+    },
+    txt: {
+      fontSize: 16,
+      color: '#424242',
+      top: 5,
+      marginVertical: 3,
+      marginHorizontal: 10
     },
     text: {
         fontSize: 16,

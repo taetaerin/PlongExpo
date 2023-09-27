@@ -60,7 +60,7 @@ const PostContent = ({navigation, route}) => {
               {/* 새싹하고 댓글 아이콘 */}
               <View style={{flexDirection: 'row', marginTop: 14}}>
                   <View style={{flexDirection: 'row', alignItems: 'center', marginRight: 10}}>
-                      <MaterialCommunityIcons name='seed-outline' size={24} style={{marginRight: 4}} />
+                      <Ionic name='leaf-outline' size={24} style={{marginRight: 4}} />
                       <Text style={{fontSize: 14}}>{item.likes}</Text>
                   </View>
 
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#E7E7E7'
   },
   name: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: '500',
   }, 
   date: {
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
   },
   text: {
     lineHeight: 21,
-    fontSize: 14,
+    fontSize: 15,
   },
   image: {
     width: '100%',

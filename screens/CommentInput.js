@@ -46,9 +46,10 @@ const CommentInput = ({postId}) => {
   };
 
   return (
+    
     <KeyboardAvoidingView
       behavior="padding"
-      keyboardVerticalOffset={10}
+      keyboardVerticalOffset={60}
       style={styles.container}
     >
       <View style={styles.inputContainer}>
@@ -65,14 +66,18 @@ const CommentInput = ({postId}) => {
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
+    
   );
 };
 
 const styles = StyleSheet.create({
+
   container: {
+    flex: 1,
     position: 'absolute',
     bottom: 0,
     width: '100%',
+    height: 80,
     backgroundColor: '#f0f0f0',
     borderTopWidth: 1,
     borderTopColor: '#ccc',

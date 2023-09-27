@@ -605,7 +605,7 @@ const Map = () => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
 
-            <View style={{ width: 240, top: 24, flexDirection: 'row', justifyContent: 'space-between'}}>
+            <View style={{ width: 240, top: 40, flexDirection: 'row', justifyContent: 'space-between'}}>
               {/* 시간 */}
               <View>
                 <Text style={styles.timer}>
@@ -619,7 +619,7 @@ const Map = () => {
               </View>
             </View>
 
-            <View style={{flexDirection: 'row', justifyContent: 'space-between', width: 220, marginTop: 18}}>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', width: 220, marginTop: 35}}>
               <Text style={styles.modalText}>{"       "}시간</Text>
               <Text style={styles.modalText}>{"    "}칼로리</Text>
             </View>
@@ -708,7 +708,7 @@ const styles = StyleSheet.create({
       width: 356, 
       alignSelf: 'center', 
       borderRadius: 5,
-      marginTop: 15
+      marginTop: 18
     },
     modalText: {
       marginTop: 10,
@@ -732,7 +732,7 @@ const styles = StyleSheet.create({
     timerbtn: {
       flexDirection: 'row',
       fontSize: 18,
-      marginTop: 10,
+      marginTop: 12,
       justifyContent: 'center',
     },
      
