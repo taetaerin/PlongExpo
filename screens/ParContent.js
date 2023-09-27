@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, Pressable, Alert, ActionSheetIOS } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Image, Pressable, Alert, ActionSheetIOS, ScrollView } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionic from 'react-native-vector-icons/Ionicons';
@@ -170,30 +170,31 @@ const ParContent = ({route, navigation}) => {
     return (
         <View style={{flex: 1}}>
             <SafeAreaView style={{backgroundColor: 'white'}} >
-                <View>
-                    {/* 상단바 */}
-                    <View 
-                        style={{
-                            width: '100%', 
-                            backgroundColor: 'white', 
-                            height: 44, 
-                            alignItems: 'center',
-                            paddingHorizontal: 18,
-                            flexDirection: 'row',
-                            justifyContent:'space-between',
-                        }}>
+                {/* 상단바 */}
+                <View 
+                    style={{
+                        width: '100%', 
+                        backgroundColor: 'white', 
+                        height: 44, 
+                        alignItems: 'center',
+                        paddingHorizontal: 18,
+                        flexDirection: 'row',
+                        justifyContent:'space-between',
+                    }}>
 
-                        {/* 뒤로가기  */}
-                        <TouchableOpacity>
-                            <Ionic name="chevron-back-sharp" style={{fontSize:24}} onPress={() => navigation.goBack()} />
-                        </TouchableOpacity>
+                    {/* 뒤로가기  */}
+                    <TouchableOpacity>
+                        <Ionic name="chevron-back-sharp" style={{fontSize:24}} onPress={() => navigation.goBack()} />
+                    </TouchableOpacity>
 
-                        {/* 점 세개 */}
-                        <TouchableOpacity onPress={handleAction}>
-                            <Ionic name= "md-ellipsis-horizontal" size={17} color='#424242' />
-                        </TouchableOpacity>
+                    {/* 점 세개 */}
+                    <TouchableOpacity onPress={handleAction}>
+                        <Ionic name= "md-ellipsis-horizontal" size={17} color='#424242' />
+                    </TouchableOpacity>
 
-                    </View>
+                </View>
+
+                <ScrollView>
 
                     <View>
                         <Image source={{url: data.imageUrl}} style={{width: '100%', height: 240}} />
@@ -238,21 +239,23 @@ const ParContent = ({route, navigation}) => {
                         </View>
 
                         {/* 준비물정보 */}
-                        {/* <View style={{marginTop: 10}}>
-                            <Text style={styles.content}>준비물: {data.meterials}</Text>
-                        </View> */}
+                        <View style={{flexDirection: 'row', marginTop: 10}}>
+                            <Ionic name='chatbubble-ellipses-outline' size={18} color='#424242'></Ionic>
+                            <Text style={styles.content}> 오픈채팅 : {data.openText}</Text>
+                        </View>
 
                         <View style={{marginTop: 40}}>
-                            <Text style={styles.content}>{data.content}</Text>
+                            <Text style={styles.contentLetter}>{data.content}</Text>
                         </View>
                         
                         <View style={{marginBottom: 165}}></View>
                         
             
                     </View>
-                </View>
+                </ScrollView>
             </SafeAreaView>
-                {/* 참여하기 버튼 */}
+            
+            {/* 참여하기 버튼 */}
             {parComplete ? (
                 <Pressable
                     style={[styles.button, { backgroundColor: '#CBCBCB' }]}
@@ -332,6 +335,10 @@ const styles = StyleSheet.create({
 
     content: {
         fontSize: 16,
+    },
+    contentLetter: {
+        fontSize: 16,
+        lineHeight: 24,
     },
     button: {
         position: 'absolute',

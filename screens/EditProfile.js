@@ -13,7 +13,7 @@ const EditProfile = ({ navigation, user }) => {
   //닉네임
   const [nickName, setNickName] = useState('');
   //닉네임 사용 여부 - true: 사용가능 
-  const [isNicknameAvailable, setIsNicknameAvailable] = useState(true); 
+  const [isNicknameAvailable, setIsNicknameAvailable] = useState(null); 
   //이전 닉네임 저장
   const [prevNickName, setPrevNickName] = useState('');
  
@@ -24,9 +24,6 @@ const EditProfile = ({ navigation, user }) => {
   
   //닉네임관련 - 완료 버튼
   const [isNicknameChanged, setIsNicknameChanged] = useState(false);
-
-
-  console.log('user 정보', user)
 
   //닉네임 변경
   const changedNickName= (text) => {
@@ -75,6 +72,7 @@ const EditProfile = ({ navigation, user }) => {
       if (nickName !== prevNickName) {
         //중복 여부 함수 실행
         const isNicknameAvailable = await checkNicknameAvailability();
+        console.log('isNickAvailable', isNicknameAvailable )
         //닉네임 중복 시
         if (!isNicknameAvailable) {
           Alert.alert('이미 존재하는 닉네임입니다.');
@@ -122,7 +120,9 @@ const EditProfile = ({ navigation, user }) => {
         });
 
         navigation.navigate('Profile');
+
       });
+
 
     } catch (error) {
       console.error('이미지 업로드 중 오류:', error);
@@ -161,7 +161,7 @@ const EditProfile = ({ navigation, user }) => {
     //닉네임이 없을 때
     if (!nickName) {
       setIsNicknameAvailable(true); // Set as available if nickname is empty
-      return;
+      return true;
     }
 
     try {
@@ -176,10 +176,12 @@ const EditProfile = ({ navigation, user }) => {
         // 닉네임이 이미 존재하는 경우
         console.log('이미 존재하는 닉네임입니다.');
         setIsNicknameAvailable(false);
+        return false;
       } else {
         // 닉네임이 존재하지 않는 경우
         console.log('사용 가능한 닉네임입니다.');
         setIsNicknameAvailable(true);
+        return true;
         // 여기에서 닉네임을 변경하거나 저장 등의 로직을 추가할 수 있습니다.
       }
     } catch (error) {

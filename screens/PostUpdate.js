@@ -10,8 +10,8 @@ import moment from 'moment';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 
 const PostUpdate = ({navigation, user}) => {
-    
-//내용 작성
+
+    //내용 작성
 const [content, setContent] = useState('');
 
 //사진 선택
@@ -43,6 +43,7 @@ const handlePostSubmit = async () => {
             alert('내용을 입력해주세요.');
             return;
         }
+        
         const postDocRef = await addDoc(collectionRef, {
             uid: user.uid,
             content: content, // 내용

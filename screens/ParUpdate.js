@@ -487,8 +487,8 @@ const styles = StyleSheet.create({
   },
   content: {
     marginTop: 30,
-    fontSize: 18,
-    fontWeight: 'bold'
+    fontSize: 16,
+    // fontWeight: 'bold'
   },
   line: {
     borderBottomColor: '#CBCBCB',

@@ -1,25 +1,26 @@
-import { FlatList, SafeAreaView, ScrollView, StyleSheet, Text, View, Image, TouchableOpacity, RefreshControl, ActionSheetIOS, Alert} from 'react-native';
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import { FlatList, SafeAreaView, StyleSheet, Text, View, Image, TouchableOpacity, RefreshControl, ActionSheetIOS, Alert} from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Ionic from 'react-native-vector-icons/Ionicons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import { arrayRemove, arrayUnion, collection, deleteDoc, doc, getDoc, getDocs, increment, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
+import {  collection, deleteDoc, doc, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 import firebase, { firestore } from '../firebase';
 import { getAuth } from 'firebase/auth';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 import { useNavigation } from '@react-navigation/native';
 
 
 const PostCard = ({ name, image, date, text, avatar, id, uid, likesCount}) => {
 
+  const navigation = useNavigation();
+
   //댓글 개수 기능
   const [commentCount, setCommentCount] = useState(0);
 
+  //파이어베이스 comments 컬랙션 
   useEffect(() => {
     const commentsRef = collection(firestore, 'comments');
     const q = query(commentsRef, where('postId', '==', id));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      setCommentCount(querySnapshot.size); // 댓글 수를 가져와서 설정
+      // 댓글 수를 가져와서 설정
+      setCommentCount(querySnapshot.size); 
 
       // 해당 게시물의 commentCount 업데이트
       const postDocRef = doc(firestore, 'posts', id);
@@ -28,33 +29,31 @@ const PostCard = ({ name, image, date, text, avatar, id, uid, likesCount}) => {
 
     return () => unsubscribe(); 
   }, [id]);
-  
 
-  
-  const navigation = useNavigation();
-
+  //수정하기 클릭 시 PostEdit로 이동
   const handleEdit = async () => {
     //PostEdit로 postId 보내주기
     navigation.navigate('PostEdit', { postId: id });
   };
 
-  //이파리 클릭 기능
-  const [liked, setLiked] = useState(false);
-
-  //게시물 삭제하기
+  
+  //삭제하기 클릭 시 게시물 삭제하기
   const handleDelete = async () => {
     try {
       // 게시물을 삭제하기 위해 게시물 문서의 레퍼런스를 가져오기
       const postDocRef = doc(firestore, 'posts', id);
-  
+      
       // 게시물 문서를 삭제
       await deleteDoc(postDocRef);
-  
+      
     } catch (error) {
       console.error('게시물 삭제 중 오류가 발생했습니다:', error);
     }
   };
   
+  //이파리(좋아요) 클릭 기능
+  const [liked, setLiked] = useState(false);
+ 
   // 이파리(좋아요) 기능
   const handleLike = async () => {
     try {
@@ -81,7 +80,6 @@ const PostCard = ({ name, image, date, text, avatar, id, uid, likesCount}) => {
   };
 
   const [currentUser, setCurrentUser] = useState(null);
-
   const auth = getAuth();
 
   useEffect(() => {
@@ -190,32 +188,16 @@ const PostCard = ({ name, image, date, text, avatar, id, uid, likesCount}) => {
   );
 }
 
+
+
+
+
+
 const Post = ({navigation, route}) => {
   const [posts, setPosts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
-  //post 사용자에게 보여지게 - 테스트용 절대 지우지 마셈!!!!!1
-  // const fetchPosts = async () => {
-  //   try {
-  //     //파이어베이스에 있는 posts 가져오기
-  //     const querySnapshot = await getDocs(collection(firestore, 'posts'));
-  //     const fetchedPosts = querySnapshot.docs.map((doc) => ({
-  //       id: doc.id,
-  //       ...doc.data(),
-  //     }));
-  //     fetchedPosts.sort((a, b) => b.dateTime.localeCompare(a.dateTime));
-  //     setPosts(fetchedPosts);
-  //   } catch (error) {
-  //     console.error('Error fetching posts:', error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchPosts();
-  // }, []);
-
-  // 게시판 데이터 가져오기 - 실시간 (이거 사용하기) 절대 지우지 마셈!!!!!1
- 
+  // 게시판 데이터 가져오기 
   const fetchPosts = async () => {
     try {
       const postCollectionRef = collection(firestore, 'posts');
@@ -316,7 +298,7 @@ const styles = StyleSheet.create({
   },
   text: {
     lineHeight: 21,
-    fontSize: 15
+    fontSize: 16,
   },
   image: {
     width: '100%',

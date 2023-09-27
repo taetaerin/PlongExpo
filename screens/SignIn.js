@@ -16,7 +16,6 @@ const SignIn = ({ navigation }) => {
   const handleSignIn = async () => {
     try {
         const user = await signInWithEmailAndPassword(auth, email, password);
-        console.log('user', user)
         navigation.navigate('Main')
         
     } catch (error){
