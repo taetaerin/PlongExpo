@@ -12,6 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 
 const PostCard = ({ name, image, date, text, avatar, id, uid, likesCount}) => {
 
+
   //댓글 개수 기능
   const [commentCount, setCommentCount] = useState(0);
 
@@ -81,6 +82,8 @@ const PostCard = ({ name, image, date, text, avatar, id, uid, likesCount}) => {
   };
 
   const [currentUser, setCurrentUser] = useState(null);
+
+  console.log('a', currentUser)
 
   const auth = getAuth();
 

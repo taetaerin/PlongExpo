@@ -26,8 +26,6 @@ const EditProfile = ({ navigation, user }) => {
   const [isNicknameChanged, setIsNicknameChanged] = useState(false);
 
 
-  console.log('user 정보', user)
-
   //닉네임 변경
   const changedNickName= (text) => {
     setNickName(text)
@@ -72,15 +70,15 @@ const EditProfile = ({ navigation, user }) => {
       }
 
       //닉네임 변경시 
-      if (nickName !== prevNickName) {
-        //중복 여부 함수 실행
-        const isNicknameAvailable = await checkNicknameAvailability();
-        //닉네임 중복 시
-        if (!isNicknameAvailable) {
-          Alert.alert('이미 존재하는 닉네임입니다.');
-          return;
-        }
-      }
+      // if (nickName !== prevNickName) {
+      //   //중복 여부 함수 실행
+      //   const isNicknameAvailable = await checkNicknameAvailability();
+      //   //닉네임 중복 시
+      //   if (!isNicknameAvailable) {
+      //     Alert.alert('이미 존재하는 닉네임입니다.');
+      //     return;
+      //   }
+      // }
 
       //닉네임 변경, 프로필 이미지 변경 X
       if (nickName === prevNickName && !isImageChanged) {
