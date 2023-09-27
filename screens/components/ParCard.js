@@ -110,7 +110,8 @@ const styles = StyleSheet.create({
 
     name: {
         fontSize: 14,
-        fontWeight: '300'
+        fontWeight: '300',
+        top: 3
 
     },
 

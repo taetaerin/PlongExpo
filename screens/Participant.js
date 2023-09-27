@@ -70,15 +70,15 @@ const Participant = ({navigation}) => {
       {/* 모집중 모집완료 스크랩 */}
       <View style={{ flexDirection: 'row', marginTop:30, marginBottom: 10}}>
         <TouchableOpacity onPress={() => setActiveTab('모집중')}>
-          <Text style={[styles.subtitle, { color: activeTab === '모집중' ? '#48566A' : '#868686' }]}>모집중</Text>
+          <Text style={[styles.subtitle, { color: activeTab === '모집중' ? '#48566A' : '#A8A8A8' }]}>모집중</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => setActiveTab('모집완료')}>
-          <Text style={[styles.subtitle, { color: activeTab === '모집완료' ? '#48566A' : '#868686' }]}>모집완료</Text>
+          <Text style={[styles.subtitle, { color: activeTab === '모집완료' ? '#48566A' : '#A8A8A8' }]}>모집완료</Text>
         </TouchableOpacity>
         
         <TouchableOpacity onPress={() => setActiveTab('스크랩')}>
-          <Text style={[styles.subtitle, { color: activeTab === '스크랩' ? '#48566A' : '#868686' }]}>스크랩</Text>
+          <Text style={[styles.subtitle, { color: activeTab === '스크랩' ? '#48566A' : '#A8A8A8' }]}>스크랩</Text>
         </TouchableOpacity>
       </View>
 
