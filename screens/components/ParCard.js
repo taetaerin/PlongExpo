@@ -63,7 +63,7 @@ const ImplementCard = ({avatar, name, image, title, location, date, time, conten
                     </TouchableOpacity>
                 </View>
             
-                <View style={{flexDirection: 'row', marginTop: -15 ,marginVertical: 10}}>
+                <View style={{flexDirection: 'row', marginTop: -18 ,marginVertical: 10,  alignItems: 'center'}}>
                     <Image source={{url: avatar}} style={styles.avatar}></Image>
                     <Text style={styles.name}>{name}</Text>
                 </View>
@@ -82,7 +82,7 @@ const ImplementCard = ({avatar, name, image, title, location, date, time, conten
                     </View>
                 </View>
 
-                <Text style={styles.b}>{state}</Text> 
+                <Text>{state}</Text> 
 
             </View>
         </View>
@@ -102,17 +102,15 @@ const styles = StyleSheet.create({
         left: 137,
     },
     avatar: {
-        width: 20,
-        height: 20,
+        width: 22,
+        height: 22,
         borderRadius: 50,
-        marginRight: 10,
+        marginRight: 6,
       },
 
     name: {
         fontSize: 14,
         fontWeight: '300',
-        top: 3
-
     },
 
     itemImage: {
@@ -129,7 +127,6 @@ const styles = StyleSheet.create({
         color: "#424242",
         fontWeight: 'bold',
         marginBottom: 10,
-        
     },
 
     item:{

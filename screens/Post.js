@@ -161,9 +161,11 @@ const PostCard = ({ name, image, date, text, avatar, id, uid, likesCount}) => {
       
         {/* 사용자 작성 글 */}
         <Text style={styles.text}>{text}</Text>
+    
         
         {/* 사용자 업로드 사진 */}
         {image && <Image source={{url : image}} style={styles.image} resizeMode='cover'/>}
+
 
         {/* 새싹하고 댓글 아이콘 */}
         <View style={{flexDirection: 'row', marginTop: 14}}>
@@ -237,7 +239,7 @@ const Post = ({navigation, route}) => {
                 {/* 플러스 아이콘 */}
                 <View style={{ position: 'absolute', right: -145 }}>
                   <TouchableOpacity onPress={() => navigation.navigate('PostUpdate')}>
-                    <Ionic name='add-outline' color="#686868" style={{fontSize: 24}} />
+                    <Ionic name='add-outline' color="#686868" style={{fontSize: 26}} />
                   </TouchableOpacity>
                 </View>
             </View>

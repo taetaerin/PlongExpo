@@ -400,7 +400,7 @@ const Profile = ({navigation, user}) => {
                   borderBottomColor: '#EAEAEA',
                 }}>
                   <View>
-                      <Text style={{fontSize: 20, color: '#424242'}}>프로필</Text>
+                      <Text style={{fontSize: 22, color: '#424242'}}>프로필</Text>
                   </View>
             </View>
           <ScrollView> 
@@ -453,7 +453,7 @@ const Profile = ({navigation, user}) => {
 
          
             <View style={{marginVertical: 10}}>
-              <TouchableOpacity style={styles.touchBox} onPress={() => onPressSaveEdit()} >
+              <TouchableOpacity style={styles.touchBox} >
                   <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                       <Text style={styles.text}>
                           내가 작성한 게시물
@@ -464,7 +464,7 @@ const Profile = ({navigation, user}) => {
 
               <View style={styles.line}></View>
 
-              <TouchableOpacity style={styles.touchBox} onPress={() => onPressSaveEdit()} >
+              <TouchableOpacity style={styles.touchBox} >
                   <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                       <Text style={styles.text}>
                           내가 작성한 모집글

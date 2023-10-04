@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   },
   text: {
     lineHeight: 21,
-    fontSize: 15,
+    fontSize: 16,
   },
   image: {
     width: '100%',

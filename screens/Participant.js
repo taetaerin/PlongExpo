@@ -59,12 +59,12 @@ const Participant = ({navigation}) => {
         marginHorizontal: 14,
         height: 44}}>
         <TouchableOpacity onPress={() => navigation.navigate('ParUpdate')}>
-          <Ionic name="md-add" size={27} color='#424242'></Ionic>
+          <Ionic name="md-add" size={26} color='#424242'></Ionic>
         </TouchableOpacity>
 
         <Text style={styles.title}>모집글</Text>
 
-        <Ionic name="md-search-outline" size={27} color='#424242'></Ionic>
+        <Ionic name="md-search-outline" size={24} color='#424242'></Ionic>
       </View>
       
       {/* 모집중 모집완료 스크랩 */}
@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     color: '#48566A'
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 17,
     color: '#868686',
     marginLeft: 18,
     fontWeight: 'bold'
