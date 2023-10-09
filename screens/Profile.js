@@ -446,7 +446,7 @@ const Profile = ({navigation, user}) => {
                  }} />
             </View>
 
-            <View style={{backgroundColor: '#E4EAF1', borderRadius: 5, marginHorizontal: 18, marginVertical: 10, height: 55}}>
+            <View style={{backgroundColor: '#E4EAF1', borderRadius: 5, marginHorizontal: 18, marginVertical: 10, height: 60}}>
                  <Text style={styles.txt}>시간: {selectedDateInfo.timer} 초</Text>
                  <Text style={styles.txt}>칼로리: {selectedDateInfo.calories} kcal</Text>
             </View>
