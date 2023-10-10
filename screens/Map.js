@@ -369,14 +369,14 @@ const styles = StyleSheet.create({
       width: 356, 
       alignSelf: 'center', 
       borderRadius: 5,
-      marginTop: 18
+      marginTop: 12
     },
     modalText: {
       marginTop: 10,
       fontSize: 16,
       textAlign: 'center', 
       color: "#424242",
-      opacity: '0.7'
+      opacity: 0.7
     },
     centeredView: {
       flex: 1,

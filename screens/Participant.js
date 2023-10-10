@@ -13,7 +13,7 @@ const Participant = ({navigation}) => {
   const [activeTab, setActiveTab] = useState('모집중');
 
 
-  // 참여하기 데이터 가져오기 - 실시간 (이거 사용하기) 절대 지우지 마셈!!!!!1
+  // 참여하기 데이터 가져오기 
   const fetchParticipant = async () => {
     try {
       const participantCollectionRef = collection(firestore, 'participant');
@@ -108,7 +108,7 @@ const Participant = ({navigation}) => {
           
         </View>
         
-        <View style={{height: 100}} />
+        {/* <View style={{height: 100}} /> */}
       </ScrollView>
     </SafeAreaView>
   )
