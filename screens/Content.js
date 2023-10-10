@@ -24,7 +24,7 @@ const Content = ({route, navigation}) => {
                     </TouchableOpacity>
             </View>
 
-            <View style={{height: 240, alignItems: 'center', justifyContent: 'center', backgroundColor:'#F8F8F8'}}>
+            <View style={{height: 240, alignItems: 'center', justifyContent: 'center'}}>
                 <Image 
                     source={data.image} 
                     resizeMode='contain' 
@@ -50,7 +50,6 @@ export default Content;
 
 const styles = StyleSheet.create({
     wrapper : {
-        // backgroundColor: 'yellow',
         paddingHorizontal: 18,
     },
     title: {

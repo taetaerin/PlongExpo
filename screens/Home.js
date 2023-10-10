@@ -93,7 +93,7 @@ const Home = ({navigation}) => {
           })}
         </View>
 
-        {/* <Text style={styles.subTitle}>환경이야기 보따리</Text>
+        <Text style={styles.subTitle}>환경이야기 보따리</Text>
         <View style={styles.container}>
           {environmentalStory.map((data, index) => {
             return(
@@ -102,7 +102,7 @@ const Home = ({navigation}) => {
               </TouchableOpacity>
             )
           })}
-        </View> */}
+        </View>
       </ScrollView>
     </SafeAreaView>
   )
@@ -119,13 +119,6 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     marginVertical: 15,
     paddingHorizontal: 18,
-  },
-  dataImage: {
-    // width: 160,
-    // height: 140,
-    width: 90,
-    height: 90,
-    borderRadius: 2,
   },
   container: {
     flexDirection: 'row',

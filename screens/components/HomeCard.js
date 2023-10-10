@@ -8,7 +8,7 @@ const ImplementCard = ({image, title}) => {
     <View style={styles.container}>
         <View style={styles.item}>
             <View style={styles.itemImage} >
-                <Image source={image} />
+                <Image source={image} style={styles.image} />
             </View>
             <Text style={styles.itemTitle}>{title}</Text>
         </View>
@@ -23,7 +23,6 @@ const styles = StyleSheet.create({
         marginBottom: 6,
         justifyContent: 'center',
         alignItems: 'center',
-        
     },
 
     itemImage: {
@@ -35,13 +34,16 @@ const styles = StyleSheet.create({
         borderColor: "#EEEEEE",
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'white',
+    },
+
+    image: {
+        width: '100%',
+        height: '100%',
     },
 
     itemTitle: {
         fontSize: 16,
         color: "#424242",
-        
     },
 
     item:{
