@@ -3,8 +3,6 @@ import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ImplementCard from './components/HomeCard'; 
 
-
-
 const environmentalPractice = [
   {
     id: 1,
@@ -31,6 +29,7 @@ const environmentalPractice = [
     content: '우리는 매일 쓰는 화장실에서 생각보다 엄청난 양의 물을 사용하고 있습니다. 물을 절약하기 위해서는 양치할 때는 양치컵을 사용하고, 세수할 때는 수도꼭지를 틀어 놓은 채 하지 않습니다. 가능하다면 샤워 시간을 줄이는 것도 좋은 방법입니다. 샤워시간을 1분만 줄여도 12L의 물을 절약할 수 있습니다. 또한 물을 채운 물병을 변기수조에 넣으면, 변기를 내릴 때 물 사용량을 줄일 수 있습니다. 우리나라도 지금과 같은 환경오염이 지속된다면 물 부족 국가가 될 수 있습니다. 개인의 노력으로 모두가 물을 절약하고 깨끗이 쓰기위해 일상에서부터 작은 실천을 해 나간다면 물 부족 현상을 분명 극복할 수 있을 것입니다.'
   },
 ];
+
 
 const environmentalStory = [
   {
@@ -59,6 +58,7 @@ const environmentalStory = [
   },
 ];
 
+
 const Home = ({navigation}) => {
   let jejuImg = require('../assets/images/plogging.jpeg');
   let logo = require('../assets/images/Logo.png'); 
@@ -74,7 +74,8 @@ const Home = ({navigation}) => {
         >
           <Image source={logo} style={{width: 100, height: 20,top: -6, resizeMode: 'contain'}} />
       </View>
-      <ScrollView>
+      
+      <ScrollView style={{backgroundColor: '#F8F8F8'}}>
   
         <View style={{top: 0, width: '100%', height: 225}}>
           <Image source={jejuImg} style={styles.image} />
@@ -92,7 +93,7 @@ const Home = ({navigation}) => {
           })}
         </View>
 
-        <Text style={styles.subTitle}>환경이야기 보따리</Text>
+        {/* <Text style={styles.subTitle}>환경이야기 보따리</Text>
         <View style={styles.container}>
           {environmentalStory.map((data, index) => {
             return(
@@ -101,7 +102,7 @@ const Home = ({navigation}) => {
               </TouchableOpacity>
             )
           })}
-        </View>
+        </View> */}
       </ScrollView>
     </SafeAreaView>
   )
@@ -131,7 +132,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     flexWrap: 'wrap',
     paddingHorizontal: 15,
-    marginBottom: 10,
+    marginBottom: 20,
   },
 });
 

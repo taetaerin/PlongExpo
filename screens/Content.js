@@ -24,8 +24,12 @@ const Content = ({route, navigation}) => {
                     </TouchableOpacity>
             </View>
 
-            <View>
-                <Image source={data.image} style={{width: '100%', height: 240}} />
+            <View style={{height: 240, alignItems: 'center', justifyContent: 'center', backgroundColor:'#F8F8F8'}}>
+                <Image 
+                    source={data.image} 
+                    resizeMode='contain' 
+                    style={{width: 200, height: 200}} 
+                />
             </View>
 
             <View style={styles.wrapper}>
