@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
         marginBottom: 6,
         justifyContent: 'center',
         alignItems: 'center',
+        
     },
 
     itemImage: {
@@ -40,6 +41,7 @@ const styles = StyleSheet.create({
     itemTitle: {
         fontSize: 16,
         color: "#424242",
+        
     },
 
     item:{
