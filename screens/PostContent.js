@@ -107,8 +107,9 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   text: {
-    lineHeight: 21,
+    lineHeight: 16*1.6,
     fontSize: 16,
+    color: '#686868',
   },
   image: {
     width: '100%',

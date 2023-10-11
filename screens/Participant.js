@@ -49,7 +49,7 @@ const Participant = ({navigation}) => {
 
  
   return (
-    <SafeAreaView style={{backgroundColor: 'white', flex: 1,}}>
+    <SafeAreaView style={{backgroundColor: 'white', flex: 1}}>
       {/* 상단바 */}
       <View 
         style={{
@@ -57,7 +57,8 @@ const Participant = ({navigation}) => {
         alignItems: 'center',
         justifyContent:'space-between', 
         marginHorizontal: 14,
-        height: 44}}>
+        height: 44,
+        }}>
         <TouchableOpacity onPress={() => navigation.navigate('ParUpdate')}>
           <Ionic name="md-add" size={26} color='#424242'></Ionic>
         </TouchableOpacity>

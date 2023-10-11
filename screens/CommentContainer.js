@@ -138,7 +138,7 @@ import { getAuth } from 'firebase/auth';
                                     
                               </View>
                           </View>
-                        <Text style={{marginTop: 8, fontSize: 14}}>{data.text}</Text>
+                        <Text style={styles.text}>{data.text}</Text>
                         </View>
   
                       </View>
@@ -172,8 +172,9 @@ const styles = StyleSheet.create({
       marginRight: 10,
     },
     text: {
-      lineHeight: 21,
       fontSize: 14,
+      color: '#686868',
+      marginTop: 6,
     },
     image: {
       width: '100%',

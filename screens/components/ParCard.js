@@ -82,7 +82,7 @@ const ImplementCard = ({avatar, name, image, title, location, date, time, conten
                     </View>
                 </View>
 
-                <Text>{state}</Text> 
+                <Text style={{color: '#686868'}}>{state}</Text> 
 
             </View>
         </View>

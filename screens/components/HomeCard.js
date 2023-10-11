@@ -28,17 +28,18 @@ const styles = StyleSheet.create({
     itemImage: {
         width: 160,
         height: 140,
-        borderRadius: 2,
+        borderRadius: 5,
         marginBottom: 4,
         borderWidth: 0.2,
         borderColor: "#EEEEEE",
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: 'white'
     },
 
     image: {
-        width: '100%',
-        height: '100%',
+        width: '70%',
+        height: '70%',
     },
 
     itemTitle: {

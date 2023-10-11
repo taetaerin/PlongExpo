@@ -132,7 +132,7 @@ const PostCard = ({ name, image, date, text, avatar, id, uid, likesCount}) => {
   
   return (
     
-    <View style={{paddingBottom: 10, paddingHorizontal: 18, borderBottomWidth: 0.5, borderBottomColor: '#EAEAEA'}}>
+    <View style={{paddingTop: 6, paddingBottom: 16, paddingHorizontal: 18, borderBottomWidth: 0.5, borderBottomColor: '#EAEAEA'}}>
 
         <View style={{flexDirection: 'row', marginVertical: 14}}>
             {/* 아바타 이미지 */}
@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
   postContainer: {
     justifyContent: 'center',
     flexDirection: 'row',
-    alignItems:'center'
+    alignItems:'center',
   },
 
   avatar: {
@@ -299,8 +299,9 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   text: {
-    lineHeight: 21,
+    lineHeight: 16*1.6,
     fontSize: 16,
+    color: '#686868',
   },
   image: {
     width: '100%',
