@@ -45,6 +45,7 @@ const styles = StyleSheet.create({
     itemTitle: {
         fontSize: 16,
         color: "#424242",
+        lineHeight: 16*1.6,
     },
 
     item:{

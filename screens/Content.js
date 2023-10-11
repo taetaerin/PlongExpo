@@ -34,7 +34,7 @@ const Content = ({route, navigation}) => {
 
             <View style={styles.wrapper}>
                 <Text style={styles.title}>
-                {data.title}
+                    {data.title}
                 </Text>
 
                 <Text style={styles.content}>
@@ -55,12 +55,13 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 20,
         color: "#48566A",
-        marginVertical: 32,
+        marginVertical: 22,
+        fontWeight: 500,
     },
     content: {
-        fontWeight: 400,
+        lineHeight: 16*1.6,
         fontSize: 16,
-        lineHeight: 24,
-        color: '#424242',
+        color: '#686868',
+
     },
 });

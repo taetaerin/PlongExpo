@@ -124,14 +124,14 @@ const handlePostSubmit = async () => {
                 <Ionic name="chevron-back-sharp" style={{fontSize:24}} onPress={() => navigation.goBack()} />
             </TouchableOpacity>
 
-            <Text style={{fontSize: 16}}>
+            <Text style={{fontSize: 16, fontWeight: 400}}>
                 게시판 글쓰기
             </Text>
 
 
             <TouchableOpacity onPress={handlePostSubmit}>
 
-                <Text style={{fontSize: 16}}>
+                <Text style={{fontSize: 16, fontWeight: 'bold'}}>
                     등록
                 </Text>
             </TouchableOpacity>
