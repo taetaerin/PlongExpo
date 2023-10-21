@@ -16,7 +16,9 @@ const ImplementCard = ({image, title}) => {
   )
 }
 
+
 export default ImplementCard
+
 
 const styles = StyleSheet.create({
     container: {

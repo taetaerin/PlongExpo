@@ -1,7 +1,9 @@
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import ImplementCard from './components/HomeCard'; 
+import ImplementCard from './components/Home/HomeCard'; 
+import ImplementCard2 from './components/Home/HomeCard';
+import HomeItem from './components/Home/HomeItem';
 
 const environmentalPractice = [
   {
@@ -36,24 +38,28 @@ const environmentalStory = [
     id: 1,
     image: require('../assets/images/bins.png'),
     title: '분리배출 잘하기',
+    subTitle: '내용 삽입',
     content: '배출 시 꼼꼼한 분리배출은 사회적 비용도 절감하고 우리모두를 깨끗한 환경에서 살 수 있게 합니다. \n플라스틱류: 페트병과 플라스틱 용기에 든 내용물은 깨끗이 비우고 부착상표와 뚜껑 등 다른 재질로 된 부분은 제거해주세요.\n비닐류: 과자, 라면봉지, 1회용 비닐봉투에 음식물과 이물질이 묻었다면 물로 2~3번 헹궈 잔여물을 없애고 버리고, 이물질 제거가 어려운 경우에는 종량제봉투에 배출하면 됩니다.\n유리병류: 탄산음료병이나 맥주병, 소주병은 담배꽁초와 같은 이물질을 넣지 말고 버려주세요.하지만 거울, 깨진 유리, 도자기류,유리 식기류는 유리병류가 아니기 때문에 종량제봉투나 전용 마대에 버려주세요.'
   },
   {
     id: 2,
     image: require('../assets/images/hands.png'),
     title: '중고거래',
+    subTitle: '내용 삽입',
     content: '국내 중고거래 시장 규모가 나날이 성장하고 있습니다. 이러한 소비의 변화는 필요없는 물건을 누군가가 재사용하게 되면서 자원순환이 일어나 환경적으로 아주 의미가 있습니다. 제품을 만드는데 사용되는 자원은 단순히 노동력과 원재료뿐 만 아니라 에너지와 천연자원도 포함됩니다. 결국 자원을 재활용하는 것은 불필요한 에너지와 천연자원을 아낄 수 있다는 의미입니다. 실제로 중고거래 앱 사용자들이 자원 재사용을 통해 얻은 자원순환효과는 5240만 그루의 소나무를 심은 것과 같고 723톤의 온실가스 저감효과를 냈다고 발표했습니다. 이처럼 중고거래는 자원 재활용을 통한 환경보호에 중요한 영향을 끼치고 있습니다.'
   },
   {
     id: 3,
     image: require('../assets/images/meal.png'),
     title: '육식 줄이고 채식 많이',
+    subTitle: '내용 삽입',
     content : '증가하고 있는 육식, 즉 공장식 축산은 기후변화에서부터 산불, 인권침해에 이르기까지 전 세계환경에 파괴적인 영향을 미칩니다. 육류 및 유제품 섭취량을 급격히 줄이지 않는다면 기후위기는 막을 수 없게되고 심할 경우 인류의 생존에도 위협이 될 수 있습니다. 증가하는 육식 소비만큼 지구환경도 점점 악화되고 있습니다. 그렇지만 채식은 기후위기의 시대를 살아가는 현대인들이 일상생활에서 실천할 수 있는 가장 효과적인 기후 대응 행동입니다. 새로운 식습관을 갖는 것은 쉽지만은 않겠지만 하루에 한번이라도 도전해보는 것이 좋겠습니다.'
   },
   {
     id: 4,
     image: require('../assets/images/socket.png'),
     title: '미 사용시 코드 빼기',
+    subTitle: '내용 삽입',
     content: '가전제품과 같은 전기용품의 플러그는 꽂아만 둬도 전기가 흘러 에너지를 낭비하게됩니다. 대기상태에서도 전기용품은 전기를 조금씩 사용하고 있습니다. 즉 전자제품의 전원을 끈 상태에서도 기기의 동작과 관계없이 의식하지 않는 사이에 소모되는 전기에너지가 있습니다. 이를 대기전력이라고 하는데 이러한 대기전력의 절감 및 에너지 절약을 실천하기 위해 가장 쉬운 쓰지 않는 플러그를 뽑는 것이 중요합니다.  TV, 에어컨, 전기밥솥, 세탁기 등 사용하지 않는 제품의 플러그를 뽑으면 하루 2800톤의 온실가스가 감축되고, 한 달 1kg의 이산화탄소가 감소하여 한 가구당 연간 50그루의 나무를 심는 것과 같습니다. 우리가 전기를 줄이면 자원의 고갈과 환경오염을 막을 수 있습니다.'
   },
 ];
@@ -83,7 +89,6 @@ const Home = ({navigation}) => {
 
         <Text style={styles.subTitle}>지구를 지키는 작은 실천</Text>
         <View style={styles.container}>
-
           {environmentalPractice.map((data) => {
             return(
               <TouchableOpacity onPress={() => navigation.navigate('Content', {data})} key={data.id}>
@@ -94,15 +99,16 @@ const Home = ({navigation}) => {
         </View>
 
         <Text style={styles.subTitle}>환경이야기 보따리</Text>
-        <View style={styles.container}>
+        <View>
           {environmentalStory.map((data, index) => {
             return(
               <TouchableOpacity onPress={() => navigation.navigate('Content', {data})} key={index}>
-                <ImplementCard title={data.title} image={data.image} />
+                <HomeItem title={data.title} image={data.image} subTitle={data.subTitle} />
               </TouchableOpacity>
             )
           })}
         </View>
+        <View style={{height: 18}}/>
       </ScrollView>
     </SafeAreaView>
   )
@@ -117,7 +123,7 @@ const styles = StyleSheet.create({
     color: "#48566A",
     fontSize: 20,
     fontWeight: 500,
-    marginVertical: 15,
+    marginVertical: 13,
     paddingHorizontal: 18,
   },
   container: {
@@ -125,7 +131,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     flexWrap: 'wrap',
     paddingHorizontal: 15,
-    marginBottom: 20,
+    marginBottom: 5,
   },
 });
 

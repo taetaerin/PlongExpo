@@ -11,7 +11,7 @@ import ParContent from './screens/ParContent';
 import ParUpdate from './screens/ParUpdate';
 import Map from './screens/Map';
 import Profile from './screens/Profile';
-import Content from './screens/Content';
+
 import SignIn from './screens/SignIn';
 import SignUp from './screens/SignUp';
 
@@ -27,6 +27,7 @@ import { LogBox } from 'react-native';
 import PostEdit from './screens/PostEdit';
 import CommentContainer from './screens/CommentContainer';
 import CommentInput from './screens/CommentInput';
+import Content from './screens/components/Home/Content';
 
 LogBox.ignoreLogs(['Possible Unhandled Promise Rejection']);
 

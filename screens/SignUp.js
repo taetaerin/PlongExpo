@@ -41,8 +41,6 @@ const SignUp = ({navigation, user}) => {
 
   const auth = getAuth();
 
-
-
   const handlePasswordChange = (text) => {
     setPassword(text);
     // 비밀번호와 비밀번호 확인이 일치하는지 검사
