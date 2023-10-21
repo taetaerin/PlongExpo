@@ -1,8 +1,7 @@
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import ImplementCard from './components/Home/HomeCard'; 
-import ImplementCard2 from './components/Home/HomeCard';
+import HomeCard from './components/Home/HomeCard'; 
 import HomeItem from './components/Home/HomeItem';
 
 const environmentalPractice = [
@@ -91,8 +90,8 @@ const Home = ({navigation}) => {
         <View style={styles.container}>
           {environmentalPractice.map((data) => {
             return(
-              <TouchableOpacity onPress={() => navigation.navigate('Content', {data})} key={data.id}>
-                <ImplementCard title={data.title} image={data.image} />
+              <TouchableOpacity onPress={() => navigation.navigate('HomeContent', {data})} key={data.id}>
+                <HomeCard title={data.title} image={data.image} />
               </TouchableOpacity>
             )
           })}
@@ -102,7 +101,7 @@ const Home = ({navigation}) => {
         <View>
           {environmentalStory.map((data, index) => {
             return(
-              <TouchableOpacity onPress={() => navigation.navigate('Content', {data})} key={index}>
+              <TouchableOpacity onPress={() => navigation.navigate('HomeContent', {data})} key={index}>
                 <HomeItem title={data.title} image={data.image} subTitle={data.subTitle} />
               </TouchableOpacity>
             )

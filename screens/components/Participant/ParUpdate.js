@@ -1,21 +1,19 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, Pressable, TextInput, Button, Platform, ScrollView } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import { StyleSheet, Text, TouchableOpacity, View, Image, Pressable, TextInput, Platform, ScrollView } from 'react-native';
+import React, {useState} from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionic from 'react-native-vector-icons/Ionicons';
-import Participant from './Participant';
 import * as ImagePicker from 'expo-image-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { PreventRemoveContext } from '@react-navigation/native';
-import LocationSearchScreen from './LocationSearchScreen';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { getAuth } from 'firebase/auth';
-import { firestore } from '../firebase';
+import { firestore } from '../../../firebase';
 import { addDoc, collection } from 'firebase/firestore';
 import moment from 'moment';
+import LocationSearchScreen from './LocationSearchScreen';
 
 
-const ParUpdate = ({route, navigation}) => {
+const ParUpdate = ({navigation}) => {
   //모임 제목
   const [title, setTitle] = useState('');
 
@@ -37,25 +35,6 @@ const ParUpdate = ({route, navigation}) => {
 
   //오픈 채팅 주소
   const [openText, setOpenText] = useState('');
-
-  // 이미지 업로드 및 URL 얻어오는 함수
-  // const uploadImageAndGetURL = async (imageURI) => {
-  //   const storage = getStorage();
-  //   const imageRef = ref(storage, `participant_uploadImg/${user.uid}_${Date.now()}.jpg`);
-    
-  //   try {
-  //       const response = await fetch(imageURI);
-  //       const blob = await response.blob();
-        
-  //       await uploadBytes(imageRef, blob);
-  //       const downloadURL = await getDownloadURL(imageRef);
-        
-  //       return downloadURL;
-  //   } catch (error) {
-  //       console.error('Error uploading image:', error);
-  //       return null;
-  //   }
-  // };
 
   //파이어베이스 사용자 객체 정보
   const auth = getAuth();
@@ -137,23 +116,7 @@ const ParUpdate = ({route, navigation}) => {
     }
   };
   
-
-  //이미지 저장 라이브러리
-  // const pickImage = async () => {
-  //   let result = await ImagePicker.launchImageLibraryAsync({
-  //     mediaTypes: ImagePicker.MediaTypeOptions.All,
-  //     allowsEditing: true,
-  //     aspect: [4, 3],
-  //     quality: 1,
-  //   });
-
-  //   //사용자가 이미지 선택 취소 하지 않을 시 실행
-  //   if (!result.canceled) {
-  //     setImage(result.assets[0].uri);
-  //     console.log('image', image)
-  //   }
-  // };
-
+  //이미지 저장 함수
   const pickImage = async () => {
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -264,8 +227,6 @@ const ParUpdate = ({route, navigation}) => {
 
     return `${hours}시 ${minutes}분`;
   }
-
-
 
   return (
     <SafeAreaView style={{backgroundColor: 'white', flex: 1}}>

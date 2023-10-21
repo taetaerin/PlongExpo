@@ -2,7 +2,7 @@ import { collection, deleteDoc, doc, getDocs, onSnapshot, orderBy, query, where 
 import { useEffect, useState } from 'react';
 import { ActionSheetIOS, Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Ionic from 'react-native-vector-icons/Ionicons';
-import { firestore } from '../firebase';
+import { firestore } from '../../../firebase';
 import { getAuth } from 'firebase/auth';
 
 

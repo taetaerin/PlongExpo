@@ -3,7 +3,7 @@ import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionic from 'react-native-vector-icons/Ionicons';
 
-const Content = ({route, navigation}) => {
+const HomeContent = ({route, navigation}) => {
     const {data} = route.params;
 
   return (
@@ -15,7 +15,6 @@ const Content = ({route, navigation}) => {
                 width: '100%', 
                 backgroundColor: 'white', 
                 height: 44, 
-                // alignItems: 'center', 
                 paddingHorizontal: 18,
                 justifyContent:'center'}}
                 >
@@ -46,7 +45,7 @@ const Content = ({route, navigation}) => {
   )
 }
 
-export default Content;
+export default HomeContent;
 
 const styles = StyleSheet.create({
     wrapper : {

@@ -3,7 +3,7 @@ import React from 'react'
 
 let dimesion = (Dimensions.get('window').width);
 
-const ImplementCard = ({image, title}) => {
+const HomeCard = ({image, title}) => {
   return (
     <View style={styles.container}>
         <View style={styles.item}>
@@ -17,7 +17,7 @@ const ImplementCard = ({image, title}) => {
 }
 
 
-export default ImplementCard
+export default HomeCard
 
 
 const styles = StyleSheet.create({

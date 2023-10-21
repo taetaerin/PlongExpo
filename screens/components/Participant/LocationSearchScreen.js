@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet } from 'react-native';
 import * as Location from 'expo-location';
-import kakao from '../kakao';
+import kakao from '../../../kakao';
 
 const LocationSearchScreen = ({onLocationChange}) => {
   const [address, setAddress] = useState('');
