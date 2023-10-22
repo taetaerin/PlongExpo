@@ -113,7 +113,6 @@ const styles = StyleSheet.create({
         fontWeight: '300'
 
     },
-
     itemImage: {
         marginVertical: 18, 
         width: 160,
