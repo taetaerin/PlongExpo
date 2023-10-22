@@ -25,6 +25,9 @@ const EditProfile = ({ navigation, user }) => {
   //닉네임관련 - 완료 버튼
   const [isNicknameChanged, setIsNicknameChanged] = useState(false);
 
+
+  console.log('user 정보', user)
+
   //닉네임 변경
   const changedNickName= (text) => {
     setNickName(text)
@@ -72,7 +75,6 @@ const EditProfile = ({ navigation, user }) => {
       if (nickName !== prevNickName) {
         //중복 여부 함수 실행
         const isNicknameAvailable = await checkNicknameAvailability();
-        console.log('isNickAvailable', isNicknameAvailable )
         //닉네임 중복 시
         if (!isNicknameAvailable) {
           Alert.alert('이미 존재하는 닉네임입니다.');
