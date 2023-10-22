@@ -15,7 +15,7 @@ import SignIn from "./screens/SignIn";
 import SignUp from "./screens/SignUp";
 
 import app from "./firebase";
-import EditProfile from "./screens/EditProfile";
+import EditProfile from "./screens/components/EditProfile";
 import PostContent from "./screens/components/Post/PostContent";
 import PostUpdate from "./screens/components/Post/PostUpdate";
 

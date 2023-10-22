@@ -9,14 +9,14 @@ import { getStorage } from 'firebase/storage';
 // Your web app's Firebase configuration
 
 //plongplong
-const firebaseConfig = {
-  apiKey: "AIzaSyAAbUkoPBFpN5wy3U4Y8le9UZnXoW7O06U",
-  authDomain: "plongplong-1a446.firebaseapp.com",
-  projectId: "plongplong-1a446",
-  storageBucket: "plongplong-1a446.appspot.com",
-  messagingSenderId: "709179252984",
-  appId: "1:709179252984:web:3abcb4b5bc0098ccf61b0d"
-};
+// const firebaseConfig = {
+//   apiKey: "AIzaSyAAbUkoPBFpN5wy3U4Y8le9UZnXoW7O06U",
+//   authDomain: "plongplong-1a446.firebaseapp.com",
+//   projectId: "plongplong-1a446",
+//   storageBucket: "plongplong-1a446.appspot.com",
+//   messagingSenderId: "709179252984",
+//   appId: "1:709179252984:web:3abcb4b5bc0098ccf61b0d"
+// };
 
 //ㅗㅗ
 // const firebaseConfig = {
@@ -27,6 +27,16 @@ const firebaseConfig = {
 //   messagingSenderId: "378231998660",
 //   appId: "1:378231998660:web:aac6a907e0ef8f9de8e191"
 // };
+
+//2
+const firebaseConfig = {
+  apiKey: "AIzaSyDuZVda5j7VLULmKR5TNPK8SfoF7UkbSuM",
+  authDomain: "practice3-1f7b5.firebaseapp.com",
+  projectId: "practice3-1f7b5",
+  storageBucket: "practice3-1f7b5.appspot.com",
+  messagingSenderId: "488433008136",
+  appId: "1:488433008136:web:ecb307642e7f30ae211bbd"
+};
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
