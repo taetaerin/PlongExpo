@@ -3,7 +3,7 @@ import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionic from 'react-native-vector-icons/Ionicons';
 
-const Content = ({route, navigation}) => {
+const HomeContent = ({route, navigation}) => {
     const {data} = route.params;
 
   return (
@@ -15,7 +15,6 @@ const Content = ({route, navigation}) => {
                 width: '100%', 
                 backgroundColor: 'white', 
                 height: 44, 
-                // alignItems: 'center', 
                 paddingHorizontal: 18,
                 justifyContent:'center'}}
                 >
@@ -24,13 +23,17 @@ const Content = ({route, navigation}) => {
                     </TouchableOpacity>
             </View>
 
-            <View>
-                <Image source={data.image} style={{width: '100%', height: 240}} />
+            <View style={{height: 240, alignItems: 'center', justifyContent: 'center'}}>
+                <Image 
+                    source={data.image} 
+                    resizeMode='contain' 
+                    style={{width: 200, height: 200}} 
+                />
             </View>
 
             <View style={styles.wrapper}>
                 <Text style={styles.title}>
-                {data.title}
+                    {data.title}
                 </Text>
 
                 <Text style={styles.content}>
@@ -42,22 +45,22 @@ const Content = ({route, navigation}) => {
   )
 }
 
-export default Content;
+export default HomeContent;
 
 const styles = StyleSheet.create({
     wrapper : {
-        // backgroundColor: 'yellow',
         paddingHorizontal: 18,
     },
     title: {
         fontSize: 20,
         color: "#48566A",
-        marginVertical: 32,
+        marginVertical: 22,
+        fontWeight: 500,
     },
     content: {
-        fontWeight: 400,
+        lineHeight: 16*1.6,
         fontSize: 16,
-        lineHeight: 24,
-        color: '#424242',
+        color: '#686868',
+
     },
 });

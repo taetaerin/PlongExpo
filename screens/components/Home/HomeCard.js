@@ -3,18 +3,22 @@ import React from 'react'
 
 let dimesion = (Dimensions.get('window').width);
 
-const ImplementCard = ({image, title}) => {
+const HomeCard = ({image, title}) => {
   return (
     <View style={styles.container}>
         <View style={styles.item}>
-            <Image source={image} style={styles.itemImage}/>
+            <View style={styles.itemImage} >
+                <Image source={image} style={styles.image} />
+            </View>
             <Text style={styles.itemTitle}>{title}</Text>
         </View>
     </View>
   )
 }
 
-export default ImplementCard
+
+export default HomeCard
+
 
 const styles = StyleSheet.create({
     container: {
@@ -26,15 +30,24 @@ const styles = StyleSheet.create({
     itemImage: {
         width: 160,
         height: 140,
-        borderRadius: 2,
+        borderRadius: 5,
         marginBottom: 4,
-        borderWidth: 0.1,
-        borderColor: "#424242",
+        borderWidth: 0.2,
+        borderColor: "#EEEEEE",
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'white'
+    },
+
+    image: {
+        width: '70%',
+        height: '70%',
     },
 
     itemTitle: {
         fontSize: 16,
         color: "#424242",
+        lineHeight: 16*1.6,
     },
 
     item:{
@@ -42,5 +55,4 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         alignItems: 'center',
     },
-
 })

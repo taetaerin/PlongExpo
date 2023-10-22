@@ -1,8 +1,8 @@
 import { View, Text,  StyleSheet, Pressable, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, Alert} from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Logo from './components/Logo';
 import CustomerInput from './components/CustomerInput';
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
 
 
@@ -16,7 +16,6 @@ const SignIn = ({ navigation }) => {
   const handleSignIn = async () => {
     try {
         const user = await signInWithEmailAndPassword(auth, email, password);
-        console.log('user', user)
         navigation.navigate('Main')
         
     } catch (error){

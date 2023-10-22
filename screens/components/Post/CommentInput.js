@@ -1,21 +1,21 @@
-import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet, KeyboardAvoidingView } from 'react-native';
-import { firestore } from '../firebase';
-import { addDoc, collection } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
-import moment from 'moment';
+import React, { useState } from "react";
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, KeyboardAvoidingView} from "react-native";
+import { firestore } from "../../../firebase";
+import { addDoc, collection } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import moment from "moment";
 
+const CommentInput = ({ postId }) => {
+  const [comment, setComment] = useState("");
 
-const CommentInput = ({postId}) => {
-  const [comment, setComment] = useState('');
-
-  const auth = getAuth()
-  const user = auth.currentUser; 
+  const auth = getAuth();
+  const user = auth.currentUser;
 
   const handleCommentChange = (text) => {
     setComment(text);
   };
 
+  //댓글 파이어베이스로 전송
   const handleAddComment = async () => {
     try {
       if (!comment.trim()) {
@@ -23,10 +23,10 @@ const CommentInput = ({postId}) => {
       }
 
       const currentTime = new Date();
-  
-      const dateTime = moment(currentTime).format('YYYY.MM.DD HH시 mm분');
-      
-      const commentsRef = collection(firestore, 'comments');
+
+      const dateTime = moment(currentTime).format("YYYY.MM.DD HH시 mm분");
+
+      const commentsRef = collection(firestore, "comments");
 
       // Create a new comment document in Firestore
       await addDoc(commentsRef, {
@@ -35,20 +35,20 @@ const CommentInput = ({postId}) => {
         timestamp: dateTime,
         nickName: user.displayName,
         avatar: user.photoURL,
-        uid: user.uid
+        uid: user.uid,
       });
 
       // Clear the comment input after adding the comment
-      setComment('');
+      setComment("");
     } catch (error) {
-      console.error('Error adding comment:', error);
+      console.error("Error adding comment:", error);
     }
   };
 
   return (
     <KeyboardAvoidingView
       behavior="padding"
-      keyboardVerticalOffset={10}
+      keyboardVerticalOffset={60}
       style={styles.container}
     >
       <View style={styles.inputContainer}>
@@ -70,17 +70,19 @@ const CommentInput = ({postId}) => {
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
+    flex: 1,
+    position: "absolute",
     bottom: 0,
-    width: '100%',
-    backgroundColor: '#f0f0f0',
+    width: "100%",
+    height: 80,
+    backgroundColor: "#f0f0f0",
     borderTopWidth: 1,
-    borderTopColor: '#ccc',
+    borderTopColor: "#ccc",
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     padding: 8,
     height: 60,
   },
@@ -89,25 +91,25 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     paddingHorizontal: 16,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     marginRight: 8,
-    justifyContent:'center',
-    alignItems:'center',
+    justifyContent: "center",
+    alignItems: "center",
     fontSize: 16,
   },
   button: {
-    backgroundColor: '#0BE060',
+    backgroundColor: "#0BE060",
     paddingHorizontal: 20,
     paddingVertical: 8,
     borderRadius: 20,
     height: 40,
-    alignItems:'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonText: {
-    color: 'white',
+    color: "white",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
 
