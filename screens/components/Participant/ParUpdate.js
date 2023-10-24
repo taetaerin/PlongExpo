@@ -449,7 +449,6 @@ const styles = StyleSheet.create({
   content: {
     marginTop: 30,
     fontSize: 16,
-    fontWeight: 'bold'
   },
   line: {
     borderBottomColor: '#CBCBCB',

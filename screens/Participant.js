@@ -53,22 +53,22 @@ const Participant = ({ navigation }) => {
   return (
     <SafeAreaView style={{ backgroundColor: "white", flex: 1 }}>
       {/* 상단바 */}
-      <View
+      <View 
         style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginHorizontal: 14,
-          height: 44,
-        }}
-      >
-        <TouchableOpacity onPress={() => navigation.navigate("ParUpdate")}>
-          <Ionic name="md-add" size={26} color="#424242"></Ionic>
-        </TouchableOpacity>
+            width: '100%', 
+            height: 44, 
+            alignItems: 'center', 
+            justifyContent:'center',
+          }}>
+        <View style={styles.parContainer}>
+          <Text style={styles.title}>모집글</Text>
+          <View style={{ position: 'absolute', right: -145 }}>
+            <TouchableOpacity onPress={() => navigation.navigate("ParUpdate")}>
+              <Ionic name="md-add" size={26} color="#424242"></Ionic>
+            </TouchableOpacity>
+          </View>
+        </View>
 
-        <Text style={styles.title}>모집글</Text>
-
-        <Ionic name="md-search-outline" size={24} color="#424242"></Ionic>
       </View>
 
       {/* 모집중 모집완료 스크랩 */}
@@ -140,6 +140,11 @@ const Participant = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  parContainer: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    alignItems:'center',
+  },
   title: {
     fontSize: 22,
     textAlign: "center",
