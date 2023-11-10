@@ -26,29 +26,62 @@ const MapModal = () => {
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
 
-  //시간, 칼로리 계산 함수
+  //걷기 / 달리기 구분
+  const [isWalking, setIsWalking] = useState(true);
+
   useEffect(() => {
     let calorieInterval;
     let timerInterval;
 
-    if (isTimerRunning) {
-      calorieInterval = setInterval(() => {
-        setCalories((prevCalories) => prevCalories + 1);
-      }, 20000);
+    const startTimers = () => {
+      if (isTimerRunning) {
+        // 사용자가 걷기 모드를 선택한 경우
+        const calorieIncrement = isWalking ? 40 : 20; // 걷기 모드일 때는 40초에 1칼로리, 달리기 모드일 때는 20초에 1칼로리
 
-      timerInterval = setInterval(() => {
-        setTimer((prevTimer) => prevTimer + 1);
-      }, 1000);
-    } else {
-      clearInterval(calorieInterval);
-      clearInterval(timerInterval);
-    }
+        calorieInterval = setInterval(() => {
+          setCalories((prevCalories) => prevCalories + 1);
+        }, calorieIncrement * 1000); // 초(ms) 단위로 변환
+
+        timerInterval = setInterval(() => {
+          setTimer((prevTimer) => prevTimer + 1);
+        }, 1000);
+      } else {
+        clearInterval(calorieInterval);
+        clearInterval(timerInterval);
+      }
+    };
+
+    startTimers(); // 초기에도 타이머를 시작하기 위해 호출
 
     return () => {
       clearInterval(calorieInterval);
       clearInterval(timerInterval);
     };
-  }, [isTimerRunning]);
+  }, [isTimerRunning, isWalking]);
+  
+  //시간, 칼로리 계산 함수
+  // useEffect(() => {
+  //   let calorieInterval;
+  //   let timerInterval;
+
+  //   if (isTimerRunning) {
+  //     calorieInterval = setInterval(() => {
+  //       setCalories((prevCalories) => prevCalories + 1);
+  //     }, 20000);
+
+  //     timerInterval = setInterval(() => {
+  //       setTimer((prevTimer) => prevTimer + 1);
+  //     }, 1000);
+  //   } else {
+  //     clearInterval(calorieInterval);
+  //     clearInterval(timerInterval);
+  //   }
+
+  //   return () => {
+  //     clearInterval(calorieInterval);
+  //     clearInterval(timerInterval);
+  //   };
+  // }, [isTimerRunning]);
 
   //파이어베이스에 날짜, 시간, 칼로리 저장 함수
   const handlePloggingEnd = async () => {
@@ -134,7 +167,7 @@ const MapModal = () => {
             <View style={styles.centeredView}>
               <View style={styles.modalView}>
 
-                <View style={{ width: 240, top: 40, flexDirection: 'row', justifyContent: 'space-between'}}>
+                <View style={{ width: 240, top: 40, left: -10,flexDirection: 'row', justifyContent: 'space-between'}}>
                   {/* 시간 */}
                   <View>
                     <Text style={styles.timer}>
@@ -148,13 +181,35 @@ const MapModal = () => {
                   </View>
                 </View>
 
-                <View style={{flexDirection: 'row', justifyContent: 'space-between', width: 220, marginTop: 35}}>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', left: -8,width: 220, marginTop: 35}}>
                   <Text style={styles.modalText}>{"       "}시간</Text>
                   <Text style={styles.modalText}>{"    "}칼로리</Text>
                 </View>
           
 
                 <View style={styles.timerbtn}>
+                  {/* 달리기 / 걷기 */}
+                  <Pressable
+                    style={({ pressed }) => [
+                      {
+                        opacity: pressed ? 0.5 : 1,
+                        borderColor: isWalking ? '#7994AD' : '#7994AD',
+                        padding: 10,
+                        borderRadius: 5,
+                        borderWidth: 0.5,
+                        width: 70,
+                      },
+                    ]}
+                    onPress={() => {
+                      setIsWalking(!isWalking);
+                      setCalories(0); // 모드 변경 시 칼로리 초기화
+                    }}
+                  >
+                    <Text style={{ color: 'black', textAlign: 'center' }}>
+                      {isWalking ? '걷기' : '달리기'}
+                    </Text>
+                  </Pressable>
+
                   <Button
                     title="시작"
                     onPress={() => setIsTimerRunning(true)}
@@ -163,10 +218,9 @@ const MapModal = () => {
                   <Button
                     title="중단"
                     onPress={() => setIsTimerRunning(false)}
-                  />             
-
+                  />   
                 </View>
-
+                
                 <Pressable
                   style={[styles.buttonClose]}
                   onPress={handlePloggingEnd}>
@@ -253,8 +307,16 @@ const styles = StyleSheet.create({
     timerbtn: {
       flexDirection: 'row',
       fontSize: 18,
-      marginTop: 12,
-      justifyContent: 'center',
+      marginTop: 10,
+      justifyContent: 'space-between',
+      width: '60%'
     },
+
+    // modeButtons: {
+    //   flexDirection: 'row',
+    //   marginTop: 20,
+    //   justifyContent: 'center',
+    //   alignItems: 'center',
+    // },
      
 });

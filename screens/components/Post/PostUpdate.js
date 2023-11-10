@@ -1,4 +1,5 @@
 import {
+  Alert,
   Image,
   Keyboard,
   StyleSheet,
@@ -31,7 +32,7 @@ const PostUpdate = ({ navigation, user }) => {
 
   //사진 선택
   const [image, setImage] = useState(null);
-
+  
   //X버튼 누를 시 이미지 삭제
   const handleRemoveImage = () => {
     setImage(null);
@@ -53,7 +54,12 @@ const PostUpdate = ({ navigation, user }) => {
     try {
       //내용이 없을 시
       if (!content) {
-        alert("내용을 입력해주세요.");
+        Alert .alert(
+          "알림",
+          "내용을 입력해주세요.",
+          [{ text: '닫기', onPress: () => console.log('닫기') }],
+          { cancelable: true }
+        );
         return;
       }
 
@@ -80,40 +86,71 @@ const PostUpdate = ({ navigation, user }) => {
   };
 
   //image-picker 라이브러리 사용
+  // const pickImage = async () => {
+  //   let result = await ImagePicker.launchImageLibraryAsync({
+  //     mediaTypes: ImagePicker.MediaTypeOptions.All,
+  //     allowsEditing: true,
+  //     aspect: [4, 3],
+  //     quality: 1,
+  //   });
+
+  //   if (!result.canceled) {
+  //     const storage = getStorage();
+  //     const imageRef = ref(
+  //       storage,
+  //       `post_uploadImg/${user.uid}_${Date.now()}.jpg`
+  //     );
+
+  //     // 이미지의 uri를 사용하여 Blob으로 변환
+  //     const response = await fetch(result.uri);
+  //     const blob = await response.blob();
+
+  //     try {
+  //       //파이어스토리지에 사진 저장
+  //       await uploadBytes(imageRef, blob);
+
+  //       //업로드한 이미지 다운로드
+  //       const downloadURL = await getDownloadURL(imageRef);
+
+  //       //다운로드한 이미지 image에 저장
+  //       setImage(downloadURL);
+  //     } catch (error) {
+  //       console.error("Error uploading image:", error);
+  //     }
+  //   }
+  // };
+
+  const uploadImageToFirebase = async (localUri) => {
+    const storage = getStorage();
+    const filename = `participant_uploadImg/${user.uid}_${Date.now()}.jpg`;
+    const storageRef = ref(storage, filename);
+    const response = await fetch(localUri);
+    const blob = await response.blob();
+    await uploadBytes(storageRef, blob);
+    const downloadURL = await getDownloadURL(storageRef);
+    return downloadURL;
+  };
+
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
 
-    if (!result.canceled) {
-      const storage = getStorage();
-      const imageRef = ref(
-        storage,
-        `post_uploadImg/${user.uid}_${Date.now()}.jpg`
-      );
-
-      // 이미지의 uri를 사용하여 Blob으로 변환
-      const response = await fetch(result.uri);
-      const blob = await response.blob();
-
-      try {
-        //파이어스토리지에 사진 저장
-        await uploadBytes(imageRef, blob);
-
-        //업로드한 이미지 다운로드
-        const downloadURL = await getDownloadURL(imageRef);
-
-        //다운로드한 이미지 image에 저장
-        setImage(downloadURL);
-      } catch (error) {
-        console.error("Error uploading image:", error);
+      if (!result.cancelled) {
+        const localUri = result.uri;
+        const firebaseUrl = await uploadImageToFirebase(localUri);
+        setImage(firebaseUrl);
       }
+    } catch (error) {
+      console.error('Error picking image:', error);
     }
   };
 
+  
   return (
     <SafeAreaView style={{ backgroundColor: "white", flex: 1 }}>
       {/* 상단바 */}

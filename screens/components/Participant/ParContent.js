@@ -20,7 +20,7 @@ import { useIsFocused } from "@react-navigation/native";
 const ParContent = ({ route, navigation }) => {
   const { data } = route.params;
   const [isParticipation, setIsParticipation] = useState(false);
-
+  const [buttonColor, setButtonColor] = useState('#0BE060')
   //참여하기 버튼
   const [parComplete, setParComplete] = useState(false);
 
@@ -181,6 +181,8 @@ const ParContent = ({ route, navigation }) => {
     }
   };
 
+
+
   return (
     <View style={{ flex: 1 }}>
       <SafeAreaView style={{ backgroundColor: "white" }}>
@@ -293,7 +295,7 @@ const ParContent = ({ route, navigation }) => {
       </SafeAreaView>
 
       {/* 참여하기 버튼 */}
-      {parComplete ? (
+      {/* {parComplete ? (
         <Pressable
           style={[styles.button, { backgroundColor: "#CBCBCB" }]}
           onPress={async () => {
@@ -331,7 +333,50 @@ const ParContent = ({ route, navigation }) => {
             참여하기
           </Text>
         </Pressable>
-      )}
+      )} */}
+
+      <Pressable
+        style={[
+          data.state === "모집완료" ? styles.button : styles.btn,
+          //{ backgroundColor: data.state === "모집완료" ? "#CBCBCB" : "#0BE060" },
+          {
+            backgroundColor:
+              data.state === "모집완료"
+                ? "#CBCBCB" // 모집완료일 때 배경색
+                : parComplete
+                ? "#1AAD55" // 참여취소일 때 배경색 #05682C
+                : "#0BE060", // 기본 참여하기 배경색
+          },
+        ]}
+        onPress={async () => {
+          if (data.state === "모집중") {
+            await toggleParticipation();
+            if (parComplete) {
+              Alert.alert("참여가 취소되었습니다.");
+            } else {
+              Alert.alert("참여가 완료되었습니다.");
+            }
+          }
+        }}
+      >
+        <Text
+          style={{
+            color: "white",
+            fontSize: 20,
+            fontWeight: "600",
+            marginBottom: 10,
+          }}
+        >
+          {data.state === "모집완료"
+            ? "모집완료"
+            : parComplete
+            ? "참여취소"
+            : "참여하기"}
+        </Text>
+      </Pressable>
+
+
+
     </View>
   );
 };

@@ -17,11 +17,11 @@ const SignIn = ({ navigation }) => {
     try {
         const user = await signInWithEmailAndPassword(auth, email, password);
         navigation.navigate('Main')
-        
     } catch (error){
+        let errorMessage = "로그인에 실패했습니다. 다시 시도해주세요.";
         Alert.alert(
-          "다시 입력해주세요",
-          error.message,
+          "알림",
+          errorMessage,
           [{text: '닫기', onPress: () => console.log('닫기')}],
           {cancelable: true}
         )

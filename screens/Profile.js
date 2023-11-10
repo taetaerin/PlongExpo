@@ -1,12 +1,12 @@
-import {View, Text, SafeAreaView, TouchableOpacity, TextInput, Image, StyleSheet, StatusBar, ScrollView, Platform} from 'react-native'
+import {View, Text, SafeAreaView, TouchableOpacity, TextInput, Image, StyleSheet, StatusBar, ScrollView, Platform, Modal} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Ionic from 'react-native-vector-icons/Ionicons';
 import { Calendar } from 'react-native-calendars';
 import {LocaleConfig} from 'react-native-calendars';
 import { collection, doc, getDoc, getDocs, getFirestore, onSnapshot, query, where } from 'firebase/firestore';
-import { getDownloadURL, getStorage, ref } from 'firebase/storage';
 import { getAuth } from 'firebase/auth';
-
+import Circle from './components/Map/Circle';
+import moment from 'moment';
 
 const Profile = ({navigation, user}) => {
     //닉네임 설정
@@ -19,8 +19,11 @@ const Profile = ({navigation, user}) => {
       calories: 0, 
       timer: 0,    
     });
-    const [selectedDate, setSelectedDate] = useState('');
 
+    const [selectedDate, setSelectedDate] = useState('');
+    const [monthlyCalories, setMonthlyCalories] = useState(0);
+    console.log('month모', monthlyCalories)
+    const [, forceRender] = useState();
 
     //파이어베이스 - 파이어스토어 닉네임, 프로필 사진 가져오기
     useEffect(() => {
@@ -96,6 +99,8 @@ const Profile = ({navigation, user}) => {
       return () => unsubscribe();
     }, [user.profilePicture]);
   
+
+    //칼로리 데이터베이스 가져오기
     const handleDateSelect = (date) => {
       const selectedDateKey = date.dateString;
   
@@ -138,6 +143,7 @@ const Profile = ({navigation, user}) => {
       fetchSelectedDateData();
       setSelectedDate(selectedDateKey); // 선택된 날짜 업데이트
     };
+
   
     const markedDates = {};
     if (selectedDate) {
@@ -149,7 +155,86 @@ const Profile = ({navigation, user}) => {
       dayNamesShort: ['일', '월','화','수','목','금','토'],
     };
     LocaleConfig.defaultLocale = 'ko';
-   
+  
+    //ㅗㅗ 
+    // useEffect(() => {
+    //   const fetchMonthlyCalories = async () => {
+    //     const auth = getAuth();
+    //     const user = auth.currentUser;
+    //     const userId = user.uid;
+    //     const firestore = getFirestore();
+    //     const currentDate = moment().format('YYYY-MM-DD');
+    //     const firstDayOfMonth = moment().startOf('month').format('YYYY-MM-DD');
+  
+    //     try {
+    //       const querySnapshot = await getDocs(
+    //         query(
+    //           collection(firestore, 'map'),
+    //           where('userId', '==', userId),
+    //           where('dateTime', '>=', firstDayOfMonth),
+    //           where('dateTime', '<=', currentDate)
+    //         )
+    //       );
+
+    //       let totalCalories = 0;
+    //       querySnapshot.forEach((doc) => {
+    //         const data = doc.data();
+    //         totalCalories += data.calories;
+    //       });
+  
+    //       setMonthlyCalories(totalCalories);
+    //     } catch (error) {
+    //       console.error('한 달 동안의 칼로리를 불러오는 중 오류 발생:', error);
+    //     }
+    //   };
+  
+    //   fetchMonthlyCalories(); // 데이터를 가져오고 상태를 업데이트하는 함수 호출
+    //   forceRender(Math.random());
+    //   // useEffect 내부에서 상태나 함수를 사용하는 경우 의존성 배열에 해당 상태나 함수를 추가
+    // }, []);
+    
+    const fetchMonthlyCalories = async () => {
+      const auth = getAuth();
+      const user = auth.currentUser;
+      const userId = user.uid;
+      const firestore = getFirestore();
+      const currentDate = moment().format('YYYY-MM-DD');
+      const firstDayOfMonth = moment().startOf('month').format('YYYY-MM-DD');
+    
+      try {
+        const querySnapshot = await getDocs(
+          query(
+            collection(firestore, 'map'),
+            where('userId', '==', userId),
+            where('dateTime', '>=', firstDayOfMonth),
+            where('dateTime', '<=', currentDate)
+          )
+        );
+    
+        let totalCalories = 0;
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          totalCalories += data.calories;
+        });
+    
+        setMonthlyCalories(totalCalories);
+      } catch (error) {
+        console.error('한 달 동안의 칼로리를 불러오는 중 오류 발생:', error);
+      }
+    };
+    
+     //불러오기
+     useEffect(() => {
+      // 주기적으로 fetchMonthlyCalories 함수를 호출하여 월간 칼로리 업데이트
+      const interval = setInterval(() => {
+        fetchMonthlyCalories();
+      }, 60000); // 1분마다 호출하도록 설정 (밀리초 단위)
+    
+      //컴포넌트 언마운트 시 clearInterval을 통해 감시 해제
+      return () => clearInterval(interval);
+    }, []);
+
+
 
     return (
         <SafeAreaView style={styles.container}>
@@ -188,6 +273,9 @@ const Profile = ({navigation, user}) => {
                 </View>
             </View>
 
+            {/* 활동량 */}
+            <Circle monthlyCalories={monthlyCalories} />
+
             <View style={{marginTop: 24, marginBottom: 8}}> 
               <Text style={styles.subTitle}>
                   플로깅 기록
@@ -200,6 +288,7 @@ const Profile = ({navigation, user}) => {
                  style={styles.calendar}
                  markedDates={markedDates}
                  onDayPress={(day) => handleDateSelect(day)} 
+                 //onDayPress={handleDayPress}
                  theme={{
                   selectedDayBackgroundColor: '#0BE060', // 선택된 날짜의 배경색
                   selectedDayTextColor: 'white',         // 선택된 날짜의 텍스트색
@@ -210,11 +299,11 @@ const Profile = ({navigation, user}) => {
                  }} />
             </View>
 
+
             <View style={{backgroundColor: '#E4EAF1', borderRadius: 5, marginHorizontal: 18, marginVertical: 10, height: 60}}>
                  <Text style={styles.txt}>시간: {selectedDateInfo.timer} 초</Text>
                  <Text style={styles.txt}>칼로리: {selectedDateInfo.calories} kcal</Text>
             </View>
-
          
             <View style={{marginVertical: 10}}>
               <TouchableOpacity style={styles.touchBox} >
@@ -307,7 +396,8 @@ const styles = StyleSheet.create({
       paddingHorizontal: 18, 
       justifyContent:'center', 
       marginVertical: 15
-    }
+    },
+    
 }
 )
 

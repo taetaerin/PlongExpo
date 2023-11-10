@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, Pressable, TextInput, Platform, ScrollView } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Image, Pressable, TextInput, Platform, ScrollView, Alert } from 'react-native';
 import React, {useState} from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionic from 'react-native-vector-icons/Ionicons';
@@ -30,6 +30,8 @@ const ParUpdate = ({navigation}) => {
     setSelectedLocation(location);
   };
 
+  const minimumDate = new Date();
+  
   //기타 위치 정보
   const [otherText, setOtherText] = useState('');
 
@@ -51,43 +53,80 @@ const ParUpdate = ({navigation}) => {
     // 새로운 문서를 생성하고 데이터를 저장
     try {
         //제목이 없을 시
-        // if (!title) {
-        //     alert('제목을 입력해주세요.');
-        //     return;
-        // }
-        // //내용이 없을 시
-        // if (!content) {
-        //     alert('내용을 입력해주세요.');
-        //     return;
-        // }
-        // //이미지가 없을 시
-        // if (!image) {
-        //   alert('사진을 넣어주세요.');
-        //   return;
-        // }
-        // //날짜가 없을 시
-        // if (!date) {
-        //   alert('날짜를 입력해주세요.');
-        //   return;
-        // }
-        // //시간이 없을 시
-        // if (!time) {
-        //   alert('시간을 입력해주세요.');
-        //   return;
-        // }
-        // //장소가 없을 시
-        // if (!selectedLocation) {
-        //   alert('장소를 입력해주세요.');
-        //   return;
-        // }
+        if (!title) {
+            Alert .alert(
+              "알림",
+              "제목을 입력해주세요.",
+              [{ text: '닫기', onPress: () => console.log('닫기') }],
+              { cancelable: true }
+            );
+            return;
+            // alert('제목을 입력해주세요.');
+            return;
+        }
+        //내용이 없을 시
+        if (!content) {
+            Alert .alert(
+              "알림",
+              "내용을 입력해주세요.",
+              [{ text: '닫기', onPress: () => console.log('닫기') }],
+              { cancelable: true }
+            );
+            return;
+        }
+        //이미지가 없을 시
+        if (!image) {
+          Alert .alert(
+            "알림",
+            "사진을 넣어주세요.",
+            [{ text: '닫기', onPress: () => console.log('닫기') }],
+            { cancelable: true }
+          );
+          return;
+        }
+        //날짜가 없을 시
+        if (!date) {
+          Alert .alert(
+            "알림",
+            "날짜를 입력해주세요.",
+            [{ text: '닫기', onPress: () => console.log('닫기') }],
+            { cancelable: true }
+          );
+          return;
+        }
+        //시간이 없을 시
+        if (!time) {
+          Alert .alert(
+            "알림",
+            "시간을 입력해주세요.",
+            [{ text: '닫기', onPress: () => console.log('닫기') }],
+            { cancelable: true }
+          );
+          return;
+        }
+        //장소가 없을 시
+        if (!selectedLocation) {
+          Alert .alert(
+            "알림",
+            "장소를 입력해주세요.",
+            [{ text: '닫기', onPress: () => console.log('닫기') }],
+            { cancelable: true }
+          );
+          return;
+        }
 
-        // //오픈채팅이 없을 시
-        // if (!openText) {
-        //   alert('오픈채팅 주소를 입력해주세요.');
-        //   return;
-        // }
+        //오픈채팅이 없을 시
+        if (!openText) {
+          Alert .alert(
+            "알림",
+            "오픈채팅 주소를 입력해주세요.",
+            [{ text: '닫기', onPress: () => console.log('닫기') }],
+            { cancelable: true }
+          );
+          return;
+        }
 
-        // const uploadedImageURL = await uploadImageAndGetURL(image);
+        //const uploadedImageURL = await uploadImageAndGetURL(image);
 
         const participantData = {
           title,
@@ -117,36 +156,67 @@ const ParUpdate = ({navigation}) => {
   };
   
   //이미지 저장 함수
+  // const pickImage = async () => {
+  //     let result = await ImagePicker.launchImageLibraryAsync({
+  //       mediaTypes: ImagePicker.MediaTypeOptions.All,
+  //       allowsEditing: true,
+  //       aspect: [4, 3],
+  //       quality: 1,
+  //     });
+  
+  //     if (!result.canceled) {
+  //       const storage = getStorage();
+  //       const imageRef = ref(storage, `participant_uploadImg/${user.uid}_${Date.now()}.jpg`);
+
+  //       // 이미지의 uri를 사용하여 Blob으로 변환
+  //       const response = await fetch(result.uri);
+  //       const blob = await response.blob();
+
+  //       try {
+  //            //파이어스토리지에 사진 저장
+  //           await uploadBytes(imageRef, blob);
+
+  //           //업로드한 이미지 다운로드
+  //           const downloadURL = await getDownloadURL(imageRef);
+
+  //           //다운로드한 이미지 image에 저장
+  //           setImage(downloadURL);
+  //       } catch (error) {
+  //           console.error('Error uploading image:', error);
+  //       }
+  //     }
+  // };
+
+  const uploadImageToFirebase = async (localUri) => {
+    const storage = getStorage();
+    const filename = `participant_uploadImg/${user.uid}_${Date.now()}.jpg`;
+    const storageRef = ref(storage, filename);
+    const response = await fetch(localUri);
+    const blob = await response.blob();
+    await uploadBytes(storageRef, blob);
+    const downloadURL = await getDownloadURL(storageRef);
+    return downloadURL;
+  };
+
   const pickImage = async () => {
+    try {
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsEditing: true,
         aspect: [4, 3],
         quality: 1,
       });
-  
-      if (!result.canceled) {
-        const storage = getStorage();
-        const imageRef = ref(storage, `participant_uploadImg/${user.uid}_${Date.now()}.jpg`);
 
-        // 이미지의 uri를 사용하여 Blob으로 변환
-        const response = await fetch(result.uri);
-        const blob = await response.blob();
-
-        try {
-             //파이어스토리지에 사진 저장
-            await uploadBytes(imageRef, blob);
-
-            //업로드한 이미지 다운로드
-            const downloadURL = await getDownloadURL(imageRef);
-
-            //다운로드한 이미지 image에 저장
-            setImage(downloadURL);
-        } catch (error) {
-            console.error('Error uploading image:', error);
-        }
+      if (!result.cancelled) {
+        const localUri = result.uri;
+        const firebaseUrl = await uploadImageToFirebase(localUri);
+        setImage(firebaseUrl);
       }
+    } catch (error) {
+      console.error('Error picking image:', error);
+    }
   };
+
 
   //날짜선택
   const [dateOfPlong, setDateOfPlong] = useState("");
@@ -306,6 +376,7 @@ const ParUpdate = ({navigation}) => {
                               display="spinner"
                               value={date}
                               onChange={onChange}
+                              //minimumDate={minimumDate} 
                               style={styles.datePicker}
                               locale="ko"
                           />
